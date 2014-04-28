@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\weapons">
+      <UniqueIdentifier>{5410f2a0-14b4-4fc9-af87-37f9802a05d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\weapons">
+      <UniqueIdentifier>{ab3b742b-f459-4df4-a39d-f6f778c16517}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\creatures">
+      <UniqueIdentifier>{b2a5cfb7-b374-4acc-b628-9902e9a96661}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\creatures">
+      <UniqueIdentifier>{80dd33e3-6b41-4a8f-ab70-437cdb113095}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Bow.h">
+      <Filter>Header Files\weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="Crossbow.h">
+      <Filter>Header Files\weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="Grenades.h">
+      <Filter>Header Files\weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="Gun.h">
+      <Filter>Header Files\weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="HandWeapon.h">
+      <Filter>Header Files\weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="RangeWeapon.h">
+      <Filter>Header Files\weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>Header Files\weapons</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>Source Files\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="RangeWeapon.cpp">
+      <Filter>Source Files\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="HandWeapon.cpp">
+      <Filter>Source Files\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="Gun.cpp">
+      <Filter>Source Files\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="Grenades.cpp">
+      <Filter>Source Files\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="Crossbow.cpp">
+      <Filter>Source Files\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="Bow.cpp">
+      <Filter>Source Files\weapons</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
