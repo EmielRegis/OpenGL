@@ -25,6 +25,18 @@
     <Filter Include="Source Files\creatures">
       <UniqueIdentifier>{80dd33e3-6b41-4a8f-ab70-437cdb113095}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\other game elements">
+      <UniqueIdentifier>{c972adeb-3930-45ee-997b-1eff2c4a7f0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\other game elements">
+      <UniqueIdentifier>{787578ba-efbc-476f-a790-2845b49007c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game mechanics">
+      <UniqueIdentifier>{92e2b47a-35a0-4d82-8e0a-af3250f0435e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\game mechanics">
+      <UniqueIdentifier>{bf5e2f09-0fca-4fe4-8e5d-6725fb709605}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bow.h">
@@ -48,8 +60,50 @@
     <ClInclude Include="Weapon.h">
       <Filter>Header Files\weapons</Filter>
     </ClInclude>
+    <ClInclude Include="Ally.h">
+      <Filter>Header Files\creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="Beast.h">
+      <Filter>Header Files\creatures</Filter>
+    </ClInclude>
     <ClInclude Include="Creature.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="Demon.h">
+      <Filter>Header Files\creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="Fighting.h">
+      <Filter>Header Files\creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Header Files\creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="Humanoid.h">
+      <Filter>Header Files\creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="Flying.h">
+      <Filter>Header Files\creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="Man.h">
+      <Filter>Header Files\creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="Robot.h">
+      <Filter>Header Files\creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="Undead.h">
+      <Filter>Header Files\creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="Archievement.h">
+      <Filter>Header Files\other game elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Location.h">
+      <Filter>Header Files\other game elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Skill.h">
+      <Filter>Header Files\other game elements</Filter>
+    </ClInclude>
+    <ClInclude Include="SpecialLocation.h">
+      <Filter>Header Files\other game elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -74,8 +128,50 @@
     <ClCompile Include="Bow.cpp">
       <Filter>Source Files\weapons</Filter>
     </ClCompile>
+    <ClCompile Include="Ally.cpp">
+      <Filter>Source Files\creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="Beast.cpp">
+      <Filter>Source Files\creatures</Filter>
+    </ClCompile>
     <ClCompile Include="Creature.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="Demon.cpp">
+      <Filter>Source Files\creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Source Files\creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="Fighting.cpp">
+      <Filter>Source Files\creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="Flying.cpp">
+      <Filter>Source Files\creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="Humanoid.cpp">
+      <Filter>Source Files\creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="Man.cpp">
+      <Filter>Source Files\creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="Robot.cpp">
+      <Filter>Source Files\creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="Undead.cpp">
+      <Filter>Source Files\creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="Archievement.cpp">
+      <Filter>Source Files\other game elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Location.cpp">
+      <Filter>Source Files\other game elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Skill.cpp">
+      <Filter>Source Files\other game elements</Filter>
+    </ClCompile>
+    <ClCompile Include="SpecialLocation.cpp">
+      <Filter>Source Files\other game elements</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
