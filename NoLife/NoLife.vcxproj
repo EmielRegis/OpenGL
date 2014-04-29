@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bow.h" />
+    <ClInclude Include="Creature.h" />
     <ClInclude Include="Crossbow.h" />
     <ClInclude Include="Grenades.h" />
     <ClInclude Include="Gun.h" />
@@ -21,6 +22,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bow.cpp" />
+    <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Crossbow.cpp" />
     <ClCompile Include="Grenades.cpp" />
     <ClCompile Include="Gun.cpp" />
