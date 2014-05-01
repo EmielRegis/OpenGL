@@ -18,6 +18,7 @@
 using namespace std;
 
 DrawableObject *kostka;
+DrawableObject *malpa;
 
 Scene &scene = Scene::getInstance();
 //Macierze
@@ -96,7 +97,8 @@ void displayFrame() {
 
 	//Narysuj obiekt
 	kostka->drawObject();
-	//alternativeDraw();
+
+
 
 
 	//Tylny bufor na przedni
@@ -177,7 +179,8 @@ int main(int argc, char** argv) {
 	initGLEW();
 	setupShaders();
 
-	kostka = new DrawableObject(shaderProgram);
+	kostka = new DrawableObject(shaderProgram, "cube1.obj");
+	malpa = new DrawableObject(shaderProgram, "suzanne.obj");
 
 	glEnable(GL_DEPTH_TEST);
 

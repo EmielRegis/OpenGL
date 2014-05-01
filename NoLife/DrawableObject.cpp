@@ -1,11 +1,29 @@
 #include "DrawableObject.h"
 
 
+
 DrawableObject::DrawableObject(ShaderProgram *shaderProgram)
 {
 	this->shaderProgram = shaderProgram;
 
-	load_obj("suzanne.obj", suzanne_vertices, suzanne_normals, suzanne_textures);
+	load_obj("cube1.obj", suzanne_vertices, suzanne_normals, suzanne_textures);
+	vertices = &suzanne_vertices[0];
+	normals = &suzanne_normals[0];
+	//colors = &suzanne_colors[0]
+	//textures = &suzanne_textures[0];
+	//elements = &suzanne_elements[0];
+	vertexCount = suzanne_vertices.size() / 4;
+
+	this->setupVBO();
+	this->setupVAO();
+}
+
+
+DrawableObject::DrawableObject(ShaderProgram *shaderProgram, const char *filepath)
+{
+	this->shaderProgram = shaderProgram;
+
+	load_obj(filepath, suzanne_vertices, suzanne_normals, suzanne_textures);
 	vertices = &suzanne_vertices[0];
 	normals = &suzanne_normals[0];
 	//colors = &suzanne_colors[0]

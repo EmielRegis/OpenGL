@@ -22,6 +22,7 @@ class DrawableObject
 {
 public:
 	DrawableObject(ShaderProgram *shaderProgram);
+	DrawableObject(ShaderProgram *shaderProgram, const char * filepath);
 	~DrawableObject();
 
 	//³adowanie modelu z Blendera
