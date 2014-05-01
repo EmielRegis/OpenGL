@@ -18,6 +18,7 @@
     <ClInclude Include="Creature.h" />
     <ClInclude Include="Crossbow.h" />
     <ClInclude Include="Demon.h" />
+    <ClInclude Include="DrawableObject.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Fighting.h" />
     <ClInclude Include="Flying.h" />
@@ -30,6 +31,7 @@
     <ClInclude Include="RangeWeapon.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Robot.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="Skill.h" />
     <ClInclude Include="SpecialLocation.h" />
     <ClInclude Include="Undead.h" />
@@ -43,6 +45,7 @@
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Crossbow.cpp" />
     <ClCompile Include="Demon.cpp" />
+    <ClCompile Include="DrawableObject.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Fighting.cpp" />
     <ClCompile Include="Flying.cpp" />
@@ -55,6 +58,7 @@
     <ClCompile Include="Man.cpp" />
     <ClCompile Include="RangeWeapon.cpp" />
     <ClCompile Include="Robot.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="shaderprogram.cpp" />
     <ClCompile Include="Skill.cpp" />
     <ClCompile Include="SpecialLocation.cpp" />

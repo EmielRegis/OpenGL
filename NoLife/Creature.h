@@ -1,5 +1,10 @@
 #pragma once
-class Creature
+
+//#include "DrawableObject.h"
+
+
+class Creature 
+	
 {
 public:
 	Creature();
