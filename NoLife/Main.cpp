@@ -23,18 +23,29 @@ DrawableObject *malpa;
 Scene &scene = Scene::getInstance();
 //Macierze
 
+bool keyW = false, keyS = false, keyA = false, keyD = false, keyE = false, keyShift = false, keySpace = false, keyZ = false, keyX = false, keyC = false;
 
 //Ustawienia okna i rzutowania
 int windowPositionX = 100;
 int windowPositionY = 100;
-int windowWidth = 400;
-int windowHeight = 400;
+int windowWidth = 600;
+int windowHeight = 600;
 float cameraAngle = 45.0f;
 
 //Zmienne do animacji
 float speed = 120; //120 stopni/s
 int lastTime = 0;
 float angle = 0;
+
+// zmienne do poruszania sie
+float obsX = 20.0f, obsY = 20.0f, obsZ = 3.0f, pktX = -8, pktY = 80.0f, pktZ = 1.0f, stepX = 0.0f, stepY = 0.0f, stepZ = 0.0f,
+i = 225,
+k = 90,
+j = 0,
+N = 360,
+R = abs(obsX - pktX);
+
+int mouseXY = 0, mouseZ;
 
 //Uchwyty na shadery
 ShaderProgram *shaderProgram; //Wskaünik na obiekt reprezentujπcy program cieniujπcy.
@@ -83,14 +94,18 @@ vector<GLushort> suzanne_elements;
 //Procedura rysujπca
 void displayFrame() {
 	//WyczyúÊ bufor kolorÛw i bufor g≥Íbokoúci
-	glClearColor(1, 0, 0, 1);
+	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Wylicz macierz rzutowania
-	scene.matP = glm::perspective(cameraAngle, (float)windowWidth / (float)windowHeight, 1.0f, 100.0f);
+	scene.matP = glm::perspective(cameraAngle, // przyblizy/oddali wido
+		(float)windowWidth / (float)windowHeight, 1.0f, 100.0f);
 
 	//Wylicz macierz widoku
-	scene.matV = glm::lookAt(glm::vec3(0.0f, 0.0f, 7.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	scene.matV = glm::lookAt(glm::vec3(obsX, obsZ, obsY), //skad dom 0,0, 7
+		glm::vec3(pktX, pktZ, pktY), //dokad dom 0,0,0
+		glm::vec3(0.0f, 1.0f, 0.0f)); //  jaki kat - domyslnie gora-dol
+
 
 	//Wylicz macierz modelu
 	scene.matM = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.5, 1, 0));
@@ -98,6 +113,9 @@ void displayFrame() {
 	//Narysuj obiekt
 	kostka->drawObject();
 
+
+	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(5.0, 0.0, 0.0));
+	malpa->drawObject();
 
 
 
@@ -173,18 +191,233 @@ void cleanShaders() {
 
 
 
+// kontrola naciskania klawiszy klawiatury
+void keyPressed(unsigned char key, int x, int y)
+{
+
+
+
+	//switch (key)
+	{
+		//case 37: {rot_y -= 5.0f; break; }
+		//case 38: {rot_x -= 5.0f; break; }
+		//case 39: {rot_y += 5.0f; break; }
+		//case 40: {rot_x += 5.0f; break; }
+
+		//case 87:
+		if (keyW){
+
+
+			stepX = (pktX - obsX) / 100;
+			stepY = (pktY - obsY) / 100;
+			if (keyE)
+			{
+				j += 0.9;
+				obsZ = 1.5 + sin(j) / 5;
+			}
+
+
+
+
+			obsX += stepX;
+			obsY += stepY;
+
+			pktX += stepX;
+			pktY += stepY;
+			// break;
+
+		} // w
+		//case 83:
+		if (keyS){
+
+			stepX = (pktX - obsX) / 100;
+			stepY = (pktY - obsY) / 100;
+
+
+			obsX -= stepX;
+			obsY -= stepY;
+			if (keyE)
+			{
+				j += 0.9;
+				obsZ = 1.5 + sin(j) / 5;
+			}
+
+			pktX -= stepX;
+			pktY -= stepY;
+			// break;
+		} // sy
+		//case 65:
+		if (keyA){
+			stepX = -(pktY - obsY) / 100;
+			stepY = (pktX - obsX) / 100;
+
+			obsX -= stepX;
+			obsY -= stepY;
+			pktX -= stepX;
+			pktY -= stepY;
+
+		} // a
+		if (keyD)//case 68:
+		{
+			stepX = -(pktY - obsY) / 100;
+			stepY = (pktX - obsX) / 100;
+
+			obsX += stepX;
+			obsY += stepY;
+			pktX += stepX;
+			pktY += stepY;
+		} // d
+
+	}
+
+}
+
+void keyDown(unsigned char c, int x, int y)
+{
+	if (c == 'w')
+	{
+		keyW = true;
+	}
+	else if (c == 's')
+	{
+		keyS = true;
+	}
+	else if (c == 'a')
+	{
+		keyA = true;
+	}
+	else if (c == 'd')
+	{
+		keyD = true;
+	}
+	else if (c == 'e')
+	{
+		keyE = true;
+	}
+	keyPressed(c, x, y);
+
+}
+
+void keyDown(int c, int x, int y)
+{
+	if (c = GLUT_KEY_SHIFT_L)
+	{
+		keyShift = true;
+	}
+
+	keyPressed((char)c, x, y);
+}
+
+void keUp(unsigned char c, int x, int y)
+{
+	if (c == 'w')
+	{
+		keyW = false;
+	}
+	else if (c == 's')
+	{
+		keyS = false;
+	}
+	else if (c == 'a')
+	{
+		keyA = false;
+	}
+	else if (c == 'd')
+	{
+		keyD = false;
+	}
+	else if (c == 'e')
+	{
+		keyE = false;
+	}
+}
+
+void keyUp(int c, int x, int y)
+{
+	if (c = GLUT_KEY_SHIFT_L)
+	{
+		keyShift = false;
+	}
+}
+
+void passiveMouseMove(int x, int y)
+{
+	int xy = x;// -windowWidth / 2;
+	int z = y;// -windowHeight / 2;
+
+	xy = xy - mouseXY;
+	z = z - mouseZ;
+
+
+
+
+	mouseXY = x;
+	mouseZ = y;
+
+	if (i > 0)
+	{
+		i += xy;
+	}
+	else
+	{
+		i = 360;
+	}
+	pktX = obsX + 1 * R * cos(6.28318 * i / N);
+	pktY = obsY + 1 * R * sin(6.28318 * i / N);
+
+	if (k > 10)
+	{
+		if ((k < 180) && k >= -z && (180 - k) >= z)
+		{
+			k += z;
+		}
+		else
+		{
+			if ((z < 0))
+			{
+				k += z;
+			}
+		}
+	}
+	else
+	{
+		if (z > 0)
+		{
+			k += z;
+		}
+	}
+
+
+	cout << "k: " << k << "   k/N: " << k / N << "   6*k/N " << 6.28318 * k / N << "cos: " << cos(6.28318 * k / N) << endl;
+
+	pktZ = obsX + 1 * R * cos(6.28318 * k / N);
+
+
+
+
+}
+
+
+
+
+
 int main(int argc, char** argv) {
 
 	initGLUT(&argc, argv);
 	initGLEW();
 	setupShaders();
+	glutKeyboardFunc(keyDown);
+	glutKeyboardUpFunc(keUp);
+	glutSpecialFunc(keyDown);
+	glutSpecialUpFunc(keyUp);
+	glutPassiveMotionFunc(passiveMouseMove);
 
-	kostka = new DrawableObject(shaderProgram, "cube1.obj");
-	malpa = new DrawableObject(shaderProgram, "suzanne.obj");
+	kostka = new DrawableObject(shaderProgram, "suzanne.obj");
+	malpa = new DrawableObject(shaderProgram, "floor.obj");
 
 	glEnable(GL_DEPTH_TEST);
 
-	
+
 
 	glutMainLoop();
 
