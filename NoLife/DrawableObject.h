@@ -14,7 +14,6 @@
 #include <sstream>
 #include "Scene.h"
 
-
 using namespace std;
 
 
@@ -26,7 +25,9 @@ public:
 	~DrawableObject();
 
 	//³adowanie modelu z Blendera
-	void load_obj(const char* filename, vector<float> &vertices, vector<float> &normals, vector<float> &textures);
+	void load_obj(const char* filename, vector<float> &vertices, vector<float> &normals, vector<float> &textures, vector<float> &colors);
+
+	void changeColor(float r, float g, float b);
 
 	//Procedura rysuj¹ca jakiœ obiekt. Ustawia odpowiednie parametry dla vertex shadera i rysuje.
 	void drawObject();

@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include "tga/tga.h"
 #include "shaderprogram.h"
-#include "cube.h"
 #include "teapot.h"
 #include "vector"
 #include <ios>
@@ -19,6 +18,11 @@ using namespace std;
 
 DrawableObject *kostka;
 DrawableObject *malpa;
+DrawableObject *USS;
+DrawableObject *demon;
+DrawableObject *floore;
+DrawableObject *smallDragon;
+DrawableObject *house;
 
 Scene &scene = Scene::getInstance();
 //Macierze
@@ -58,21 +62,7 @@ GLuint bufNormals; //Uchwyt na bufor VBO przechowuj¹cy tablicê wektorów normalny
 GLuint bufTextures; //Uchwyt na bufor VBO przechowujacy tablicê wartoœci tekstur
 GLuint bufElements; //Uchwyt na bufor VBO elementow - trojkatow o ile takowy bufor mozna utworzyc
 
-//"Model" który rysujemy. Dane wskazywane przez poni¿sze wskaŸniki i o zadanej liczbie wierzcho³ków s¹ póŸniej wysowane przez program.
-//W programie s¹ dwa modele, z których jeden mo¿na wybraæ komentuj¹c/odkomentowuj¹c jeden z poni¿szych fragmentów.
 
-//Kostka
-/*float *vertices = cubeVertices;
-float *colors = cubeColors;
-float *normals = cubeNormals;
-int vertexCount = cubeVertexCount;*/
-
-/*
-//Czajnik
-float *vertices=teapotVertices;
-float *colors=teapotColors;
-float *normals=teapotNormals;
-int vertexCount=teapotVertexCount;*/
 
 float *vertices;
 float *colors;
@@ -94,7 +84,7 @@ vector<GLushort> suzanne_elements;
 //Procedura rysuj¹ca
 void displayFrame() {
 	//Wyczyœæ bufor kolorów i bufor g³êbokoœci
-	glClearColor(0, 0, 0, 1);
+	glClearColor(0.8, 0.8, 1, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Wylicz macierz rzutowania
@@ -108,14 +98,30 @@ void displayFrame() {
 
 
 	//Wylicz macierz modelu
-	scene.matM = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.5, 1, 0));
+	scene.matM = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0, 1, 0));
 
 	//Narysuj obiekt
-	kostka->drawObject();
+	USS->drawObject();
 
 
 	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(5.0, 0.0, 0.0));
-	malpa->drawObject();
+	floore->drawObject();
+
+
+	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(20.0, 0.0, 10.0));
+	demon->drawObject();
+	
+	
+		
+	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0, 10.0, 15.0));
+	scene.matM = glm::scale(scene.matM, glm::vec3(15.0, 15.0, 15.0));
+	scene.matM = glm::rotate(scene.matM, 90.0f, glm::vec3(1.0, .0, 0.0));
+	scene.matM = glm::rotate(scene.matM, 180.0f, glm::vec3(1.0, 1.0, 0.0));
+	smallDragon->drawObject();
+
+	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(50.0, 0.0, 40.0));
+	house->drawObject();
+
 
 
 
@@ -388,7 +394,7 @@ void passiveMouseMove(int x, int y)
 	}
 
 
-	cout << "k: " << k << "   k/N: " << k / N << "   6*k/N " << 6.28318 * k / N << "cos: " << cos(6.28318 * k / N) << endl;
+	//cout << "k: " << k << "   k/N: " << k / N << "   6*k/N " << 6.28318 * k / N << "cos: " << cos(6.28318 * k / N) << endl;
 
 	pktZ = obsX + 1 * R * cos(6.28318 * k / N);
 
@@ -412,10 +418,43 @@ int main(int argc, char** argv) {
 	glutSpecialUpFunc(keyUp);
 	glutPassiveMotionFunc(passiveMouseMove);
 
-	kostka = new DrawableObject(shaderProgram, "suzanne.obj");
-	malpa = new DrawableObject(shaderProgram, "floor.obj");
 
+
+	glEnable(GL_LIGHTING);
+	// w³¹czenie obs³ugi w³aœciwoœci materia³ów
+	glEnable(GL_COLOR_MATERIAL);
+	// w³¹czenie testu bufora g³êbokoœci
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_NORMALIZE);
+
+	float swiatlo_otoczenia[] = { 0.1, 0.1, 0.1, 1.0 };
+	float swiatlo_rozproszone[] = { 0.2, 0.2, 0.6, 1.0 };
+	float swiatlo_odbite[] = { 1.0, 0.2, 0.2, 1.0 };
+	float swiatlo_pozycja[] = { 0.0, 0.0, -20.0, 1.0 };
+	glLightfv(GL_LIGHT0, GL_AMBIENT, swiatlo_otoczenia);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, swiatlo_rozproszone);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, swiatlo_odbite);
+	glLightfv(GL_LIGHT0, GL_POSITION, swiatlo_pozycja);		float material[] = { 0.5, 0.5, 0.5, 1.0 };
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, material);
+
+
+	//kostka = new DrawableObject(shaderProgram, "cube1.obj");
+	//malpa = new DrawableObject(shaderProgram, "floor.obj");
+	//malpa->changeColor(0.1f, 0.4f, 0.1f);
+	floore = new DrawableObject(shaderProgram, "floor.obj");
+	floore->changeColor(0.4, 0.7, 0.4);
+
+	demon = new DrawableObject(shaderProgram, "devil.obj");
+	demon->changeColor(0.9, 0.0, 0.0);
+
+	USS = new DrawableObject(shaderProgram, "USS.obj");
+
+	smallDragon = new DrawableObject(shaderProgram, "small_dragon.obj");
+	smallDragon->changeColor(0.4, 0.2, 0.1);
+
+	house = new DrawableObject(shaderProgram, "house.obj");
+	house->changeColor(0.3, 0.2, 0.3);
 
 
 

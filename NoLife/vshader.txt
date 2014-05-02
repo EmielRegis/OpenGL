@@ -10,7 +10,11 @@ uniform mat4 M;
 in vec4 vertex; //wspolrzedne wierzcholka w przestrzeni modelu
 in vec4 color;  //kolor wierzcholka (na razie ignorowany)
 in vec4 normal; //wektor normalny w wierzcholku (na razie ignorowany)
+out vec4 kolorek;
+
 
 void main(void) {
 	gl_Position=P*V*M*vertex;
+	kolorek=color;
+	vec4 lightPos = vec4(0,0,7,1);
 }

@@ -6,13 +6,14 @@ DrawableObject::DrawableObject(ShaderProgram *shaderProgram)
 {
 	this->shaderProgram = shaderProgram;
 
-	load_obj("cube1.obj", suzanne_vertices, suzanne_normals, suzanne_textures);
+	load_obj("cube1.obj", suzanne_vertices, suzanne_normals, suzanne_textures, suzanne_colors);
 	vertices = &suzanne_vertices[0];
 	normals = &suzanne_normals[0];
-	//colors = &suzanne_colors[0]
+	colors = &suzanne_colors[0];
 	//textures = &suzanne_textures[0];
 	//elements = &suzanne_elements[0];
 	vertexCount = suzanne_vertices.size() / 4;
+	
 
 	this->setupVBO();
 	this->setupVAO();
@@ -23,10 +24,10 @@ DrawableObject::DrawableObject(ShaderProgram *shaderProgram, const char *filepat
 {
 	this->shaderProgram = shaderProgram;
 
-	load_obj(filepath, suzanne_vertices, suzanne_normals, suzanne_textures);
+	load_obj(filepath, suzanne_vertices, suzanne_normals, suzanne_textures, suzanne_colors);
 	vertices = &suzanne_vertices[0];
 	normals = &suzanne_normals[0];
-	//colors = &suzanne_colors[0]
+	colors = &suzanne_colors[0];
 	//textures = &suzanne_textures[0];
 	//elements = &suzanne_elements[0];
 	vertexCount = suzanne_vertices.size() / 4;
@@ -42,9 +43,25 @@ DrawableObject::~DrawableObject()
 	this->freeVBO();
 }
 
+void DrawableObject::changeColor(float r, float g, float b)
+{
+	for (int i = 0; i < suzanne_colors.size(); i += 4)
+	{
+		suzanne_colors[i] = r;
+		suzanne_colors[i+1] = g;
+		suzanne_colors[i+2] = b;
+		suzanne_colors[i+3] = 1.0f;
+	}
+
+	colors = &suzanne_colors[0];
+
+	this->setupVBO();
+	this->setupVAO();
+}
+
 
 //³adowanie modelu z Blendera
-void DrawableObject::load_obj(const char* filename, vector<float> &vertices, vector<float> &normals, vector<float> &textures) {
+void DrawableObject::load_obj(const char* filename, vector<float> &vertices, vector<float> &normals, vector<float> &textures, vector<float>&colors) {
 	vector<int> elements;
 	vector<glm::vec4> verts;
 	vector<glm::vec2> text;
@@ -83,6 +100,11 @@ void DrawableObject::load_obj(const char* filename, vector<float> &vertices, vec
 		vertices.push_back((float)verts[elements[i]].y);
 		vertices.push_back((float)verts[elements[i]].z);
 		vertices.push_back((float)verts[elements[i]].w);
+
+		colors.push_back(1.0f);
+		colors.push_back(1.0f);
+		colors.push_back(1.0f);
+		colors.push_back(1.0f);
 
 		if (text.size() >= verts.size())
 		{
