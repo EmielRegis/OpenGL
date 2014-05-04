@@ -12,6 +12,10 @@
 #include <sstream>
 #include "Scene.h"
 #include "DrawableObject.h"
+#include <chrono>
+#include <thread>
+#include <cstdlib>
+
 
 
 using namespace std;
@@ -42,7 +46,7 @@ int lastTime = 0;
 float angle = 0;
 
 // zmienne do poruszania sie
-float obsX = 20.0f, obsY = 20.0f, obsZ = 3.0f, pktX = -8, pktY = 80.0f, pktZ = 1.0f, stepX = 0.0f, stepY = 0.0f, stepZ = 0.0f,
+float obsX = 20.0f, obsY = 20.0f, obsZ = 2.0f, pktX = -8, pktY = 0.0f, pktZ = 2.0f, stepX = 0.0f, stepY = 0.0f, stepZ = 0.0f,
 i = 225,
 k = 90,
 j = 0,
@@ -219,7 +223,7 @@ void keyPressed(unsigned char key, int x, int y)
 			if (keyE)
 			{
 				j += 0.9;
-				obsZ = 1.5 + sin(j) / 5;
+				obsZ = 1.8 + sin(j) / 5;
 			}
 
 
@@ -245,7 +249,7 @@ void keyPressed(unsigned char key, int x, int y)
 			if (keyE)
 			{
 				j += 0.9;
-				obsZ = 1.5 + sin(j) / 5;
+				obsZ = 1.8 + sin(j) / 5;
 			}
 
 			pktX -= stepX;
@@ -300,8 +304,34 @@ void keyDown(unsigned char c, int x, int y)
 	{
 		keyE = true;
 	}
+	else if (c == 'z')
+	{
+		obsZ = 2.0f;
+	}
+	else if (c == 'x')
+	{
+		obsZ = 1.0f;
+	}
+	else if (c == 'c')
+	{
+		obsZ = 0.5f;
+	}
 	keyPressed(c, x, y);
 
+}
+
+void jump()
+{
+	for (float i = 0.0f; i < 3.14f; i += 0.1f)
+	{
+		obsZ = 2.0f + sin(i);
+		cout << obsZ << endl;
+		std::this_thread::sleep_for(std::chrono::milliseconds(30));
+		
+
+	}
+
+	obsZ = 2.0;
 }
 
 void keyDown(int c, int x, int y)
@@ -310,6 +340,7 @@ void keyDown(int c, int x, int y)
 	{
 		keyShift = true;
 	}
+
 
 	keyPressed((char)c, x, y);
 }
@@ -335,6 +366,13 @@ void keUp(unsigned char c, int x, int y)
 	else if (c == 'e')
 	{
 		keyE = false;
+	}
+	else if (c == ' ')
+	{
+		std::thread first(jump);
+		first.detach();
+
+		
 	}
 }
 
@@ -392,11 +430,12 @@ void passiveMouseMove(int x, int y)
 			k += z;
 		}
 	}
-
+	 
+	//cout  << " " << i << " " << k << endl;
 
 	//cout << "k: " << k << "   k/N: " << k / N << "   6*k/N " << 6.28318 * k / N << "cos: " << cos(6.28318 * k / N) << endl;
 
-	pktZ = obsX + 1 * R * cos(6.28318 * k / N);
+	pktZ = obsZ + 1 * R * cos(6.28318 * k / N);
 
 
 
