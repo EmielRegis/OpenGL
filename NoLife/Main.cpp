@@ -28,6 +28,8 @@ DrawableObject *floore;
 DrawableObject *smallDragon;
 DrawableObject *house;
 
+bool artificalMousemove = false;
+
 Scene &scene = Scene::getInstance();
 //Macierze
 
@@ -91,6 +93,7 @@ void displayFrame() {
 	glClearColor(0.8, 0.8, 1, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
 	//Wylicz macierz rzutowania
 	scene.matP = glm::perspective(cameraAngle, // przyblizy/oddali wido
 		(float)windowWidth / (float)windowHeight, 1.0f, 100.0f);
@@ -126,8 +129,21 @@ void displayFrame() {
 	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(50.0, 0.0, 40.0));
 	house->drawObject();
 
+	
+	/*scene.matP = glm::ortho(0, windowWidth, windowHeight, 0,0, 100);
+	glUniformMatrix4fv(shaderProgram->getUniformLocation("P"), 1, false, glm::value_ptr(scene.matP));
+	glUniformMatrix4fv(shaderProgram->getUniformLocation("V"), 1, false, glm::value_ptr(scene.matV));
+	glUniformMatrix4fv(shaderProgram->getUniformLocation("M"), 1, false, glm::value_ptr(scene.matM));
 
+	glBegin(GL_TRIANGLES);
+		glVertex2f(0, 0);
+		glVertex2f(0, 1);
+		glVertex2f(1, 1);
 
+		glVertex2f(1, 1);
+		glVertex2f(1, 0);
+		glVertex2f(0, 0);
+	glEnd();*/
 
 	//Tylny bufor na przedni
 	glutSwapBuffers();
@@ -386,6 +402,8 @@ void keyUp(int c, int x, int y)
 
 void passiveMouseMove(int x, int y)
 {
+	
+
 	int xy = x;// -windowWidth / 2;
 	int z = y;// -windowHeight / 2;
 
@@ -437,8 +455,27 @@ void passiveMouseMove(int x, int y)
 
 	pktZ = obsZ + 1 * R * cos(6.28318 * k / N);
 
-
-
+	if (mouseXY > windowWidth - windowWidth/40)
+	{
+		mouseXY = windowWidth / 2;
+		glutWarpPointer(windowWidth / 2, mouseZ);
+	}
+	if (mouseXY < windowWidth / 40)
+	{
+		mouseXY = windowWidth / 2;
+		glutWarpPointer(windowWidth / 2, mouseZ);
+	}
+	if (mouseZ > windowHeight - windowHeight / 40)
+	{
+		mouseZ = windowHeight / 2;
+		glutWarpPointer(mouseXY, windowHeight / 2);
+	}
+	if (mouseZ < windowHeight / 40)
+	{
+		mouseZ = windowHeight / 2;
+		glutWarpPointer(mouseXY, windowHeight / 2);
+	}
+	
 
 }
 
@@ -457,7 +494,7 @@ int main(int argc, char** argv) {
 	glutSpecialUpFunc(keyUp);
 	glutPassiveMotionFunc(passiveMouseMove);
 
-
+	glutSetCursor(GLUT_CURSOR_NONE);
 
 	glEnable(GL_LIGHTING);
 	// w³¹czenie obs³ugi w³aœciwoœci materia³ów
@@ -467,15 +504,7 @@ int main(int argc, char** argv) {
 	glEnable(GL_LIGHT0);
 	glEnable(GL_NORMALIZE);
 
-	float swiatlo_otoczenia[] = { 0.1, 0.1, 0.1, 1.0 };
-	float swiatlo_rozproszone[] = { 0.2, 0.2, 0.6, 1.0 };
-	float swiatlo_odbite[] = { 1.0, 0.2, 0.2, 1.0 };
-	float swiatlo_pozycja[] = { 0.0, 0.0, -20.0, 1.0 };
-	glLightfv(GL_LIGHT0, GL_AMBIENT, swiatlo_otoczenia);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, swiatlo_rozproszone);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, swiatlo_odbite);
-	glLightfv(GL_LIGHT0, GL_POSITION, swiatlo_pozycja);		float material[] = { 0.5, 0.5, 0.5, 1.0 };
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, material);
+	
 
 
 	//kostka = new DrawableObject(shaderProgram, "cube1.obj");
