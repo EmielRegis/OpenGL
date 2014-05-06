@@ -13,3 +13,30 @@ Scene &Scene::getInstance()
 {
 	return Scene::scene;
 }
+
+void Scene::setupShaders()
+{
+	shaderProgram = new ShaderProgram("vshader.txt", NULL, "fshader.txt");
+	shaderProgram2D = new ShaderProgram("vshader2D.txt", NULL, "fshader2D.txt");
+	shaderProgramPro = new ShaderProgram("vshaderPro.txt", NULL, "fshaderPro.txt");
+}
+
+//Zwolnij pamiêæ karty graficznej z shaderów i programu cieniuj¹cego
+void Scene::cleanShaders() 
+{
+	delete shaderProgram;
+	delete shaderProgram2D;
+	delete shaderProgramPro;
+}
+
+void Scene::initScene()
+{
+
+	this->setupShaders();
+	initialized = true;
+}
+
+bool Scene::isInitialized(void)
+{
+	return this->initialized;
+}

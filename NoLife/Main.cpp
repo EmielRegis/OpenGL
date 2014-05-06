@@ -57,8 +57,7 @@ R = abs(obsX - pktX);
 
 int mouseXY = 0, mouseZ;
 
-//Uchwyty na shadery
-ShaderProgram *shaderProgram; //WskaŸnik na obiekt reprezentuj¹cy program cieniuj¹cy.
+
 
 //Uchwyty na VAO i bufory wierzcho³ków
 GLuint vao;
@@ -200,18 +199,18 @@ void initGLEW() {
 }
 
 
-//Wczytuje vertex shader i fragment shader i ³¹czy je w program cieniuj¹cy
+/*//Wczytuje vertex shader i fragment shader i ³¹czy je w program cieniuj¹cy
 void setupShaders() {
 	shaderProgram = new ShaderProgram("vshader.txt", NULL, "fshader.txt");
-}
+}*/
 
 
 
 
-//Zwolnij pamiêæ karty graficznej z shaderów i programu cieniuj¹cego
+/*//Zwolnij pamiêæ karty graficznej z shaderów i programu cieniuj¹cego
 void cleanShaders() {
 	delete shaderProgram;
-}
+}*/
 
 
 
@@ -486,8 +485,10 @@ void passiveMouseMove(int x, int y)
 int main(int argc, char** argv) {
 
 	initGLUT(&argc, argv);
+	//initGLUT(0, NULL);
 	initGLEW();
-	setupShaders();
+	//setupShaders();
+	Scene::getInstance().initScene();
 	glutKeyboardFunc(keyDown);
 	glutKeyboardUpFunc(keUp);
 	glutSpecialFunc(keyDown);
@@ -510,18 +511,18 @@ int main(int argc, char** argv) {
 	//kostka = new DrawableObject(shaderProgram, "cube1.obj");
 	//malpa = new DrawableObject(shaderProgram, "floor.obj");
 	//malpa->changeColor(0.1f, 0.4f, 0.1f);
-	floore = new DrawableObject(shaderProgram, "floor.obj");
+	floore = new DrawableObject(Scene::getInstance().shaderProgramPro, "floor.obj");
 	floore->changeColor(0.4, 0.7, 0.4);
 
-	demon = new DrawableObject(shaderProgram, "devil.obj");
+	demon = new DrawableObject(Scene::getInstance().shaderProgramPro, "devil.obj");
 	demon->changeColor(0.9, 0.0, 0.0);
 
-	USS = new DrawableObject(shaderProgram, "USS.obj");
+	USS = new DrawableObject(Scene::getInstance().shaderProgramPro, "USS.obj");
 
-	smallDragon = new DrawableObject(shaderProgram, "small_dragon.obj");
+	smallDragon = new DrawableObject(Scene::getInstance().shaderProgramPro, "small_dragon.obj");
 	smallDragon->changeColor(0.4, 0.2, 0.1);
 
-	house = new DrawableObject(shaderProgram, "house.obj");
+	house = new DrawableObject(Scene::getInstance().shaderProgramPro, "house.obj");
 	house->changeColor(0.3, 0.2, 0.3);
 
 
@@ -529,6 +530,6 @@ int main(int argc, char** argv) {
 	glutMainLoop();
 
 
-	cleanShaders();
+	//cleanShaders();
 	return 0;
 }

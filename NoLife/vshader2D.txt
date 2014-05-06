@@ -1,0 +1,36 @@
+#version 330
+
+//Zmienne jednorodne
+uniform mat4 P;
+uniform mat4 V;
+uniform mat4 M;
+
+
+//Atrybuty
+in vec4 vertex; //wspolrzedne wierzcholka w przestrzeni modelu
+in vec4 color;  //kolor wierzcholka (na razie ignorowany)
+in vec4 normal; //wektor normalny w wierzcholku (na razie ignorowany)
+out vec4 kolorek;
+out vec4 final;
+
+
+
+void main(void) {
+	vec4 Ma = vec4(1,1,1,1);
+	vec4 La = vec4(0.3,0.3,0.3,1);
+	vec4 Md = Ma;
+	vec4 Ld = vec4(1,1,1,1);
+	vec4 pos = vec4(0,0,5,1);
+
+	vec4 l = normalize(V*pos - V*M*vertex);
+	vec4 n = normalize(V*M*normal);
+
+	float nl = max(0, dot(l,n));
+
+	final = Ma * La + Md * Ld * vec4(nl, nl, nl, 1);
+	
+
+	gl_Position=P*V*M*vertex;
+	kolorek=color;
+	vec4 lightPos = vec4(0,0,7,1);
+}
