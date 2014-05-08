@@ -215,6 +215,7 @@ void DrawableObject::load_obj(const char* filename, vector<float> &vertices, vec
 //³adowanie modelu z Blendera
 void DrawableObject::load_obj_with_textures(const char* filename, vector<float> &vertices, vector<float> &normals, vector<float> &textures, vector<float>&colors) {
 	vector<int> elements;
+	vector<int> elements2;
 	vector<glm::vec4> verts;
 	vector<glm::vec2> text;
 	ifstream in(filename, ios::in);
@@ -231,19 +232,37 @@ void DrawableObject::load_obj_with_textures(const char* filename, vector<float> 
 		}
 		else if (line.substr(0, 3) == "vt ")
 		{
-			istringstream s(line.substr(2));
-			glm::vec2 vt; s >> vt.x; s >> vt.y;
+			istringstream s(line.substr(3));
+
+			glm::vec2 vt; 
+			s >> vt.x; s >> vt.y;
 			text.push_back(vt);
 		}
 		else if (line.substr(0, 2) == "f ") {
 			istringstream s(line.substr(2));
-			GLushort a, b, c;
-			s >> a; s >> b; s >> c;
-			a--; b--; c--;
+
+			string pars[3];
+			s >> pars[0]; s >> pars[1]; s >> pars[2];
+
+			int a, b, c, d, e, f;
+
+			sscanf_s(pars[0].c_str(), "%d/%d", &a, &d);
+			sscanf_s(pars[1].c_str(), "%d/%d", &b, &e);
+			sscanf_s(pars[2].c_str(), "%d/%d", &c, &f);
+	
+			a--; b--; c--; d--; e--; f--;
+
 			elements.push_back(a); elements.push_back(b); elements.push_back(c);
+			elements2.push_back(d); elements2.push_back(e); elements2.push_back(f);
 		}
 		else if (line[0] == '#') {}
 		else {}
+	}
+
+	for (int i = 0; i < elements2.size(); i++)
+	{
+		textures.push_back((float)text[elements2[i]].x);
+		textures.push_back((float)text[elements2[i]].y);
 	}
 
 	for (int i = 0; i < elements.size(); i++)
@@ -253,8 +272,7 @@ void DrawableObject::load_obj_with_textures(const char* filename, vector<float> 
 		vertices.push_back((float)verts[elements[i]].z);
 		vertices.push_back((float)verts[elements[i]].w);
 
-		textures.push_back((float)text[elements[i]].x);
-		textures.push_back((float)text[elements[i]].y);
+		
 
 		colors.push_back(1.0f);
 		colors.push_back(1.0f);

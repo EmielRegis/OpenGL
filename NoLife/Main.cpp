@@ -92,6 +92,10 @@ void displayFrame() {
 
 	kostka->drawObject();
 
+	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0, 0.0, 20.0));
+	scene.matM = glm::rotate(scene.matM, angle, glm::vec3(0.0, 1, 0));
+	
+	USS->drawObject();
 
 	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(5.0, 0.0, 0.0));
 	floore->drawObject();
@@ -500,7 +504,7 @@ int main(int argc, char** argv) {
 	demon = new DrawableObject(Scene::getInstance().shaderProgramPro, "devil.obj");
 	demon->changeColor(0.9, 0.0, 0.0);
 	
-	USS = new DrawableObject(Scene::getInstance().shaderProgramProTex, "USS.obj");
+	USS = new DrawableObject(Scene::getInstance().shaderProgramProTex, "USSEnterprise.obj", "uss.tga");
 
 	
 
@@ -511,7 +515,7 @@ int main(int argc, char** argv) {
 	house = new DrawableObject(Scene::getInstance().shaderProgramPro, "house.obj");
 	house->changeColor(0.3, 0.2, 0.3);
 
-	kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "wood_cube.obj", "wood.tga");
+	kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "wood_cube2.obj", "wood.tga");
 
 	glutMainLoop();
 
