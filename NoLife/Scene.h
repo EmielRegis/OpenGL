@@ -16,6 +16,7 @@ public:
 	ShaderProgram *shaderProgram; //Wskaünik na obiekt reprezentujπcy program cieniujπcy.
 	ShaderProgram *shaderProgram2D; //Wskaünik na obiekt reprezentujπcy program cieniujπcy w przestrzeni 2D - interfejs uøytkownika.
 	ShaderProgram *shaderProgramPro;
+	ShaderProgram *shaderProgramProTex;
 
 	//ShaderProgram *shaderProgram; //Wskaünik na obiekt reprezentujπcy program cieniujπcy.
 

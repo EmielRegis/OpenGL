@@ -34,6 +34,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Skill.h" />
     <ClInclude Include="SpecialLocation.h" />
+    <ClInclude Include="tga.h" />
     <ClInclude Include="Undead.h" />
     <ClInclude Include="Weapon.h" />
   </ItemGroup>
@@ -62,6 +63,7 @@
     <ClCompile Include="shaderprogram.cpp" />
     <ClCompile Include="Skill.cpp" />
     <ClCompile Include="SpecialLocation.cpp" />
+    <ClCompile Include="tga.cpp" />
     <ClCompile Include="Undead.cpp" />
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>

@@ -1,3 +1,4 @@
+#pragma once
 #include "gl/glew.h"
 #include "gl/freeglut.h"
 #include "glm/glm.hpp"
@@ -6,7 +7,7 @@
 #include <stdio.h>
 #include "tga/tga.h"
 #include "shaderprogram.h"
-#include "teapot.h"
+
 #include "vector"
 #include <ios>
 #include <sstream>
@@ -68,24 +69,6 @@ GLuint bufTextures; //Uchwyt na bufor VBO przechowujacy tablicê wartoœci tekstur
 GLuint bufElements; //Uchwyt na bufor VBO elementow - trojkatow o ile takowy bufor mozna utworzyc
 
 
-
-float *vertices;
-float *colors;
-float *normals;
-float *textures;
-GLushort *elements;
-int vertexCount;
-
-vector<float> suzanne_vertices;
-vector<float> suzanne_normals;
-vector<float> suzanne_colors;
-vector<float> suzanne_textures;
-vector<GLushort> suzanne_elements;
-
-
-
-
-
 //Procedura rysuj¹ca
 void displayFrame() {
 	//Wyczyœæ bufor kolorów i bufor g³êbokoœci
@@ -105,9 +88,9 @@ void displayFrame() {
 
 	//Wylicz macierz modelu
 	scene.matM = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0, 1, 0));
+	scene.matM = glm::translate(scene.matM, glm::vec3(0.0, 2.0, 0.0));
 
-	//Narysuj obiekt
-	USS->drawObject();
+	kostka->drawObject();
 
 
 	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(5.0, 0.0, 0.0));
@@ -340,7 +323,7 @@ void jump()
 	for (float i = 0.0f; i < 3.14f; i += 0.1f)
 	{
 		obsZ = 2.0f + sin(i);
-		cout << obsZ << endl;
+		//cout << obsZ << endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(30));
 		
 
@@ -505,7 +488,7 @@ int main(int argc, char** argv) {
 	glEnable(GL_LIGHT0);
 	glEnable(GL_NORMALIZE);
 
-	
+	GLint textureUnits = 3;	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &textureUnits);
 
 
 	//kostka = new DrawableObject(shaderProgram, "cube1.obj");
@@ -516,16 +499,19 @@ int main(int argc, char** argv) {
 
 	demon = new DrawableObject(Scene::getInstance().shaderProgramPro, "devil.obj");
 	demon->changeColor(0.9, 0.0, 0.0);
+	
+	USS = new DrawableObject(Scene::getInstance().shaderProgramProTex, "USS.obj");
 
-	USS = new DrawableObject(Scene::getInstance().shaderProgramPro, "USS.obj");
+	
 
 	smallDragon = new DrawableObject(Scene::getInstance().shaderProgramPro, "small_dragon.obj");
 	smallDragon->changeColor(0.4, 0.2, 0.1);
+	
 
 	house = new DrawableObject(Scene::getInstance().shaderProgramPro, "house.obj");
 	house->changeColor(0.3, 0.2, 0.3);
 
-
+	kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "wood_cube.obj", "wood.tga");
 
 	glutMainLoop();
 

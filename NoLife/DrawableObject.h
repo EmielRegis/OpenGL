@@ -6,13 +6,15 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include <stdio.h>
-#include "tga/tga.h"
+#include "tga.h"
 #include "shaderprogram.h"
 
 #include "vector"
 #include <ios>
 #include <sstream>
 #include "Scene.h"
+
+
 
 using namespace std;
 
@@ -22,10 +24,13 @@ class DrawableObject
 public:
 	DrawableObject(ShaderProgram *shaderProgram);
 	DrawableObject(ShaderProgram *shaderProgram, const char * filepath);
+	DrawableObject(ShaderProgram *shaderProgram, const char * filepath, const char *texturepath);
 	~DrawableObject();
 
 	//³adowanie modelu z Blendera
 	void load_obj(const char* filename, vector<float> &vertices, vector<float> &normals, vector<float> &textures, vector<float> &colors);
+
+	void load_obj_with_textures(const char* filename, vector<float> &vertices, vector<float> &normals, vector<float> &textures, vector<float> &colors);
 
 	void changeColor(float r, float g, float b);
 
@@ -59,7 +64,12 @@ protected:
 	vector<float> suzanne_textures;
 	vector<GLushort> suzanne_elements;
 
+	GLuint tex0;
+	bool isTexurable = false;
+
 	
+	GLuint loadTexture(const char *filepath);
+
 	//Tworzy bufor na wierzcho³ki, kolory i normalne
 	GLuint makeBuffer(void *data, int vertexCount, int vertexSize);
 
