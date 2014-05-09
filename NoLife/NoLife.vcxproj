@@ -28,6 +28,7 @@
     <ClInclude Include="Humanoid.h" />
     <ClInclude Include="Location.h" />
     <ClInclude Include="Man.h" />
+    <ClInclude Include="MusicMixer.h" />
     <ClInclude Include="RangeWeapon.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Robot.h" />
@@ -57,6 +58,7 @@
     <ClCompile Include="Location.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Man.cpp" />
+    <ClCompile Include="MusicMixer.cpp" />
     <ClCompile Include="RangeWeapon.cpp" />
     <ClCompile Include="Robot.cpp" />
     <ClCompile Include="Scene.cpp" />

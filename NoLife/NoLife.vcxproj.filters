@@ -105,17 +105,20 @@
     <ClInclude Include="SpecialLocation.h">
       <Filter>Header Files\other game elements</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DrawableObject.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\game mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="MusicMixer.h">
+      <Filter>Header Files\game mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files\game mechanics</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\game mechanics</Filter>
     </ClInclude>
     <ClInclude Include="tga.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\game mechanics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -185,20 +188,23 @@
     <ClCompile Include="SpecialLocation.cpp">
       <Filter>Source Files\other game elements</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="shaderprogram.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DrawableObject.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\game mechanics</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files\game mechanics</Filter>
+    </ClCompile>
+    <ClCompile Include="MusicMixer.cpp">
+      <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\game mechanics</Filter>
+    </ClCompile>
+    <ClCompile Include="shaderprogram.cpp">
+      <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
     <ClCompile Include="tga.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

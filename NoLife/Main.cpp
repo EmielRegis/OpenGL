@@ -16,10 +16,15 @@
 #include <chrono>
 #include <thread>
 #include <cstdlib>
+#include "MusicMixer.h"
+
+
 
 
 
 using namespace std;
+
+MusicMixer *mixer;
 
 DrawableObject *kostka;
 DrawableObject *malpa;
@@ -28,6 +33,10 @@ DrawableObject *demon;
 DrawableObject *floore;
 DrawableObject *smallDragon;
 DrawableObject *house;
+
+
+
+
 
 bool artificalMousemove = false;
 
@@ -203,6 +212,13 @@ void cleanShaders() {
 
 
 
+
+
+
+
+
+
+
 // kontrola naciskania klawiszy klawiatury
 void keyPressed(unsigned char key, int x, int y)
 {
@@ -372,9 +388,22 @@ void keUp(unsigned char c, int x, int y)
 	else if (c == ' ')
 	{
 		std::thread first(jump);
-		first.detach();
-
-		
+		first.detach();	
+	}
+	else if (c == 'n')
+	{
+		mixer->playBackgroundMusic();
+	}
+	else if (c == 'm')
+	{
+		if (mixer->getBackgroundMusicVolume() < 0.02f)
+		{
+			mixer->enableBackgroundMusic();
+		}
+		else
+		{
+			mixer->muteBackgroundMusic();
+		}
 	}
 }
 
@@ -471,6 +500,10 @@ void passiveMouseMove(int x, int y)
 
 int main(int argc, char** argv) {
 
+	srand(time(NULL));
+	
+	
+
 	initGLUT(&argc, argv);
 	//initGLUT(0, NULL);
 	initGLEW();
@@ -514,11 +547,15 @@ int main(int argc, char** argv) {
 
 	house = new DrawableObject(Scene::getInstance().shaderProgramPro, "house.obj");
 	house->changeColor(0.3, 0.2, 0.3);
+	
 
 	kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "wood_cube2.obj", "wood.tga");
 
-	glutMainLoop();
+	mixer = new MusicMixer();
+    mixer->playBackgroundMusic();
 
+
+	glutMainLoop();
 
 	//cleanShaders();
 	return 0;
