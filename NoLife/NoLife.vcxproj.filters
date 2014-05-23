@@ -120,6 +120,9 @@
     <ClInclude Include="tga.h">
       <Filter>Header Files\game mechanics</Filter>
     </ClInclude>
+    <ClInclude Include="DrawableObject2D.h">
+      <Filter>Header Files\game mechanics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Weapon.cpp">
@@ -204,6 +207,9 @@
       <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
     <ClCompile Include="tga.cpp">
+      <Filter>Source Files\game mechanics</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawableObject2D.cpp">
       <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
   </ItemGroup>

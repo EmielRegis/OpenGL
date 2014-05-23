@@ -19,6 +19,7 @@
     <ClInclude Include="Crossbow.h" />
     <ClInclude Include="Demon.h" />
     <ClInclude Include="DrawableObject.h" />
+    <ClInclude Include="DrawableObject2D.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Fighting.h" />
     <ClInclude Include="Flying.h" />
@@ -48,6 +49,7 @@
     <ClCompile Include="Crossbow.cpp" />
     <ClCompile Include="Demon.cpp" />
     <ClCompile Include="DrawableObject.cpp" />
+    <ClCompile Include="DrawableObject2D.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Fighting.cpp" />
     <ClCompile Include="Flying.cpp" />

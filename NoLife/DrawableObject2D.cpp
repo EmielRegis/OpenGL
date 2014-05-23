@@ -1,26 +1,15 @@
-#include "DrawableObject.h"
+#include "DrawableObject2D.h"
 
 
 
-DrawableObject::DrawableObject(ShaderProgram *shaderProgram)
+DrawableObject2D::DrawableObject2D(ShaderProgram *shaderProgram)
 {
-	this->shaderProgram = shaderProgram;
-
-	loadObject("cube1.obj", suzanne_vertices, suzanne_normals, suzanne_textures, suzanne_colors);
-	vertices = &suzanne_vertices[0];
-	normals = &suzanne_normals[0];
-	colors = &suzanne_colors[0];
-	//textures = &suzanne_textures[0];
-	//elements = &suzanne_elements[0];
-	vertexCount = suzanne_vertices.size() / 4;
-	
-
 	this->setupVBO();
 	this->setupVAO();
 }
 
 
-DrawableObject::DrawableObject(ShaderProgram *shaderProgram, const char *filepath)
+DrawableObject2D::DrawableObject2D(ShaderProgram *shaderProgram, const char *filepath)
 {
 	this->shaderProgram = shaderProgram;
 
@@ -29,17 +18,17 @@ DrawableObject::DrawableObject(ShaderProgram *shaderProgram, const char *filepat
 	normals = &suzanne_normals[0];
 	colors = &suzanne_colors[0];
 	vertexCount = suzanne_vertices.size() / 4;
-	
+
 	this->setupVBO();
 	this->setupVAO();
 }
 
-DrawableObject::DrawableObject(ShaderProgram *shaderProgram, const char * filepath, const char *texturepath)
+DrawableObject2D::DrawableObject2D(ShaderProgram *shaderProgram, const char * filepath, const char *texturepath)
 {
 	this->isTexurable = true;
 
 	this->shaderProgram = shaderProgram;
-	
+
 	loadObjectWithTextures(filepath, suzanne_vertices, suzanne_normals, suzanne_textures, suzanne_colors);
 	this->tex0 = this->loadTexture(texturepath);
 
@@ -50,24 +39,24 @@ DrawableObject::DrawableObject(ShaderProgram *shaderProgram, const char * filepa
 	vertexCount = suzanne_vertices.size() / 4;
 
 	this->setupVBO();
-	this->setupVAO();	
+	this->setupVAO();
 }
 
 
-DrawableObject::~DrawableObject()
+DrawableObject2D::~DrawableObject2D()
 {
 	this->freeVAO();
 	this->freeVBO();
 }
 
-void DrawableObject::changeColor(float r, float g, float b)
+void DrawableObject2D::changeColor(float r, float g, float b)
 {
 	for (int i = 0; i < suzanne_colors.size(); i += 4)
 	{
 		suzanne_colors[i] = r;
-		suzanne_colors[i+1] = g;
-		suzanne_colors[i+2] = b;
-		suzanne_colors[i+3] = 1.0f;
+		suzanne_colors[i + 1] = g;
+		suzanne_colors[i + 2] = b;
+		suzanne_colors[i + 3] = 1.0f;
 	}
 
 	colors = &suzanne_colors[0];
@@ -77,7 +66,7 @@ void DrawableObject::changeColor(float r, float g, float b)
 }
 
 
-GLuint DrawableObject::loadTexture(const char *filepath)
+GLuint DrawableObject2D::loadTexture(const char *filepath)
 {
 	GLuint tex = 0;
 	char *filename = (char*)filepath;
@@ -117,7 +106,7 @@ GLuint DrawableObject::loadTexture(const char *filepath)
 }
 
 //³adowanie modelu z Blendera
-void DrawableObject::loadObject(const char* filename, vector<float> &vertices, vector<float> &normals, vector<float> &textures, vector<float>&colors) {
+void DrawableObject2D::loadObject(const char* filename, vector<float> &vertices, vector<float> &normals, vector<float> &textures, vector<float>&colors) {
 	vector<int> elements;
 	vector<glm::vec4> verts;
 	vector<glm::vec2> text;
@@ -146,10 +135,10 @@ void DrawableObject::loadObject(const char* filename, vector<float> &vertices, v
 			a--; b--; c--;
 			elements.push_back(a); elements.push_back(b); elements.push_back(c);
 		}
-		else if (line[0] == '#') {  }
-		else {  }
+		else if (line[0] == '#') {}
+		else {}
 	}
-	
+
 	for (int i = 0; i < elements.size(); i++)
 	{
 		vertices.push_back((float)verts[elements[i]].x);
@@ -189,7 +178,7 @@ void DrawableObject::loadObject(const char* filename, vector<float> &vertices, v
 
 
 //³adowanie modelu z Blendera
-void DrawableObject::loadObjectWithTextures(const char* filename, vector<float> &vertices, vector<float> &normals, vector<float> &textures, vector<float>&colors) {
+void DrawableObject2D::loadObjectWithTextures(const char* filename, vector<float> &vertices, vector<float> &normals, vector<float> &textures, vector<float>&colors) {
 	vector<int> elements;
 	vector<int> elements2;
 	vector<glm::vec4> verts;
@@ -210,7 +199,7 @@ void DrawableObject::loadObjectWithTextures(const char* filename, vector<float> 
 		{
 			istringstream s(line.substr(3));
 
-			glm::vec2 vt; 
+			glm::vec2 vt;
 			s >> vt.x; s >> vt.y;
 			text.push_back(vt);
 		}
@@ -225,7 +214,7 @@ void DrawableObject::loadObjectWithTextures(const char* filename, vector<float> 
 			sscanf_s(pars[0].c_str(), "%d/%d", &a, &d);
 			sscanf_s(pars[1].c_str(), "%d/%d", &b, &e);
 			sscanf_s(pars[2].c_str(), "%d/%d", &c, &f);
-	
+
 			a--; b--; c--; d--; e--; f--;
 
 			elements.push_back(a); elements.push_back(b); elements.push_back(c);
@@ -273,16 +262,17 @@ void DrawableObject::loadObjectWithTextures(const char* filename, vector<float> 
 
 
 //Procedura rysuj¹ca jakiœ obiekt. Ustawia odpowiednie parametry dla vertex shadera i rysuje.
-void DrawableObject::drawObject() {
+void DrawableObject2D::drawObject() 
+{
 
-	if (this->alternateDrawing)
-	{	
-		scene.matM = glm::rotate(glm::mat4(1.0f), this->xAngle, glm::vec3(1.0, 0.0, 0.0));
+
+		/*scene.matM = glm::rotate(glm::mat4(1.0f), this->xAngle, glm::vec3(1.0, 0.0, 0.0));
 		scene.matM = glm::rotate(scene.matM, this->yAngle, glm::vec3(0.0, 0.0, 1.0));
-		scene.matM = glm::rotate(scene.matM, this->zAngle, glm::vec3(0.0, 1.0, 0.0));
 		scene.matM = glm::translate(scene.matM, glm::vec3(this->xPosition, this->zPosition, this->yPosition));
-		scene.matM = glm::scale(scene.matM , glm::vec3(this->xScale, this->zScale, this->yScale));
-	}
+		scene.matM = glm::scale(scene.matM, glm::vec3(this->xScale, this->zScale, this->yScale));*/
+
+
+	scene.matM = glm::mat4(1.0f);
 
 	//W³¹czenie programu cieniuj¹cego, który ma zostaæ u¿yty do rysowania
 	//W tym programie wystarczy³oby wywo³aæ to raz, w setupShaders, ale chodzi o pokazanie, 
@@ -323,62 +313,51 @@ void DrawableObject::drawObject() {
 
 
 // Natychmiastowa zmiana pozycje
-void DrawableObject::instantMove(float xPosition, float yPosition, float zPosition)
+void DrawableObject2D::instantMove(float xPosition, float yPosition)
 {
 	this->xPosition += xPosition;
 	this->yPosition += yPosition;
-	this->zPosition += zPosition;
 }
 
-void DrawableObject::move(float xPosition, float yPosition, float zPosition, int speedInMilis)
+void DrawableObject2D::move(float xPosition, float yPosition, int speedInMilis)
 {
 	;
 }
 
-void DrawableObject::instantRotate(float xAngle, float yAngle, float zAngle)
+void DrawableObject2D::instantRotate(float xAngle, float yAngle)
 {
 	this->xAngle += xAngle;
 	this->yAngle += yAngle;
-	this->zAngle += zAngle;
 }
 
-void DrawableObject::rotate(float xAngle, float yAngle, float zAngle, int speedInMilis)
+void DrawableObject2D::rotate(float xAngle, float yAngle, int speedInMilis)
 {
 	;
 }
 
-void DrawableObject::instantScale(float xScale, float yScale, float zScale)
+void DrawableObject2D::instantScale(float xScale, float yScale)
 {
 	this->xScale *= xScale;
 	this->yScale *= yScale;
-	this->zScale *= zScale;
 }
 
-void DrawableObject::scale(float xScale, float yScale, float zScale, int speedInMilis)
+void DrawableObject2D::scale(float xScale, float yScale, int speedInMilis)
 {
 	;
 }
 
-void DrawableObject::setAlternativeDrawing(bool alternativeDrawing)
-{
-	this->alternateDrawing = alternativeDrawing;
-}
-
-void DrawableObject::instantScaleNatural(float scalingValue)
+void DrawableObject2D::instantScaleNatural(float scalingValue)
 {
 	this->xScale *= scalingValue;
 	this->yScale *= scalingValue;
-	this->zScale *= scalingValue;
 }
 
-void DrawableObject::scaleNatural(float value, int timeInMilis)
+void DrawableObject2D::scaleNatural(float value, int timeInMilis)
 {
 	;
 }
 
-
-
-GLuint DrawableObject::makeBuffer(void *data, int vertexCount, int vertexSize) {
+GLuint DrawableObject2D::makeBuffer(void *data, int vertexCount, int vertexSize) {
 	GLuint handle;
 
 	glGenBuffers(1, &handle);//Wygeneruj uchwyt na Vertex Buffer Object (VBO), który bêdzie zawiera³ tablicê danych
@@ -390,7 +369,7 @@ GLuint DrawableObject::makeBuffer(void *data, int vertexCount, int vertexSize) {
 
 
 //Procedura tworz¹ca bufory VBO zawieraj¹ce dane z tablic opisuj¹cych rysowany obiekt.
-void DrawableObject::setupVBO() {
+void DrawableObject2D::setupVBO() {
 	bufVertices = makeBuffer(vertices, vertexCount, sizeof(float)* 4); //Wspó³rzêdne wierzcho³ków
 	bufColors = makeBuffer(colors, vertexCount, sizeof(float)* 4);//Kolory wierzcho³ków
 	bufNormals = makeBuffer(normals, vertexCount, sizeof(float)* 4);//Wektory normalne wierzcho³ków
@@ -402,7 +381,7 @@ void DrawableObject::setupVBO() {
 }
 
 
-void DrawableObject::assignVBOtoAttribute(char* attributeName, GLuint bufVBO, int variableSize) {
+void DrawableObject2D::assignVBOtoAttribute(char* attributeName, GLuint bufVBO, int variableSize) {
 	GLuint location = shaderProgram->getAttribLocation(attributeName); //Pobierz numery slotów dla atrybutu
 	glBindBuffer(GL_ARRAY_BUFFER, bufVBO);  //Uaktywnij uchwyt VBO 
 	glEnableVertexAttribArray(location); //W³¹cz u¿ywanie atrybutu o numerze slotu zapisanym w zmiennej location
@@ -411,7 +390,7 @@ void DrawableObject::assignVBOtoAttribute(char* attributeName, GLuint bufVBO, in
 
 
 //Procedura tworz¹ca VAO - "obiekt" OpenGL wi¹¿¹cy numery slotów atrybutów z buforami VBO
-void DrawableObject::setupVAO() {
+void DrawableObject2D::setupVAO() {
 	//Wygeneruj uchwyt na VAO i zapisz go do zmiennej globalnej
 	glGenVertexArrays(1, &vao);
 
@@ -430,13 +409,14 @@ void DrawableObject::setupVAO() {
 	glBindVertexArray(0);
 }
 
-void DrawableObject::freeVBO() {
+
+void DrawableObject2D::freeVBO() {
 	glDeleteBuffers(1, &bufVertices);
 	glDeleteBuffers(1, &bufColors);
 	glDeleteBuffers(1, &bufNormals);
 }
 
 
-void DrawableObject::freeVAO() {
+void DrawableObject2D::freeVAO() {
 	glDeleteVertexArrays(1, &vao);
 }

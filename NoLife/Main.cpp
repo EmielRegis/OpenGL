@@ -95,22 +95,19 @@ void displayFrame() {
 		glm::vec3(0.0f, 1.0f, 0.0f)); //  jaki kat - domyslnie gora-dol
 
 
-	//Wylicz macierz modelu
+
 	scene.matM = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0, 1, 0));
 	scene.matM = glm::translate(scene.matM, glm::vec3(0.0, 2.0, 0.0));
-
 	kostka->drawObject();
 
 	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0, 0.0, 20.0));
-	scene.matM = glm::rotate(scene.matM, angle, glm::vec3(0.0, 1, 0));
-	
+	scene.matM = glm::rotate(scene.matM, angle, glm::vec3(0.0, 1, 0));	
 	USS->drawObject();
 
 	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(5.0, 0.0, 0.0));
 	floore->drawObject();
 
 
-	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(20.0, 0.0, 10.0));
 	demon->drawObject();
 	
 	
@@ -121,24 +118,10 @@ void displayFrame() {
 	scene.matM = glm::rotate(scene.matM, 180.0f, glm::vec3(1.0, 1.0, 0.0));
 	smallDragon->drawObject();
 
-	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(50.0, 0.0, 40.0));
+	
 	house->drawObject();
 
-	
-	/*scene.matP = glm::ortho(0, windowWidth, windowHeight, 0,0, 100);
-	glUniformMatrix4fv(shaderProgram->getUniformLocation("P"), 1, false, glm::value_ptr(scene.matP));
-	glUniformMatrix4fv(shaderProgram->getUniformLocation("V"), 1, false, glm::value_ptr(scene.matV));
-	glUniformMatrix4fv(shaderProgram->getUniformLocation("M"), 1, false, glm::value_ptr(scene.matM));
 
-	glBegin(GL_TRIANGLES);
-		glVertex2f(0, 0);
-		glVertex2f(0, 1);
-		glVertex2f(1, 1);
-
-		glVertex2f(1, 1);
-		glVertex2f(1, 0);
-		glVertex2f(0, 0);
-	glEnd();*/
 
 	//Tylny bufor na przedni
 	glutSwapBuffers();
@@ -536,6 +519,9 @@ int main(int argc, char** argv) {
 
 	demon = new DrawableObject(Scene::getInstance().shaderProgramPro, "devil.obj");
 	demon->changeColor(0.9, 0.0, 0.0);
+	demon->setAlternativeDrawing(true);
+	demon->instantMove(20.0, 10.0, 0.0);
+	
 	
 	USS = new DrawableObject(Scene::getInstance().shaderProgramProTex, "USSEnterprise.obj", "uss.tga");
 
@@ -546,7 +532,10 @@ int main(int argc, char** argv) {
 	
 
 	house = new DrawableObject(Scene::getInstance().shaderProgramPro, "house.obj");
+	house->setAlternativeDrawing(true);
 	house->changeColor(0.3, 0.2, 0.3);
+	house->instantMove(50.0, 40.0, 0.0);
+
 	
 
 	kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "wood_cube2.obj", "wood.tga");

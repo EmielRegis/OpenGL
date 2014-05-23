@@ -19,15 +19,15 @@
 using namespace std;
 
 
-class DrawableObject
+class DrawableObject2D
 {
 public:
-	DrawableObject(ShaderProgram *shaderProgram);
-	DrawableObject(ShaderProgram *shaderProgram, const char * filepath);
-	DrawableObject(ShaderProgram *shaderProgram, const char * filepath, const char *texturepath);
-	~DrawableObject();
+	DrawableObject2D(ShaderProgram *shaderProgram);
+	DrawableObject2D(ShaderProgram *shaderProgram, const char * filepath);
+	DrawableObject2D(ShaderProgram *shaderProgram, const char * filepath, const char *texturepath);
+	~DrawableObject2D();
 
-	
+
 
 	// Zmiana koloru modelu
 	void changeColor(float r, float g, float b);
@@ -36,31 +36,29 @@ public:
 	void drawObject();
 
 	// Natychmiastowa zmiana pozycje
-	void instantMove(float xPosition, float yPosition, float zPosition);
-	
-	void move(float xPosition, float yPosition, float zPosition, int timeInMilis);
+	void instantMove(float xPosition, float yPosition);
 
-	void instantRotate(float xAngle, float yAngle, float zAngle);
+	void move(float xPosition, float yPosition, int timeInMilis);
 
-	void rotate(float xAngle, float yAngle, float zAngle, int timeInMilis);
+	void instantRotate(float xAngle, float yAngle);
 
-	void instantScale(float xScale, float yScale, float zScale);
+	void rotate(float xAngle, float yAngle, int timeInMilis);
 
-	void scale(float xScale, float yScale, float zScale, int timeInMilis);
+	void instantScale(float xScale, float yScale);
+
+	void scale(float xScale, float yScale, int timeInMilis);
 
 	void instantScaleNatural(float scalingValue);
 
 	void scaleNatural(float value, int timeInMilis);
 
-	void setAlternativeDrawing(bool alternativeDrawing);
 
 
 protected:
-	Scene &scene  = Scene::getInstance();
+	Scene &scene = Scene::getInstance();
 
-	float xPosition = 0, yPosition = 0, zPosition = 0, xAngle = 0, yAngle = 0, zAngle = 0, xScale = 1, yScale = 1, zScale = 1;
-	
-	bool alternateDrawing = false;
+	float xPosition = 0, yPosition = 0, xAngle = 0, yAngle = 0, xScale = 1, yScale = 1;
+
 
 	ShaderProgram *shaderProgram;
 
@@ -88,7 +86,7 @@ protected:
 	GLuint tex0;
 	bool isTexurable = false;
 
-	
+
 	//Ladowanie modelu w formacie .obj bez tekstur
 	void loadObject(const char* filename, vector<float> &vertices, vector<float> &normals, vector<float> &textures, vector<float> &colors);
 
