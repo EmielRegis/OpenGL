@@ -19,10 +19,22 @@
 using namespace std;
 
 
+
 class DrawableObject2D
 {
 public:
-	DrawableObject2D(ShaderProgram *shaderProgram);
+	static enum MODE
+	{
+		DRAWABLE_TRIANGLE,
+		DRAWABLE_SQUARE,
+		DRAWABLE_CIRCLE,
+		DRAWABLE_LINE,
+		DRAWABLE_2D_MODEL,
+		DRAWABLE_2D_MODEL_WITH_TEXTURES
+	};
+
+
+	DrawableObject2D(ShaderProgram *shaderProgram, MODE mode);
 	DrawableObject2D(ShaderProgram *shaderProgram, const char * filepath);
 	DrawableObject2D(ShaderProgram *shaderProgram, const char * filepath, const char *texturepath);
 	~DrawableObject2D();
@@ -32,6 +44,12 @@ public:
 	// Zmiana koloru modelu
 	void changeColor(float r, float g, float b);
 
+	void changeColor(float r, float g, float b, float a);
+
+	void addTexture(const char *filepath);
+
+
+
 	//Procedura rysuj¹ca model. Ustawia odpowiednie parametry dla vertex shadera i rysuje.
 	void drawObject();
 
@@ -40,9 +58,9 @@ public:
 
 	void move(float xPosition, float yPosition, int timeInMilis);
 
-	void instantRotate(float xAngle, float yAngle);
+	void instantRotate(float angle);
 
-	void rotate(float xAngle, float yAngle, int timeInMilis);
+	void rotate(float angle, int timeInMilis);
 
 	void instantScale(float xScale, float yScale);
 
@@ -52,12 +70,17 @@ public:
 
 	void scaleNatural(float value, int timeInMilis);
 
+	
+	
+
 
 
 protected:
 	Scene &scene = Scene::getInstance();
 
-	float xPosition = 0, yPosition = 0, xAngle = 0, yAngle = 0, xScale = 1, yScale = 1;
+	unsigned mode;
+
+	float xPosition = 0, yPosition = 0, angle = 0, xScale = 1, yScale = 1;
 
 
 	ShaderProgram *shaderProgram;
@@ -66,32 +89,28 @@ protected:
 	GLuint vao;
 	GLuint bufVertices; //Uchwyt na bufor VBO przechowuj¹cy tablicê wspó³rzêdnych wierzcho³ków
 	GLuint bufColors;  //Uchwyt na bufor VBO przechowuj¹cy tablicê kolorów
-	GLuint bufNormals; //Uchwyt na bufor VBO przechowuj¹cy tablicê wektorów normalnych
 	GLuint bufTextures; //Uchwyt na bufor VBO przechowujacy tablicê wartoœci tekstur
-	GLuint bufElements; //Uchwyt na bufor VBO elementow - trojkatow o ile takowy bufor mozna utworzyc
 
 	float *vertices;
 	float *colors;
-	float *normals;
 	float *textures;
-	GLushort *elements;
+	//GLushort *elements;
 	int vertexCount;
 
 	vector<float> suzanne_vertices;
-	vector<float> suzanne_normals;
 	vector<float> suzanne_colors;
 	vector<float> suzanne_textures;
-	vector<GLushort> suzanne_elements;
+	//vector<GLushort> suzanne_elements;
 
 	GLuint tex0;
 	bool isTexurable = false;
 
 
 	//Ladowanie modelu w formacie .obj bez tekstur
-	void loadObject(const char* filename, vector<float> &vertices, vector<float> &normals, vector<float> &textures, vector<float> &colors);
+	void loadObject(const char* filename, vector<float> &vertices, vector<float> &textures, vector<float> &colors);
 
 	//Ladowanie modelu w formacie .obj wraz z teksturami
-	void loadObjectWithTextures(const char* filename, vector<float> &vertices, vector<float> &normals, vector<float> &textures, vector<float> &colors);
+	void loadObjectWithTextures(const char* filename, vector<float> &vertices, vector<float> &textures, vector<float> &colors);
 
 	//Ladowanie tekstur dla modelu
 	GLuint loadTexture(const char *filepath);

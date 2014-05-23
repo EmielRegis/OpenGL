@@ -13,6 +13,7 @@
 #include <sstream>
 #include "Scene.h"
 #include "DrawableObject.h"
+#include "DrawableObject2D.h"
 #include <chrono>
 #include <thread>
 #include <cstdlib>
@@ -34,6 +35,12 @@ DrawableObject *floore;
 DrawableObject *smallDragon;
 DrawableObject *house;
 
+DrawableObject2D *obj2D;
+DrawableObject2D *crossA;
+DrawableObject2D *crossB;
+DrawableObject2D *crossC;
+DrawableObject2D *crossD;
+
 
 
 
@@ -48,8 +55,8 @@ bool keyW = false, keyS = false, keyA = false, keyD = false, keyE = false, keySh
 //Ustawienia okna i rzutowania
 int windowPositionX = 100;
 int windowPositionY = 100;
-int windowWidth = 600;
-int windowHeight = 600;
+int windowWidth = 860;
+int windowHeight = 484;
 float cameraAngle = 45.0f;
 
 //Zmienne do animacji
@@ -121,6 +128,18 @@ void displayFrame() {
 	
 	house->drawObject();
 
+	scene.matP = glm::mat4((float)windowHeight / windowWidth, 0.0f, 0.0f, 0.0f,
+		0.0f, (float)windowHeight / windowHeight, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
+	
+	obj2D->drawObject();
+	crossA->drawObject();
+	crossB->drawObject();
+	crossC->drawObject();
+	crossD->drawObject();
+
+
 
 
 	//Tylny bufor na przedni
@@ -145,10 +164,25 @@ void nextFrame(void) {
 //Procedura wywo³ywana przy zmianie rozmiaru okna
 void changeSize(int w, int h) {
 	//Ustawienie wymiarow przestrzeni okna
-	glViewport(0, 0, w, h);
+	
 	//Zapamiêtanie nowych wymiarów okna dla poprawnego wyliczania macierzy rzutowania
-	windowWidth = w;
-	windowHeight = h;
+	if (h > w * 10 / 16)
+	{
+		windowWidth = w;
+		windowHeight = w * 10 / 16;	
+	}
+	else if (w > h * 22/10)
+	{
+		windowWidth = h * 22 / 10;
+		windowHeight = h;
+	}
+	else
+	{
+		windowWidth = w;
+		windowHeight = h;
+	}
+
+	glViewport(0, 0, windowWidth, windowHeight);
 }
 
 
@@ -540,8 +574,40 @@ int main(int argc, char** argv) {
 
 	kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "wood_cube2.obj", "wood.tga");
 
+	
+
+	obj2D = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_CIRCLE);
+	obj2D->instantScaleNatural(0.12f);
+	obj2D->instantRotate(180.0);
+	obj2D->instantMove(0.85*windowWidth/windowHeight, -0.75);
+
+	crossA = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_LINE);
+	crossA->instantScaleNatural(0.3);
+	crossA->instantScale(1.0, 0.1);
+	crossA->instantMove(0.0, 0.05);
+
+	crossB = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_LINE);
+	crossB->instantRotate(90);
+	crossB->instantScaleNatural(0.3);
+	crossB->instantScale(0.1,1.0);
+	crossB->instantMove(-0.05, 0.0);
+
+	crossC = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_LINE);
+	crossC->instantRotate(180);
+	crossC->instantScaleNatural(0.3);
+	crossC->instantScale(1.0,0.1);
+	crossC->instantMove(0.0, -0.05);
+
+	crossD = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_LINE);
+	crossD->instantRotate(270);
+	crossD->instantScaleNatural(0.3);
+	crossD->instantScale(0.1,1.0);
+	crossD->instantMove(0.05, 0.0);
+
+
 	mixer = new MusicMixer();
-    mixer->playBackgroundMusic();
+	mixer->playBackgroundMusic();
+	
 
 
 	glutMainLoop();

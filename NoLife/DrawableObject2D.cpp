@@ -2,10 +2,220 @@
 
 
 
-DrawableObject2D::DrawableObject2D(ShaderProgram *shaderProgram)
+DrawableObject2D::DrawableObject2D(ShaderProgram *shaderProgram, MODE mode)
 {
+	this->shaderProgram = shaderProgram;
+
+	this->mode = mode;
+	
+	if (mode == DRAWABLE_TRIANGLE)
+	{
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(1.0f);
+
+		suzanne_vertices.push_back(1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(1.0f);
+
+		suzanne_vertices.push_back(0.0f);
+		suzanne_vertices.push_back(1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(1.0f);
+
+		suzanne_colors.push_back(0.8f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(1.0f);
+
+		suzanne_colors.push_back(0.8f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(1.0f);
+
+		suzanne_colors.push_back(0.2f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(1.0f);
+	}
+	else if (mode == DRAWABLE_SQUARE)
+	{
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(1.0f);
+
+		suzanne_vertices.push_back(1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(1.0f);
+
+		suzanne_vertices.push_back(1.0f);
+		suzanne_vertices.push_back(1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(1.0f);
+
+		suzanne_vertices.push_back(1.0f);
+		suzanne_vertices.push_back(1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(1.0f);
+
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(1.0f);
+
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(1.0f);
+
+		suzanne_colors.push_back(0.8f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(1.0f);
+
+		suzanne_colors.push_back(0.8f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(1.0f);
+
+		suzanne_colors.push_back(0.2f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(1.0f);
+
+		suzanne_colors.push_back(0.2f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(1.0f);
+
+		suzanne_colors.push_back(0.8f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(1.0f);
+
+		suzanne_colors.push_back(0.2f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(1.0f);
+	}
+	else if (mode == DRAWABLE_CIRCLE)
+	{
+		for (int i = 0; i < 360; i++)
+		{
+			float r = 1.0;
+			float a1 = r * cos(i);
+			float b1 = r* sin(i);
+			float a2 = r * cos(i+1);
+			float b2 = r * sin(i+1);
+
+			suzanne_vertices.push_back(a1);
+			suzanne_vertices.push_back(b1);
+			suzanne_vertices.push_back(-1.0f);
+			suzanne_vertices.push_back(1.0f);
+
+			suzanne_vertices.push_back(a2);
+			suzanne_vertices.push_back(b2);
+			suzanne_vertices.push_back(-1.0f);
+			suzanne_vertices.push_back(1.0f);
+
+			suzanne_vertices.push_back(0.0);
+			suzanne_vertices.push_back(0.0);
+			suzanne_vertices.push_back(-1.0f);
+			suzanne_vertices.push_back(1.0f);
+
+			suzanne_colors.push_back(0.8f);
+			suzanne_colors.push_back(0.0f);
+			suzanne_colors.push_back(0.0f);
+			suzanne_colors.push_back(1.0f);
+
+			suzanne_colors.push_back(0.8f);
+			suzanne_colors.push_back(0.0f);
+			suzanne_colors.push_back(0.0f);
+			suzanne_colors.push_back(1.0f);
+
+			suzanne_colors.push_back(0.2f);
+			suzanne_colors.push_back(0.0f);
+			suzanne_colors.push_back(0.0f);
+			suzanne_colors.push_back(1.0f);
+		}
+		
+	}
+	else if (mode == DRAWABLE_LINE)
+	{
+		suzanne_vertices.push_back(-0.01f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(1.0f);
+
+		suzanne_vertices.push_back(0.01f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(1.0f);
+
+		suzanne_vertices.push_back(0.01f);
+		suzanne_vertices.push_back(1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(1.0f);
+
+		suzanne_vertices.push_back(0.01f);
+		suzanne_vertices.push_back(1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(1.0f);
+
+		suzanne_vertices.push_back(-0.01f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(1.0f);
+
+		suzanne_vertices.push_back(-0.01f);
+		suzanne_vertices.push_back(1.0f);
+		suzanne_vertices.push_back(-1.0f);
+		suzanne_vertices.push_back(1.0f);
+
+		suzanne_colors.push_back(0.8f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(1.0f);
+
+		suzanne_colors.push_back(0.8f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(1.0f);
+
+		suzanne_colors.push_back(0.2f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(1.0f);
+
+		suzanne_colors.push_back(0.2f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(1.0f);
+
+		suzanne_colors.push_back(0.8f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(1.0f);
+
+		suzanne_colors.push_back(0.2f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(0.0f);
+		suzanne_colors.push_back(1.0f);
+	}
+
+
+	vertices = &suzanne_vertices[0];
+	colors = &suzanne_colors[0];
+
+	vertexCount = suzanne_vertices.size() / 4;
+
 	this->setupVBO();
 	this->setupVAO();
+
 }
 
 
@@ -13,9 +223,10 @@ DrawableObject2D::DrawableObject2D(ShaderProgram *shaderProgram, const char *fil
 {
 	this->shaderProgram = shaderProgram;
 
-	loadObject(filepath, suzanne_vertices, suzanne_normals, suzanne_textures, suzanne_colors);
+	this->mode = DRAWABLE_2D_MODEL;
+
+	loadObject(filepath, suzanne_vertices, suzanne_textures, suzanne_colors);
 	vertices = &suzanne_vertices[0];
-	normals = &suzanne_normals[0];
 	colors = &suzanne_colors[0];
 	vertexCount = suzanne_vertices.size() / 4;
 
@@ -29,13 +240,15 @@ DrawableObject2D::DrawableObject2D(ShaderProgram *shaderProgram, const char * fi
 
 	this->shaderProgram = shaderProgram;
 
-	loadObjectWithTextures(filepath, suzanne_vertices, suzanne_normals, suzanne_textures, suzanne_colors);
+	this->mode = DRAWABLE_2D_MODEL_WITH_TEXTURES;
+
+	loadObjectWithTextures(filepath, suzanne_vertices, suzanne_textures, suzanne_colors);
 	this->tex0 = this->loadTexture(texturepath);
 
 	vertices = &suzanne_vertices[0];
-	normals = &suzanne_normals[0];
 	colors = &suzanne_colors[0];
 	textures = &suzanne_textures[0];
+
 	vertexCount = suzanne_vertices.size() / 4;
 
 	this->setupVBO();
@@ -48,6 +261,40 @@ DrawableObject2D::~DrawableObject2D()
 	this->freeVAO();
 	this->freeVBO();
 }
+
+//Procedura rysuj¹ca jakiœ obiekt. Ustawia odpowiednie parametry dla vertex shadera i rysuje.
+void DrawableObject2D::drawObject()
+{
+	glm::mat4 S = glm::scale(glm::mat4(1.0), glm::vec3(this->xScale, this->yScale, 1));
+	glm::mat4 T = glm::translate(glm::mat4(1.0), glm::vec3(this->xPosition, this->yPosition, 0));
+	glm::mat4 R = glm::rotate(glm::mat4(1.0), this->angle, glm::vec3(0.0, 0.0, 1.0));
+
+	scene.matM = T*S*R;
+	
+
+	shaderProgram->use();
+
+	glUniformMatrix4fv(shaderProgram->getUniformLocation("P"), 1, false, glm::value_ptr(scene.matP));
+	glUniformMatrix4fv(shaderProgram->getUniformLocation("M"), 1, false, glm::value_ptr(scene.matM));
+
+	//glUniform1i(shaderProgram->getUniformLocation("textureMap0"), 0);
+
+	//Uaktywnienie VAO i tym samym uaktywnienie predefiniowanych w tym VAO powi¹zañ slotów atrybutów z tablicami z danymi
+	glBindVertexArray(vao);
+
+	if (isTexurable)
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, tex0);
+	}
+
+	//Narysowanie obiektu
+	glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+
+	//Posprz¹tanie po sobie (niekonieczne w sumie je¿eli korzystamy z VAO dla ka¿dego rysowanego obiektu)
+	glBindVertexArray(0);
+}
+
 
 void DrawableObject2D::changeColor(float r, float g, float b)
 {
@@ -63,6 +310,28 @@ void DrawableObject2D::changeColor(float r, float g, float b)
 
 	this->setupVBO();
 	this->setupVAO();
+}
+
+void DrawableObject2D::changeColor(float r, float g, float b, float a)
+{
+	for (int i = 0; i < suzanne_colors.size(); i += 4)
+	{
+		suzanne_colors[i] = r;
+		suzanne_colors[i + 1] = g;
+		suzanne_colors[i + 2] = b;
+		suzanne_colors[i + 3] = a;
+	}
+
+	colors = &suzanne_colors[0];
+
+	this->setupVBO();
+	this->setupVAO();
+}
+
+void DrawableObject2D::addTexture(const char *filepath)
+{
+	this->loadTexture(filepath);
+	this->isTexurable = true;
 }
 
 
@@ -106,7 +375,7 @@ GLuint DrawableObject2D::loadTexture(const char *filepath)
 }
 
 //³adowanie modelu z Blendera
-void DrawableObject2D::loadObject(const char* filename, vector<float> &vertices, vector<float> &normals, vector<float> &textures, vector<float>&colors) {
+void DrawableObject2D::loadObject(const char* filename, vector<float> &vertices, vector<float> &textures, vector<float>&colors) {
 	vector<int> elements;
 	vector<glm::vec4> verts;
 	vector<glm::vec2> text;
@@ -164,21 +433,13 @@ void DrawableObject2D::loadObject(const char* filename, vector<float> &vertices,
 			glm::vec4 b = verts[elements[i + 2]] - verts[elements[i]];
 
 			glm::vec4 n = glm::vec4(glm::normalize(glm::cross(glm::vec3(a.x, a.y, a.z), glm::vec3(b.x, b.y, b.z))), 0.0f);
-
-			for (int j = 0; j < 3; j++)
-			{
-				normals.push_back(n.x);
-				normals.push_back(n.y);
-				normals.push_back(n.z);
-				normals.push_back(n.w);
-			}
 		}
 	}
 }
 
 
 //³adowanie modelu z Blendera
-void DrawableObject2D::loadObjectWithTextures(const char* filename, vector<float> &vertices, vector<float> &normals, vector<float> &textures, vector<float>&colors) {
+void DrawableObject2D::loadObjectWithTextures(const char* filename, vector<float> &vertices, vector<float> &textures, vector<float>&colors) {
 	vector<int> elements;
 	vector<int> elements2;
 	vector<glm::vec4> verts;
@@ -248,68 +509,10 @@ void DrawableObject2D::loadObjectWithTextures(const char* filename, vector<float
 			glm::vec4 b = verts[elements[i + 2]] - verts[elements[i]];
 
 			glm::vec4 n = glm::vec4(glm::normalize(glm::cross(glm::vec3(a.x, a.y, a.z), glm::vec3(b.x, b.y, b.z))), 0.0f);
-
-			for (int j = 0; j < 3; j++)
-			{
-				normals.push_back(n.x);
-				normals.push_back(n.y);
-				normals.push_back(n.z);
-				normals.push_back(n.w);
-			}
 		}
 	}
 }
 
-
-//Procedura rysuj¹ca jakiœ obiekt. Ustawia odpowiednie parametry dla vertex shadera i rysuje.
-void DrawableObject2D::drawObject() 
-{
-
-
-		/*scene.matM = glm::rotate(glm::mat4(1.0f), this->xAngle, glm::vec3(1.0, 0.0, 0.0));
-		scene.matM = glm::rotate(scene.matM, this->yAngle, glm::vec3(0.0, 0.0, 1.0));
-		scene.matM = glm::translate(scene.matM, glm::vec3(this->xPosition, this->zPosition, this->yPosition));
-		scene.matM = glm::scale(scene.matM, glm::vec3(this->xScale, this->zScale, this->yScale));*/
-
-
-	scene.matM = glm::mat4(1.0f);
-
-	//W³¹czenie programu cieniuj¹cego, który ma zostaæ u¿yty do rysowania
-	//W tym programie wystarczy³oby wywo³aæ to raz, w setupShaders, ale chodzi o pokazanie, 
-	//¿e mozna zmieniaæ program cieniuj¹cy podczas rysowania jednej sceny
-	shaderProgram->use();
-
-	//Przeka¿ do shadera macierze P,V i M.
-	//W linijkach poni¿ej, polecenie:
-	//  shaderProgram->getUniformLocation("P") 
-	//pobiera numer slotu odpowiadaj¹cego zmiennej jednorodnej o podanej nazwie
-	//UWAGA! "P" w powy¿szym poleceniu odpowiada deklaracji "uniform mat4 P;" w vertex shaderze, 
-	//a matP w glm::value_ptr(matP) odpowiada deklaracji  "glm::mat4 matP;" TYM pliku.
-	//Ca³a poni¿sza linijka przekazuje do zmiennej jednorodnej P w vertex shaderze dane ze zmiennej matP
-	//zadeklarowanej globalnie w tym pliku. 
-	//Pozosta³e polecenia dzia³aj¹ podobnie.
-	glUniformMatrix4fv(shaderProgram->getUniformLocation("P"), 1, false, glm::value_ptr(scene.matP));
-	glUniformMatrix4fv(shaderProgram->getUniformLocation("V"), 1, false, glm::value_ptr(scene.matV));
-	glUniformMatrix4fv(shaderProgram->getUniformLocation("M"), 1, false, glm::value_ptr(scene.matM));
-
-	glUniform1i(shaderProgram->getUniformLocation("textureMap0"), 0);
-
-	//Uaktywnienie VAO i tym samym uaktywnienie predefiniowanych w tym VAO powi¹zañ slotów atrybutów z tablicami z danymi
-	glBindVertexArray(vao);
-
-	if (isTexurable)
-	{
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, tex0);
-	}
-
-
-	//Narysowanie obiektu
-	glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-
-	//Posprz¹tanie po sobie (niekonieczne w sumie je¿eli korzystamy z VAO dla ka¿dego rysowanego obiektu)
-	glBindVertexArray(0);
-}
 
 
 // Natychmiastowa zmiana pozycje
@@ -324,13 +527,12 @@ void DrawableObject2D::move(float xPosition, float yPosition, int speedInMilis)
 	;
 }
 
-void DrawableObject2D::instantRotate(float xAngle, float yAngle)
+void DrawableObject2D::instantRotate(float angle)
 {
-	this->xAngle += xAngle;
-	this->yAngle += yAngle;
+	this->angle += angle;
 }
 
-void DrawableObject2D::rotate(float xAngle, float yAngle, int speedInMilis)
+void DrawableObject2D::rotate(float angle, int speedInMilis)
 {
 	;
 }
@@ -372,7 +574,6 @@ GLuint DrawableObject2D::makeBuffer(void *data, int vertexCount, int vertexSize)
 void DrawableObject2D::setupVBO() {
 	bufVertices = makeBuffer(vertices, vertexCount, sizeof(float)* 4); //Wspó³rzêdne wierzcho³ków
 	bufColors = makeBuffer(colors, vertexCount, sizeof(float)* 4);//Kolory wierzcho³ków
-	bufNormals = makeBuffer(normals, vertexCount, sizeof(float)* 4);//Wektory normalne wierzcho³ków
 
 	if (this->isTexurable)
 	{
@@ -399,7 +600,6 @@ void DrawableObject2D::setupVAO() {
 
 	assignVBOtoAttribute("vertex", bufVertices, 4); //"vertex" odnosi siê do deklaracji "in vec4 vertex;" w vertex shaderze
 	assignVBOtoAttribute("color", bufColors, 4); //"color" odnosi siê do deklaracji "in vec4 color;" w vertex shaderze
-	assignVBOtoAttribute("normal", bufNormals, 4); //"normal" odnosi siê do deklaracji "in vec4 normal;" w vertex shaderze
 
 	if (this->isTexurable)
 	{
@@ -413,7 +613,6 @@ void DrawableObject2D::setupVAO() {
 void DrawableObject2D::freeVBO() {
 	glDeleteBuffers(1, &bufVertices);
 	glDeleteBuffers(1, &bufColors);
-	glDeleteBuffers(1, &bufNormals);
 }
 
 
