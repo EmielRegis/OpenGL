@@ -44,6 +44,10 @@ public:
 
 	void rotate(float xAngle, float yAngle, float zAngle, int timeInMilis);
 
+	void instantRotateAroundPoint(float xAngle, float yAngle, float zAngle, float xRadiusVectorCoord, float yRadiusVectorCoord, float zRadiusVectorCoord);
+
+	void rotateAroundPoint(float xAngle, float yAngle, float zAngle, float xRadiusVectorCoord, float yRadiusVectorCoord, float zRadiusVectorCoord, int timeInMilis);
+
 	void instantScale(float xScale, float yScale, float zScale);
 
 	void scale(float xScale, float yScale, float zScale, int timeInMilis);
@@ -54,11 +58,25 @@ public:
 
 	void setAlternativeDrawing(bool alternativeDrawing);
 
+	float getXCoordinate();
+
+	float getYCoordinate();
+
+	float getZCoordinate();
+
+	float getXRotationAngle();
+
+	float getYRotationAngle();
+
+	float getZRotationAngle();
+
+	float getZRotationAroundAngle();
+
 
 protected:
 	Scene &scene  = Scene::getInstance();
 
-	float xPosition = 0, yPosition = 0, zPosition = 0, xAngle = 0, yAngle = 0, zAngle = 0, xScale = 1, yScale = 1, zScale = 1;
+	float xPosition = 0, yPosition = 0, zPosition = 0, xAngle = 0, yAngle = 0, zAngle = 0, xAngleAround = 0, yAngleAround = 0, zAngleAround = 0, xRotCoord = 0, yRotCoord = 0, zRotCoord = 0, xScale = 1, yScale = 1, zScale = 1;
 	
 	bool alternateDrawing = false;
 

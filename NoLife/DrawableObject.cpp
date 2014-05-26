@@ -277,11 +277,34 @@ void DrawableObject::drawObject() {
 
 	if (this->alternateDrawing)
 	{	
-		scene.matM = glm::rotate(glm::mat4(1.0f), this->xAngle, glm::vec3(1.0, 0.0, 0.0));
+		/*scene.matM = glm::rotate(glm::mat4(1.0f), this->xAngle, glm::vec3(1.0, 0.0, 0.0));
 		scene.matM = glm::rotate(scene.matM, this->yAngle, glm::vec3(0.0, 0.0, 1.0));
 		scene.matM = glm::rotate(scene.matM, this->zAngle, glm::vec3(0.0, 1.0, 0.0));
 		scene.matM = glm::translate(scene.matM, glm::vec3(this->xPosition, this->zPosition, this->yPosition));
-		scene.matM = glm::scale(scene.matM , glm::vec3(this->xScale, this->zScale, this->yScale));
+		scene.matM = glm::scale(scene.matM , glm::vec3(this->xScale, this->zScale, this->yScale));*/
+
+		
+		
+		
+		glm::mat4 RX = scene.matM = glm::rotate(glm::mat4(1.0f), this->xAngle, glm::vec3(1.0, 1.0, 0.0));
+		glm::mat4 RY = scene.matM = glm::rotate(glm::mat4(1.0f), this->yAngle, glm::vec3(0.0, 0.0, 1.0));
+		glm::mat4 RZ = scene.matM = glm::rotate(glm::mat4(1.0f), this->zAngle, glm::vec3(0.0, 1.0, 0.0));
+
+		glm::mat4 S = glm::scale(glm::mat4(1.0f), glm::vec3(this->xScale, this->zScale, this->yScale));
+
+		
+		glm::mat4 TRAZ = glm::translate(glm::mat4(1.0f), glm::vec3(this->xRotCoord, this->zRotCoord, this->yRotCoord));
+
+		glm::mat4 RAZ = glm::rotate(glm::mat4(1.0f), this->zAngleAround, glm::vec3(0.0, 1.0, 0.0));
+
+		glm::mat4 T = glm::translate(glm::mat4(1.0f), glm::vec3(this->xPosition, this->zPosition, this->yPosition));
+
+		scene.matM = T*RAZ*TRAZ*S*RZ*RY*RX;
+
+		//scene.matM =   T*S*RZ*RY*RX;
+
+		//scene.matM = glm::rotate((glm::translate(glm::mat4(1.0f), glm::vec3(this->xRotCoord, this->zRotCoord, this->yRotCoord))), this->zAngleAround, glm::vec3(0.0, 1.0, 0.0)) * T*S*RZ*RY*RX;;
+
 	}
 
 	//W³¹czenie programu cieniuj¹cego, który ma zostaæ u¿yty do rysowania
@@ -347,6 +370,22 @@ void DrawableObject::rotate(float xAngle, float yAngle, float zAngle, int speedI
 	;
 }
 
+void DrawableObject::instantRotateAroundPoint(float xAngle, float yAngle, float zAngle, float xRadiusVectorCoord, float yRadiusVectorCoord, float zRadiusVectorCoord)
+{
+	this->xAngleAround += xAngle;
+	this->yAngleAround += yAngle;
+	this->zAngleAround += zAngle;
+
+	this->xRotCoord = xRadiusVectorCoord;
+	this->yRotCoord = yRadiusVectorCoord;
+	this->zRotCoord = zRadiusVectorCoord;
+}
+
+void rotateAroundPoint(float xAngle, float yAngle, float zAngle, float xRadiusVectorCoord, float yRadiusVectorCoord, float zRadiusVectorCoord, int timieInMilis)
+{
+	;
+}
+
 void DrawableObject::instantScale(float xScale, float yScale, float zScale)
 {
 	this->xScale *= xScale;
@@ -375,6 +414,42 @@ void DrawableObject::scaleNatural(float value, int timeInMilis)
 {
 	;
 }
+
+float DrawableObject::getXCoordinate()
+{
+	return this->xPosition;
+}
+
+float DrawableObject::getYCoordinate()
+{
+	return this->yPosition;
+}
+
+float DrawableObject::getZCoordinate()
+{
+	return this->zPosition;
+}
+
+float DrawableObject::getXRotationAngle()
+{
+	return this->xAngle;
+}
+
+float DrawableObject::getYRotationAngle()
+{
+	return this->yAngle;
+}
+
+float DrawableObject::getZRotationAngle()
+{
+	return this->zAngle;
+}
+
+float DrawableObject::getZRotationAroundAngle()
+{
+	return this->zAngleAround;
+}
+
 
 
 

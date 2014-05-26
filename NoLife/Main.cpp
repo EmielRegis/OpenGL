@@ -34,6 +34,7 @@ DrawableObject *demon;
 DrawableObject *floore;
 DrawableObject *smallDragon;
 DrawableObject *house;
+DrawableObject *weapon;
 
 DrawableObject2D *obj2D;
 DrawableObject2D *crossA;
@@ -59,13 +60,15 @@ int windowWidth = 860;
 int windowHeight = 484;
 float cameraAngle = 45.0f;
 
+float weaponRotationFlag = true;
+
 //Zmienne do animacji
 float speed = 120; //120 stopni/s
 int lastTime = 0;
 float angle = 0;
 
 // zmienne do poruszania sie
-float obsX = 20.0f, obsY = 20.0f, obsZ = 2.0f, pktX = -8, pktY = 0.0f, pktZ = 2.0f, stepX = 0.0f, stepY = 0.0f, stepZ = 0.0f,
+float obsX = 10.0f, obsY = 0.0f, obsZ = 2.0f, pktX = -8, pktY = 0.0f, pktZ = 2.0f, stepX = 0.0f, stepY = 0.0f, stepZ = 0.0f,
 i = 225,
 k = 90,
 j = 0,
@@ -114,19 +117,18 @@ void displayFrame() {
 	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(5.0, 0.0, 0.0));
 	floore->drawObject();
 
-
 	demon->drawObject();
-	
-	
 		
 	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0, 10.0, 15.0));
 	scene.matM = glm::scale(scene.matM, glm::vec3(15.0, 15.0, 15.0));
 	scene.matM = glm::rotate(scene.matM, 90.0f, glm::vec3(1.0, .0, 0.0));
 	scene.matM = glm::rotate(scene.matM, 180.0f, glm::vec3(1.0, 1.0, 0.0));
 	smallDragon->drawObject();
-
 	
 	house->drawObject();
+
+	weapon->instantMove(obsX - weapon->getXCoordinate(), obsY - weapon->getYCoordinate(), 0.0);
+	weapon->drawObject();
 
 	scene.matP = glm::mat4((float)windowHeight / windowWidth, 0.0f, 0.0f, 0.0f,
 		0.0f, (float)windowHeight / windowHeight, 0.0f, 0.0f,
@@ -134,11 +136,14 @@ void displayFrame() {
 		0.0f, 0.0f, 0.0f, 1.0f);
 	
 	obj2D->drawObject();
+
 	crossA->drawObject();
 	crossB->drawObject();
 	crossC->drawObject();
 	crossD->drawObject();
 
+
+	
 
 
 
@@ -459,6 +464,37 @@ void passiveMouseMove(int x, int y)
 	pktX = obsX + 1 * R * cos(6.28318 * i / N);
 	pktY = obsY + 1 * R * sin(6.28318 * i / N);
 
+
+	if (weaponRotationFlag)
+	{
+		weapon->instantRotateAroundPoint(0.0, 0.0, (((acos((pktX - obsX) / R))*57.29578 - 180.0) - weapon->getZRotationAroundAngle() + 200.0), 1.3, 1.2, 0.0);
+		weaponRotationFlag = false;
+	}
+	else
+	{
+		float sinD = (asin((pktY - obsY) / R))*57.29578;
+		float cosD = (acos((pktX - obsX) / R))*57.29578 - 180.0;
+
+		if (cosD < 0 && sinD > 0)
+		{
+			cosD = -cosD;
+		}
+
+		float d = 0;
+		d = ((cosD - weapon->getZRotationAroundAngle() + 200.0));
+	
+		//cout << "xy: " << -xy << " d: " << d << " coskat: " << cosD << " sinkat: " << sinD << " kat broni: " << weapon->getZRotationAroundAngle() << endl;
+
+		weapon->instantRotateAroundPoint(0.0, 0.0, d, 1.3, 1.2, 0.0);
+		//weapon->instantRotate(0.0,acos((((pktZ - obsZ) / R))*57.29578) - weapon->getYRotationAngle(), 0.0);
+
+		// cout << acos((((pktZ - obsZ) / R))*57.29578) - 180.0 << endl;
+		
+	}
+	
+	
+
+
 	if (k > 10)
 	{
 		if ((k < 180) && k >= -z && (180 - k) >= z)
@@ -480,8 +516,11 @@ void passiveMouseMove(int x, int y)
 			k += z;
 		}
 	}
-	 
-	//cout  << " " << i << " " << k << endl;
+
+	float cosY = (acos(cos(6.28318 * k / N)))*57.29578 - 90.0;
+	cout << (acos(cos(6.28318 * k / N)))*57.29578 - 90.0 << endl;
+	weapon->instantRotate(0.0, (cosY - weapon->getYRotationAngle())*0.7, 0.0);
+	weapon->instantMove(0, 0.0, -cosY / 70.0 - weapon->getZCoordinate() + 0.65);
 
 	//cout << "k: " << k << "   k/N: " << k / N << "   6*k/N " << 6.28318 * k / N << "cos: " << cos(6.28318 * k / N) << endl;
 
@@ -605,8 +644,19 @@ int main(int argc, char** argv) {
 	crossD->instantMove(0.05, 0.0);
 
 
+	weapon = new DrawableObject(Scene::getInstance().shaderProgramPro, "mp5.obj");
+	weapon->setAlternativeDrawing(true);
+	weapon->changeColor(0.1, 0.1, 0.1);
+	weapon->instantMove(obsX, obsY, 0.65);
+	weapon->instantRotate(0, -10, 150);
+	weapon->instantRotateAroundPoint(0, 0, 200, 1.3, 1.2, 0);
+
+
 	mixer = new MusicMixer();
 	mixer->playBackgroundMusic();
+
+
+	
 	
 
 
