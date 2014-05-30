@@ -6,6 +6,10 @@ MusicMixer::MusicMixer()
 	this->engine = irrklang::createIrrKlangDevice();
 	this->myReceiver = new MySoundEndReceiver(this);
 	properBackgroundMusic();
+
+	gunSingleShotSource = engine->addSoundSourceFromFile("resources\\sounds\\effects\\guns\\mp5\\mp5_single_shot.mp3");;
+	gunSeriesShotSource = engine->addSoundSourceFromFile("resources\\sounds\\effects\\guns\\mp5\\mp5_long_serie.mp3");;
+	gunClipChangeSource = engine->addSoundSourceFromFile("resources\\sounds\\effects\\guns\\mp5\\mp5_clip_change.mp3");;
 	
 }
 
@@ -40,6 +44,11 @@ void MusicMixer::properBackgroundMusic()
 	soundtrack[7] = engine->addSoundSourceFromFile("resources\\sounds\\soundtrack\\maiden-daughter.mp3");
 	soundtrack[8] = engine->addSoundSourceFromFile("resources\\sounds\\soundtrack\\maiden-montsegur.mp3");
 	soundtrack[9] = engine->addSoundSourceFromFile("resources\\sounds\\soundtrack\\percival-rozum.mp3");
+
+	for (int i = 0; i < 10; i++)
+	{
+		soundtrack[i]->setDefaultVolume(0.5f);
+	}
 }
 
 void MusicMixer::playBackgroundMusic()
@@ -62,6 +71,11 @@ void MusicMixer::playBackgroundMusic()
 	backgroundTrack = engine->play2D(soundtrack[number], false, false, true);
 
 	backgroundTrack->setSoundStopEventReceiver(myReceiver, 0);
+}
+
+void MusicMixer::playGunShotSerie()
+{
+	gunSingleShot = engine->play2D(gunSingleShotSource);
 }
 
 

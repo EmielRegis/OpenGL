@@ -18,6 +18,12 @@ protected:
 	irrklang::ISoundEngine* engine;
 	irrklang::ISound* backgroundTrack;
 	irrklang::ISoundSource* soundtrack[10];
+	irrklang::ISound* gunSingleShot;
+	irrklang::ISound* gunSeriesShot;
+	irrklang::ISound* gunClipChange;
+	irrklang::ISoundSource* gunSingleShotSource;
+	irrklang::ISoundSource* gunSeriesShotSource;
+	irrklang::ISoundSource* gunClipChangeSource;
 
 	void properBackgroundMusic();
 	
@@ -41,6 +47,8 @@ public:
 	float getBackgroundMusicVolume();
 	void muteBackgroundMusic();
 	void enableBackgroundMusic();
+
+	void playGunShotSerie();
 	
 };
 

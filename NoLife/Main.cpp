@@ -91,7 +91,7 @@ GLuint bufElements; //Uchwyt na bufor VBO elementow - trojkatow o ile takowy buf
 //Procedura rysuj¹ca
 void displayFrame() {
 	//Wyczyœæ bufor kolorów i bufor g³êbokoœci
-	glClearColor(0.8, 0.8, 1, 1);
+	glClearColor(0.5, 0.1, 0.8, 0.7);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -114,7 +114,7 @@ void displayFrame() {
 	scene.matM = glm::rotate(scene.matM, angle, glm::vec3(0.0, 1, 0));	
 	USS->drawObject();
 
-	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(5.0, 0.0, 0.0));
+	//scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(5.0, 0.0, 0.0));
 	floore->drawObject();
 
 	demon->drawObject();
@@ -360,13 +360,18 @@ void keyDown(unsigned char c, int x, int y)
 
 }
 
+bool jumpFlag = true;
+
 void jump()
 {
 	for (float i = 0.0f; i < 3.14f; i += 0.1f)
 	{
+		jumpFlag = false;
 		obsZ = 2.0f + sin(i);
+		weapon->instantMove(0, 0 ,0.65 + sin(i) - weapon->getZCoordinate());
 		//cout << obsZ << endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(30));
+		jumpFlag = true;
 		
 
 	}
@@ -409,8 +414,11 @@ void keUp(unsigned char c, int x, int y)
 	}
 	else if (c == ' ')
 	{
-		std::thread first(jump);
-		first.detach();	
+		if (jumpFlag)
+		{
+			std::thread first(jump);
+			first.detach();
+		}	
 	}
 	else if (c == 'n')
 	{
@@ -547,8 +555,52 @@ void passiveMouseMove(int x, int y)
 		glutWarpPointer(mouseXY, windowHeight / 2);
 	}
 	
-
 }
+
+bool shotFlag = false;
+
+void singleShot()
+{
+	mixer->playGunShotSerie();
+}
+
+void serieShot()
+{
+	shotFlag = true;
+	while (shotFlag)
+	{
+		singleShot();
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
+}
+
+void shotStop()
+{
+	shotFlag = false;
+}
+
+void mouseClick(int button, int state, int x, int y)
+{
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+	{
+		std::thread first(serieShot);
+		first.detach();
+	}
+	else if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
+	{
+		shotStop();
+	}
+	else if (button == GLUT_MIDDLE_BUTTON)
+	{
+
+	}
+	else if (button == GLUT_RIGHT_BUTTON)
+	{
+
+	}
+}
+
+
 
 
 
@@ -570,6 +622,7 @@ int main(int argc, char** argv) {
 	glutSpecialFunc(keyDown);
 	glutSpecialUpFunc(keyUp);
 	glutPassiveMotionFunc(passiveMouseMove);
+	glutMouseFunc(mouseClick);
 
 	glutSetCursor(GLUT_CURSOR_NONE);
 
@@ -587,8 +640,9 @@ int main(int argc, char** argv) {
 	//kostka = new DrawableObject(shaderProgram, "cube1.obj");
 	//malpa = new DrawableObject(shaderProgram, "floor.obj");
 	//malpa->changeColor(0.1f, 0.4f, 0.1f);
-	floore = new DrawableObject(Scene::getInstance().shaderProgramPro, "floor.obj");
-	floore->changeColor(0.4, 0.7, 0.4);
+	floore = new DrawableObject(Scene::getInstance().shaderProgramProTex, "floor.obj", "terrain.tga");
+	floore->setAlternativeDrawing(true);
+	//floore->changeColor(0.4, 0.7, 0.4);
 
 	demon = new DrawableObject(Scene::getInstance().shaderProgramPro, "devil.obj");
 	demon->changeColor(0.9, 0.0, 0.0);
