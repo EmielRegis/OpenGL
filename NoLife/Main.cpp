@@ -32,6 +32,8 @@ DrawableObject *malpa;
 DrawableObject *USS;
 DrawableObject *demon;
 DrawableObject *floore;
+DrawableObject *terrain;
+DrawableObject *skydome;
 DrawableObject *smallDragon;
 DrawableObject *house;
 DrawableObject *weapon;
@@ -68,7 +70,7 @@ int lastTime = 0;
 float angle = 0;
 
 // zmienne do poruszania sie
-float obsX = 10.0f, obsY = 0.0f, obsZ = 2.0f, pktX = -8, pktY = 0.0f, pktZ = 2.0f, stepX = 0.0f, stepY = 0.0f, stepZ = 0.0f,
+float obsX = 10.0f, obsY = 0.0f, obsZ = 2.0f, pktX = -8, pktY = -18.0f, pktZ = 2.0f, stepX = 0.0f, stepY = 0.0f, stepZ = 0.0f,
 i = 225,
 k = 90,
 j = 0,
@@ -97,14 +99,14 @@ void displayFrame() {
 
 	//Wylicz macierz rzutowania
 	scene.matP = glm::perspective(cameraAngle, // przyblizy/oddali wido
-		(float)windowWidth / (float)windowHeight, 1.0f, 100.0f);
+		(float)windowWidth / (float)windowHeight, 1.0f, 200.0f);
 
 	//Wylicz macierz widoku
 	scene.matV = glm::lookAt(glm::vec3(obsX, obsZ, obsY), //skad dom 0,0, 7
 		glm::vec3(pktX, pktZ, pktY), //dokad dom 0,0,0
 		glm::vec3(0.0f, 1.0f, 0.0f)); //  jaki kat - domyslnie gora-dol
 
-
+	
 
 	scene.matM = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0, 1, 0));
 	scene.matM = glm::translate(scene.matM, glm::vec3(0.0, 2.0, 0.0));
@@ -115,7 +117,7 @@ void displayFrame() {
 	USS->drawObject();
 
 	//scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(5.0, 0.0, 0.0));
-	floore->drawObject();
+	
 
 	demon->drawObject();
 		
@@ -127,8 +129,24 @@ void displayFrame() {
 	
 	house->drawObject();
 
-	weapon->instantMove(obsX - weapon->getXCoordinate(), obsY - weapon->getYCoordinate(), 0.0);
+
+
+	//Wylicz macierz rzutowania
+	scene.matP = glm::perspective(cameraAngle, // przyblizy/oddali wido
+		(float)windowWidth / (float)windowHeight, 0.0125f, 400.0f);
+
+	floore->drawObject();
+	skydome->drawObject();
+
+	scene.matP = glm::perspective(cameraAngle, // przyblizy/oddali wido
+		(float)windowWidth / (float)windowHeight, 1.0f, 200.0f);
+
 	weapon->drawObject();
+
+	//weapon->instantMove(obsX - weapon->getXCoordinate(), obsY - weapon->getYCoordinate(), 0.0);
+	
+
+	
 
 	scene.matP = glm::mat4((float)windowHeight / windowWidth, 0.0f, 0.0f, 0.0f,
 		0.0f, (float)windowHeight / windowHeight, 0.0f, 0.0f,
@@ -258,12 +276,19 @@ void keyPressed(unsigned char key, int x, int y)
 		if (keyW){
 
 
-			stepX = (pktX - obsX) / 100;
-			stepY = (pktY - obsY) / 100;
+			
 			if (keyE)
 			{
-				j += 0.9;
-				obsZ = 1.8 + sin(j) / 5;
+				j += 0.6;
+				obsZ = 1.8 + sin(j) / 8;
+
+				stepX = (pktX - obsX) / 60;
+				stepY = (pktY - obsY) / 60;
+			}
+			else
+			{
+				stepX = (pktX - obsX) / 100;
+				stepY = (pktY - obsY) / 100;
 			}
 
 
@@ -274,6 +299,8 @@ void keyPressed(unsigned char key, int x, int y)
 
 			pktX += stepX;
 			pktY += stepY;
+
+			skydome->instantMove(stepX, stepY, 0);
 			// break;
 
 		} // w
@@ -284,16 +311,28 @@ void keyPressed(unsigned char key, int x, int y)
 			stepY = (pktY - obsY) / 100;
 
 
-			obsX -= stepX;
-			obsY -= stepY;
+			
 			if (keyE)
 			{
-				j += 0.9;
-				obsZ = 1.8 + sin(j) / 5;
+				j += 0.6;
+				obsZ = 1.8 + sin(j) / 8;
+
+				stepX = (pktX - obsX) / 60;
+				stepY = (pktY - obsY) / 60;
 			}
+			else
+			{
+				stepX = (pktX - obsX) / 100;
+				stepY = (pktY - obsY) / 100;
+			}
+
+			obsX -= stepX;
+			obsY -= stepY;
 
 			pktX -= stepX;
 			pktY -= stepY;
+
+			skydome->instantMove(-stepX, -stepY, 0);
 			// break;
 		} // sy
 		//case 65:
@@ -306,6 +345,8 @@ void keyPressed(unsigned char key, int x, int y)
 			pktX -= stepX;
 			pktY -= stepY;
 
+			skydome->instantMove(-stepX, -stepY, 0);
+
 		} // a
 		if (keyD)//case 68:
 		{
@@ -316,6 +357,9 @@ void keyPressed(unsigned char key, int x, int y)
 			obsY += stepY;
 			pktX += stepX;
 			pktY += stepY;
+
+
+			skydome->instantMove(stepX, stepY, 0);
 		} // d
 
 	}
@@ -368,7 +412,7 @@ void jump()
 	{
 		jumpFlag = false;
 		obsZ = 2.0f + sin(i);
-		weapon->instantMove(0, 0 ,0.65 + sin(i) - weapon->getZCoordinate());
+		//weapon->instantMove(0, 0 ,0.65 + sin(i) - weapon->getZCoordinate());
 		//cout << obsZ << endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(30));
 		jumpFlag = true;
@@ -411,6 +455,7 @@ void keUp(unsigned char c, int x, int y)
 	else if (c == 'e')
 	{
 		keyE = false;
+		obsZ = 2.0f;
 	}
 	else if (c == ' ')
 	{
@@ -475,8 +520,8 @@ void passiveMouseMove(int x, int y)
 
 	if (weaponRotationFlag)
 	{
-		weapon->instantRotateAroundPoint(0.0, 0.0, (((acos((pktX - obsX) / R))*57.29578 - 180.0) - weapon->getZRotationAroundAngle() + 200.0), 1.3, 1.2, 0.0);
-		weaponRotationFlag = false;
+		//weapon->instantRotateAroundPoint(0.0, 0.0, (((acos((pktX - obsX) / R))*57.29578 - 180.0) - weapon->getZRotationAroundAngle() + 200.0), 1.3, 1.2, 0.0);
+		//weaponRotationFlag = false;
 	}
 	else
 	{
@@ -493,7 +538,7 @@ void passiveMouseMove(int x, int y)
 	
 		//cout << "xy: " << -xy << " d: " << d << " coskat: " << cosD << " sinkat: " << sinD << " kat broni: " << weapon->getZRotationAroundAngle() << endl;
 
-		weapon->instantRotateAroundPoint(0.0, 0.0, d, 1.3, 1.2, 0.0);
+		//weapon->instantRotateAroundPoint(0.0, 0.0, d, 1.3, 1.2, 0.0);
 		//weapon->instantRotate(0.0,acos((((pktZ - obsZ) / R))*57.29578) - weapon->getYRotationAngle(), 0.0);
 
 		// cout << acos((((pktZ - obsZ) / R))*57.29578) - 180.0 << endl;
@@ -526,9 +571,9 @@ void passiveMouseMove(int x, int y)
 	}
 
 	float cosY = (acos(cos(6.28318 * k / N)))*57.29578 - 90.0;
-	cout << (acos(cos(6.28318 * k / N)))*57.29578 - 90.0 << endl;
-	weapon->instantRotate(0.0, (cosY - weapon->getYRotationAngle())*0.7, 0.0);
-	weapon->instantMove(0, 0.0, -cosY / 70.0 - weapon->getZCoordinate() + 0.65);
+	//cout << (acos(cos(6.28318 * k / N)))*57.29578 - 90.0 << endl;
+	//weapon->instantRotate(0.0, (cosY - weapon->getYRotationAngle())*0.7, 0.0);
+	//weapon->instantMove(0, 0.0, -cosY / 70.0 - weapon->getZCoordinate() + 0.65);
 
 	//cout << "k: " << k << "   k/N: " << k / N << "   6*k/N " << 6.28318 * k / N << "cos: " << cos(6.28318 * k / N) << endl;
 
@@ -641,8 +686,13 @@ int main(int argc, char** argv) {
 	//malpa = new DrawableObject(shaderProgram, "floor.obj");
 	//malpa->changeColor(0.1f, 0.4f, 0.1f);
 	floore = new DrawableObject(Scene::getInstance().shaderProgramProTex, "floor.obj", "terrain.tga");
+	//floore = new DrawableObject(Scene::getInstance().shaderProgramProTex, "skydome.obj", "skydome.tga");
 	floore->setAlternativeDrawing(true);
 	//floore->changeColor(0.4, 0.7, 0.4);
+
+	skydome = new DrawableObject(Scene::getInstance().shaderProgramProTex, "skydome2.obj", "skydome2.tga");
+	skydome->setAlternativeDrawing(true);
+	skydome->instantScale(0.5, 0.5, 0.5);
 
 	demon = new DrawableObject(Scene::getInstance().shaderProgramPro, "devil.obj");
 	demon->changeColor(0.9, 0.0, 0.0);
@@ -665,49 +715,56 @@ int main(int argc, char** argv) {
 
 	
 
-	kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "wood_cube2.obj", "wood.tga");
+	//kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "wood_cube2.obj", "wood.tga");
+	kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "cz805.obj", "CZ805.tga");
 
 	
 
-	obj2D = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_CIRCLE);
+	obj2D = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_CIRCLE);
 	obj2D->instantScaleNatural(0.12f);
 	obj2D->instantRotate(180.0);
 	obj2D->instantMove(0.85*windowWidth/windowHeight, -0.75);
 
-	crossA = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_LINE);
+	crossA = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_LINE);
 	crossA->instantScaleNatural(0.3);
 	crossA->instantScale(1.0, 0.1);
 	crossA->instantMove(0.0, 0.05);
 
-	crossB = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_LINE);
+	crossB = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_LINE);
 	crossB->instantRotate(90);
 	crossB->instantScaleNatural(0.3);
 	crossB->instantScale(0.1,1.0);
 	crossB->instantMove(-0.05, 0.0);
 
-	crossC = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_LINE);
+	crossC = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_LINE);
 	crossC->instantRotate(180);
 	crossC->instantScaleNatural(0.3);
 	crossC->instantScale(1.0,0.1);
 	crossC->instantMove(0.0, -0.05);
 
-	crossD = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_LINE);
+	crossD = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_LINE);
 	crossD->instantRotate(270);
 	crossD->instantScaleNatural(0.3);
 	crossD->instantScale(0.1,1.0);
 	crossD->instantMove(0.05, 0.0);
 
 
-	weapon = new DrawableObject(Scene::getInstance().shaderProgramPro, "mp5.obj");
+	weapon = new DrawableObject(Scene::getInstance().shaderProgramEyePerspective, "cz805.obj", "CZ805.tga");
 	weapon->setAlternativeDrawing(true);
 	weapon->changeColor(0.1, 0.1, 0.1);
-	weapon->instantMove(obsX, obsY, 0.65);
-	weapon->instantRotate(0, -10, 150);
-	weapon->instantRotateAroundPoint(0, 0, 200, 1.3, 1.2, 0);
+	//weapon->instantRotate(0, -10, 270);
+	weapon->instantRotate(0, 5, 95);
+	//weapon->instantMove(0.5, -1.8, -1);
+	weapon->instantMove(0.7, -2.2, -1);
+	//weapon->instantScale(0.7,0.7,0.7);
+	weapon->instantScale(0.4, 0.4, 0.4);
+
 
 
 	mixer = new MusicMixer();
 	mixer->playBackgroundMusic();
+
+	new DrawableObject(Scene::getInstance().shaderProgramPro, "mp5.obj", 2, "dfdf", "fdfdf");
 
 
 	

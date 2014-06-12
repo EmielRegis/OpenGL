@@ -5,10 +5,9 @@
 DrawableObject2D::DrawableObject2D(ShaderProgram *shaderProgram, MODE mode)
 {
 	this->shaderProgram = shaderProgram;
-
 	this->mode = mode;
 	
-	if (mode == DRAWABLE_TRIANGLE)
+	if (mode == DRAWABLE_2D_PRIMITIVE_TRIANGLE)
 	{
 		suzanne_vertices.push_back(-1.0f);
 		suzanne_vertices.push_back(-1.0f);
@@ -40,7 +39,7 @@ DrawableObject2D::DrawableObject2D(ShaderProgram *shaderProgram, MODE mode)
 		suzanne_colors.push_back(0.0f);
 		suzanne_colors.push_back(1.0f);
 	}
-	else if (mode == DRAWABLE_SQUARE)
+	else if (mode == DRAWABLE_2D_PRIMITIVE_SQUARE)
 	{
 		suzanne_vertices.push_back(-1.0f);
 		suzanne_vertices.push_back(-1.0f);
@@ -102,7 +101,7 @@ DrawableObject2D::DrawableObject2D(ShaderProgram *shaderProgram, MODE mode)
 		suzanne_colors.push_back(0.0f);
 		suzanne_colors.push_back(1.0f);
 	}
-	else if (mode == DRAWABLE_CIRCLE)
+	else if (mode == DRAWABLE_2D_PRIMITIVE_CIRCLE)
 	{
 		for (int i = 0; i < 360; i++)
 		{
@@ -144,7 +143,7 @@ DrawableObject2D::DrawableObject2D(ShaderProgram *shaderProgram, MODE mode)
 		}
 		
 	}
-	else if (mode == DRAWABLE_LINE)
+	else if (mode == DRAWABLE_2D_PRIMITIVE_LINE)
 	{
 		suzanne_vertices.push_back(-0.01f);
 		suzanne_vertices.push_back(-1.0f);
@@ -222,8 +221,7 @@ DrawableObject2D::DrawableObject2D(ShaderProgram *shaderProgram, MODE mode)
 DrawableObject2D::DrawableObject2D(ShaderProgram *shaderProgram, const char *filepath)
 {
 	this->shaderProgram = shaderProgram;
-
-	this->mode = DRAWABLE_2D_MODEL;
+	this->mode = DRAWABLE_2D_NOT_TEXTURED_MODEL;
 
 	loadObject(filepath, suzanne_vertices, suzanne_textures, suzanne_colors);
 	vertices = &suzanne_vertices[0];
@@ -237,10 +235,8 @@ DrawableObject2D::DrawableObject2D(ShaderProgram *shaderProgram, const char *fil
 DrawableObject2D::DrawableObject2D(ShaderProgram *shaderProgram, const char * filepath, const char *texturepath)
 {
 	this->isTexurable = true;
-
+	this->mode = DRAWABLE_2D_SINGLE_TEXTURED_MODEL;
 	this->shaderProgram = shaderProgram;
-
-	this->mode = DRAWABLE_2D_MODEL_WITH_TEXTURES;
 
 	loadObjectWithTextures(filepath, suzanne_vertices, suzanne_textures, suzanne_colors);
 	this->tex0 = this->loadTexture(texturepath);

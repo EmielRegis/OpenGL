@@ -5,24 +5,22 @@
 DrawableObject::DrawableObject(ShaderProgram *shaderProgram)
 {
 	this->shaderProgram = shaderProgram;
+	this->mode = DRAWABLE_3D_PRIMITIVE_CUBE;
 
 	loadObject("cube1.obj", suzanne_vertices, suzanne_normals, suzanne_textures, suzanne_colors);
 	vertices = &suzanne_vertices[0];
 	normals = &suzanne_normals[0];
 	colors = &suzanne_colors[0];
-	//textures = &suzanne_textures[0];
-	//elements = &suzanne_elements[0];
 	vertexCount = suzanne_vertices.size() / 4;
 	
-
 	this->setupVBO();
 	this->setupVAO();
 }
 
-
 DrawableObject::DrawableObject(ShaderProgram *shaderProgram, const char *filepath)
 {
 	this->shaderProgram = shaderProgram;
+	this->mode = DRAWABLE_3D_NOT_TEXTURED_MODEL;
 
 	loadObject(filepath, suzanne_vertices, suzanne_normals, suzanne_textures, suzanne_colors);
 	vertices = &suzanne_vertices[0];
@@ -36,9 +34,8 @@ DrawableObject::DrawableObject(ShaderProgram *shaderProgram, const char *filepat
 
 DrawableObject::DrawableObject(ShaderProgram *shaderProgram, const char * filepath, const char *texturepath)
 {
-	this->isTexurable = true;
-
 	this->shaderProgram = shaderProgram;
+	this->mode = DRAWABLE_3D_SINGLE_TEXTURED_MODEL;
 	
 	loadObjectWithTextures(filepath, suzanne_vertices, suzanne_normals, suzanne_textures, suzanne_colors);
 	this->tex0 = this->loadTexture(texturepath);
@@ -51,6 +48,36 @@ DrawableObject::DrawableObject(ShaderProgram *shaderProgram, const char * filepa
 
 	this->setupVBO();
 	this->setupVAO();	
+}
+
+DrawableObject::DrawableObject(ShaderProgram *shaderProgram, const char *filepath, unsigned int texturesNumber, ...)
+{
+	this->shaderProgram = shaderProgram;
+	this->mode = DRAWABLE_3D_MULTI_TEXTURED_MODEL;
+
+	va_list arguments;                     
+
+	va_start(arguments, texturesNumber);           
+	for (int x = 0; x < texturesNumber; x++)
+	{
+		cout << va_arg(arguments, const char *) << endl;
+	}		
+	va_end(arguments);                  
+
+
+	loadObject(filepath, suzanne_vertices, suzanne_normals, suzanne_textures, suzanne_colors);
+
+	//loadObjectWithTextures(filepath, suzanne_vertices, suzanne_normals, suzanne_textures, suzanne_colors);
+	//this->tex0 = this->loadTexture(texturepath);
+
+	vertices = &suzanne_vertices[0];
+	normals = &suzanne_normals[0];
+	colors = &suzanne_colors[0];
+	//textures = &suzanne_textures[0];
+	vertexCount = suzanne_vertices.size() / 4;
+
+	this->setupVBO();
+	this->setupVAO();
 }
 
 
@@ -84,6 +111,7 @@ GLuint DrawableObject::loadTexture(const char *filepath)
 	TGAImg img;
 
 	glActiveTexture(GL_TEXTURE0);
+
 
 	if (img.Load(filename) == IMG_OK)
 	{
@@ -277,63 +305,42 @@ void DrawableObject::drawObject() {
 
 	if (this->alternateDrawing)
 	{	
-		/*scene.matM = glm::rotate(glm::mat4(1.0f), this->xAngle, glm::vec3(1.0, 0.0, 0.0));
-		scene.matM = glm::rotate(scene.matM, this->yAngle, glm::vec3(0.0, 0.0, 1.0));
-		scene.matM = glm::rotate(scene.matM, this->zAngle, glm::vec3(0.0, 1.0, 0.0));
-		scene.matM = glm::translate(scene.matM, glm::vec3(this->xPosition, this->zPosition, this->yPosition));
-		scene.matM = glm::scale(scene.matM , glm::vec3(this->xScale, this->zScale, this->yScale));*/
-
-		
-		
-		
 		glm::mat4 RX = scene.matM = glm::rotate(glm::mat4(1.0f), this->xAngle, glm::vec3(1.0, 1.0, 0.0));
 		glm::mat4 RY = scene.matM = glm::rotate(glm::mat4(1.0f), this->yAngle, glm::vec3(0.0, 0.0, 1.0));
 		glm::mat4 RZ = scene.matM = glm::rotate(glm::mat4(1.0f), this->zAngle, glm::vec3(0.0, 1.0, 0.0));
 
 		glm::mat4 S = glm::scale(glm::mat4(1.0f), glm::vec3(this->xScale, this->zScale, this->yScale));
 
-		
 		glm::mat4 TRAZ = glm::translate(glm::mat4(1.0f), glm::vec3(this->xRotCoord, this->zRotCoord, this->yRotCoord));
-
 		glm::mat4 RAZ = glm::rotate(glm::mat4(1.0f), this->zAngleAround, glm::vec3(0.0, 1.0, 0.0));
 
 		glm::mat4 T = glm::translate(glm::mat4(1.0f), glm::vec3(this->xPosition, this->zPosition, this->yPosition));
 
 		scene.matM = T*RAZ*TRAZ*S*RZ*RY*RX;
-
-		//scene.matM =   T*S*RZ*RY*RX;
-
-		//scene.matM = glm::rotate((glm::translate(glm::mat4(1.0f), glm::vec3(this->xRotCoord, this->zRotCoord, this->yRotCoord))), this->zAngleAround, glm::vec3(0.0, 1.0, 0.0)) * T*S*RZ*RY*RX;;
-
 	}
 
-	//W³¹czenie programu cieniuj¹cego, który ma zostaæ u¿yty do rysowania
-	//W tym programie wystarczy³oby wywo³aæ to raz, w setupShaders, ale chodzi o pokazanie, 
-	//¿e mozna zmieniaæ program cieniuj¹cy podczas rysowania jednej sceny
 	shaderProgram->use();
 
-	//Przeka¿ do shadera macierze P,V i M.
-	//W linijkach poni¿ej, polecenie:
-	//  shaderProgram->getUniformLocation("P") 
-	//pobiera numer slotu odpowiadaj¹cego zmiennej jednorodnej o podanej nazwie
-	//UWAGA! "P" w powy¿szym poleceniu odpowiada deklaracji "uniform mat4 P;" w vertex shaderze, 
-	//a matP w glm::value_ptr(matP) odpowiada deklaracji  "glm::mat4 matP;" TYM pliku.
-	//Ca³a poni¿sza linijka przekazuje do zmiennej jednorodnej P w vertex shaderze dane ze zmiennej matP
-	//zadeklarowanej globalnie w tym pliku. 
-	//Pozosta³e polecenia dzia³aj¹ podobnie.
 	glUniformMatrix4fv(shaderProgram->getUniformLocation("P"), 1, false, glm::value_ptr(scene.matP));
 	glUniformMatrix4fv(shaderProgram->getUniformLocation("V"), 1, false, glm::value_ptr(scene.matV));
 	glUniformMatrix4fv(shaderProgram->getUniformLocation("M"), 1, false, glm::value_ptr(scene.matM));
+
+	glUniform4f(shaderProgram->getUniformLocation("lpos"), 0,2,5,1);
 
 	glUniform1i(shaderProgram->getUniformLocation("textureMap0"), 0);
 
 	//Uaktywnienie VAO i tym samym uaktywnienie predefiniowanych w tym VAO powi¹zañ slotów atrybutów z tablicami z danymi
 	glBindVertexArray(vao);
 
-	if (isTexurable)
+	if (this->mode == DRAWABLE_3D_SINGLE_TEXTURED_MODEL)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, tex0);
+
+	}
+	else if (this->mode == DRAWABLE_3D_MULTI_TEXTURED_MODEL)
+	{
+
 	}
 
 
@@ -470,9 +477,13 @@ void DrawableObject::setupVBO() {
 	bufColors = makeBuffer(colors, vertexCount, sizeof(float)* 4);//Kolory wierzcho³ków
 	bufNormals = makeBuffer(normals, vertexCount, sizeof(float)* 4);//Wektory normalne wierzcho³ków
 
-	if (this->isTexurable)
+	if (this->mode == DRAWABLE_3D_SINGLE_TEXTURED_MODEL)
 	{
 		this->bufTextures = makeBuffer(this->textures, this->vertexCount, sizeof(float)* 2);
+	}
+	else if (this->mode == DRAWABLE_3D_MULTI_TEXTURED_MODEL)
+	{
+
 	}
 }
 
@@ -497,9 +508,13 @@ void DrawableObject::setupVAO() {
 	assignVBOtoAttribute("color", bufColors, 4); //"color" odnosi siê do deklaracji "in vec4 color;" w vertex shaderze
 	assignVBOtoAttribute("normal", bufNormals, 4); //"normal" odnosi siê do deklaracji "in vec4 normal;" w vertex shaderze
 
-	if (this->isTexurable)
+	if (this->mode == DRAWABLE_3D_SINGLE_TEXTURED_MODEL)
 	{
 		assignVBOtoAttribute("texCoord", bufTextures, 2);
+	}
+	else if (this->mode == DRAWABLE_3D_MULTI_TEXTURED_MODEL)
+	{
+
 	}
 
 	glBindVertexArray(0);
@@ -509,6 +524,15 @@ void DrawableObject::freeVBO() {
 	glDeleteBuffers(1, &bufVertices);
 	glDeleteBuffers(1, &bufColors);
 	glDeleteBuffers(1, &bufNormals);
+
+	if (this->mode == DRAWABLE_3D_SINGLE_TEXTURED_MODEL)
+	{
+		glDeleteBuffers(1, &bufTextures);
+	}
+	else if (this->mode == DRAWABLE_3D_MULTI_TEXTURED_MODEL)
+	{
+
+	}
 }
 
 

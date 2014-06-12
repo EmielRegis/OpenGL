@@ -4,12 +4,12 @@
 uniform mat4 P;
 uniform mat4 V;
 uniform mat4 M;
-uniform vec4 lpos;
+
 
 //Atrybuty
-in vec4 vertex; 
-in vec4 color;  
-in vec4 normal; 
+in vec4 vertex; //wspolrzedne wierzcholka w przestrzeni modelu
+in vec4 color;  //kolor wierzcholka (na razie ignorowany)
+in vec4 normal; //wektor normalny w wierzcholku (na razie ignorowany)
 in vec2 texCoord;
 out vec4 kolorek;
 out vec4 l;
@@ -18,20 +18,18 @@ out vec4 v;
 out vec2 fTexCoord;
 
 
-
 void main(void) {
-
-	fTexCoord = texCoord;
 	
 	vec4 pos = vec4(0,0,5,1);
 
-	l = normalize(V*lpos - V*M*vertex);
+	l = normalize(V*pos - V*M*vertex);
 	n = normalize(V*M*normal);
 
 	v = normalize(vec4(0,0,0,1) - V*M*vertex);
 
 
-	gl_Position=P*V*M*vertex;
+	gl_Position=P*M*vertex;
 	kolorek=color;
-	
+	fTexCoord = texCoord;
+	vec4 lightPos = vec4(0,0,7,1);
 }

@@ -20,6 +20,7 @@ void Scene::setupShaders()
 	shaderProgram2D = new ShaderProgram("vshader2D.txt", NULL, "fshader2D.txt");
 	shaderProgramPro = new ShaderProgram("vshaderPro.txt", NULL, "fshaderPro.txt");
 	shaderProgramProTex = new ShaderProgram("vshaderProTex.txt", NULL, "fshaderProTex.txt");
+	shaderProgramEyePerspective = new ShaderProgram("vshaderEye.txt", NULL, "fshaderEye.txt");
 }
 
 //Zwolnij pamiêæ karty graficznej z shaderów i programu cieniuj¹cego

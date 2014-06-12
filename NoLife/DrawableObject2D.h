@@ -25,12 +25,13 @@ class DrawableObject2D
 public:
 	static enum MODE
 	{
-		DRAWABLE_TRIANGLE,
-		DRAWABLE_SQUARE,
-		DRAWABLE_CIRCLE,
-		DRAWABLE_LINE,
-		DRAWABLE_2D_MODEL,
-		DRAWABLE_2D_MODEL_WITH_TEXTURES
+		DRAWABLE_2D_PRIMITIVE_TRIANGLE,
+		DRAWABLE_2D_PRIMITIVE_SQUARE,
+		DRAWABLE_2D_PRIMITIVE_CIRCLE,
+		DRAWABLE_2D_PRIMITIVE_LINE,
+		DRAWABLE_2D_NOT_TEXTURED_MODEL,
+		DRAWABLE_2D_SINGLE_TEXTURED_MODEL,
+		DRAWABLE_2D_MULTI_TEXTURED_MODEL
 	};
 
 
@@ -69,11 +70,7 @@ public:
 	void instantScaleNatural(float scalingValue);
 
 	void scaleNatural(float value, int timeInMilis);
-
 	
-	
-
-
 
 protected:
 	Scene &scene = Scene::getInstance();

@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include "tga.h"
 #include "shaderprogram.h"
-
+#include <cstdarg>
 #include "vector"
 #include <ios>
 #include <sstream>
@@ -22,9 +22,19 @@ using namespace std;
 class DrawableObject
 {
 public:
+	static enum MODE
+	{
+		DRAWABLE_3D_PRIMITIVE_CUBE,
+		DRAWABLE_3D_PRIMITIVE_BALL,
+		DRAWABLE_3D_NOT_TEXTURED_MODEL,
+		DRAWABLE_3D_SINGLE_TEXTURED_MODEL,
+		DRAWABLE_3D_MULTI_TEXTURED_MODEL,
+	};
+
 	DrawableObject(ShaderProgram *shaderProgram);
 	DrawableObject(ShaderProgram *shaderProgram, const char * filepath);
 	DrawableObject(ShaderProgram *shaderProgram, const char * filepath, const char *texturepath);
+	DrawableObject(ShaderProgram *shaderProgram, const char *filepath, unsigned int texturesNumber, ...);
 	~DrawableObject();
 
 	
@@ -78,6 +88,7 @@ protected:
 
 	float xPosition = 0, yPosition = 0, zPosition = 0, xAngle = 0, yAngle = 0, zAngle = 0, xAngleAround = 0, yAngleAround = 0, zAngleAround = 0, xRotCoord = 0, yRotCoord = 0, zRotCoord = 0, xScale = 1, yScale = 1, zScale = 1;
 	
+	unsigned mode;
 	bool alternateDrawing = false;
 
 	ShaderProgram *shaderProgram;
@@ -103,6 +114,7 @@ protected:
 	vector<float> suzanne_textures;
 	vector<GLushort> suzanne_elements;
 
+	unsigned int texturesCount;
 	GLuint tex0;
 	bool isTexurable = false;
 
