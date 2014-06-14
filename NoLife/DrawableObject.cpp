@@ -94,7 +94,7 @@ void DrawableObject::changeColor(float r, float g, float b)
 		suzanne_colors[i] = r;
 		suzanne_colors[i+1] = g;
 		suzanne_colors[i+2] = b;
-		suzanne_colors[i+3] = 1.0f;
+		suzanne_colors[i+3] = 0.1f;
 	}
 
 	colors = &suzanne_colors[0];

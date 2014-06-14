@@ -17,6 +17,7 @@ out vec4 pixelColor;
 
 void main(void) {
 
+
 	vec4 Ma = vec4(1,1,1,1);
 	vec4 La = vec4(0.3,0.3,0.3,1);
 	vec4 Md = Ma;

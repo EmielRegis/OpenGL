@@ -93,7 +93,7 @@ GLuint bufElements; //Uchwyt na bufor VBO elementow - trojkatow o ile takowy buf
 //Procedura rysuj¹ca
 void displayFrame() {
 	//Wyczyœæ bufor kolorów i bufor g³êbokoœci
-	glClearColor(0.5, 0.1, 0.8, 0.7);
+	glClearColor(1.0, 1.0, 1.0, 0.1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -106,6 +106,17 @@ void displayFrame() {
 		glm::vec3(pktX, pktZ, pktY), //dokad dom 0,0,0
 		glm::vec3(0.0f, 1.0f, 0.0f)); //  jaki kat - domyslnie gora-dol
 
+
+	//Wylicz macierz rzutowania
+	scene.matP = glm::perspective(cameraAngle, // przyblizy/oddali wido
+		(float)windowWidth / (float)windowHeight, 0.0125f, 400.0f);
+
+	floore->drawObject();
+	skydome->drawObject();
+
+
+	scene.matP = glm::perspective(cameraAngle, // przyblizy/oddali wido
+		(float)windowWidth / (float)windowHeight, 1.0f, 200.0f);
 	
 
 	scene.matM = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0, 1, 0));
@@ -117,9 +128,10 @@ void displayFrame() {
 	USS->drawObject();
 
 	//scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(5.0, 0.0, 0.0));
-	
-
+	//glm::vec3 
+	//demon->instantRotate(0,0,)
 	demon->drawObject();
+
 		
 	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0, 10.0, 15.0));
 	scene.matM = glm::scale(scene.matM, glm::vec3(15.0, 15.0, 15.0));
@@ -131,12 +143,7 @@ void displayFrame() {
 
 
 
-	//Wylicz macierz rzutowania
-	scene.matP = glm::perspective(cameraAngle, // przyblizy/oddali wido
-		(float)windowWidth / (float)windowHeight, 0.0125f, 400.0f);
-
-	floore->drawObject();
-	skydome->drawObject();
+	
 
 	scene.matP = glm::perspective(cameraAngle, // przyblizy/oddali wido
 		(float)windowWidth / (float)windowHeight, 1.0f, 200.0f);
@@ -250,7 +257,23 @@ void cleanShaders() {
 
 
 
+void playerMoveListener()
+{
+	glm::vec3 look = glm::vec3(0, 0, 1);
+	float lookLength = glm::sqrt(look.x*look.x + look.z*look.z + look.y*look.y);
 
+	glm::vec3 objToCam = glm::normalize(glm::vec3(obsX, 0, obsY) - glm::vec3(demon->getXCoordinate(), 0, demon->getYCoordinate()));
+	float objToCamLength = glm::sqrt(objToCam.x*objToCam.x + objToCam.z*objToCam.z + objToCam.y*objToCam.y);
+
+	float deg = glm::degrees(acos(glm::dot(look, objToCam) / (glm::abs(lookLength) * glm::abs(objToCamLength))));
+
+	if (obsX < 0)
+	{
+		deg = -deg;
+	}
+
+	demon->instantRotate(0, 0, deg - demon->getZRotationAngle());
+}
 
 
 
@@ -262,7 +285,7 @@ void cleanShaders() {
 // kontrola naciskania klawiszy klawiatury
 void keyPressed(unsigned char key, int x, int y)
 {
-
+	playerMoveListener();
 
 
 	//switch (key)
@@ -387,6 +410,7 @@ void keyDown(unsigned char c, int x, int y)
 	else if (c == 'e')
 	{
 		keyE = true;
+		
 	}
 	else if (c == 'z')
 	{
@@ -678,6 +702,8 @@ int main(int argc, char** argv) {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHT0);
 	glEnable(GL_NORMALIZE);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
 
 	GLint textureUnits = 3;	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &textureUnits);
 
@@ -697,10 +723,14 @@ int main(int argc, char** argv) {
 	demon = new DrawableObject(Scene::getInstance().shaderProgramPro, "devil.obj");
 	demon->changeColor(0.9, 0.0, 0.0);
 	demon->setAlternativeDrawing(true);
-	demon->instantMove(20.0, 10.0, 0.0);
+	demon->instantMove(0.0, 5.0, 0.0);
+	
+
 	
 	
-	USS = new DrawableObject(Scene::getInstance().shaderProgramProTex, "USSEnterprise.obj", "uss.tga");
+	
+	//USS = new DrawableObject(Scene::getInstance().shaderProgramProTex, "USSEnterprise.obj", "uss.tga");
+	USS = new DrawableObject(Scene::getInstance().shaderProgramProTex, "fog.obj", "mist.tga");
 
 	
 
