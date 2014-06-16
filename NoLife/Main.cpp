@@ -119,17 +119,13 @@ void displayFrame() {
 		(float)windowWidth / (float)windowHeight, 1.0f, 200.0f);
 	
 
-	scene.matM = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0, 1, 0));
-	scene.matM = glm::translate(scene.matM, glm::vec3(0.0, 2.0, 0.0));
+	kostka->instantRotate(0, 0, angle - kostka->getZRotationAngle());
 	kostka->drawObject();
 
-	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0, 0.0, 20.0));
-	scene.matM = glm::rotate(scene.matM, angle, glm::vec3(0.0, 1, 0));	
+	USS->instantRotate(0, 0, angle - USS->getZRotationAngle());
 	USS->drawObject();
 
-	//scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(5.0, 0.0, 0.0));
-	//glm::vec3 
-	//demon->instantRotate(0,0,)
+
 	demon->drawObject();
 
 		
@@ -708,37 +704,33 @@ int main(int argc, char** argv) {
 	GLint textureUnits = 3;	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &textureUnits);
 
 
-	//kostka = new DrawableObject(shaderProgram, "cube1.obj");
-	//malpa = new DrawableObject(shaderProgram, "floor.obj");
-	//malpa->changeColor(0.1f, 0.4f, 0.1f);
-	floore = new DrawableObject(Scene::getInstance().shaderProgramProTex, "floor.obj", "terrain.tga");
-	//floore = new DrawableObject(Scene::getInstance().shaderProgramProTex, "skydome.obj", "skydome.tga");
+	floore = new DrawableObject(Scene::getInstance().shaderProgramProTex, "resources\\models\\objects/\\floor.obj", "resources\\models\\textures\\terrain.tga");
 	floore->setAlternativeDrawing(true);
-	//floore->changeColor(0.4, 0.7, 0.4);
 
-	skydome = new DrawableObject(Scene::getInstance().shaderProgramProTex, "skydome2.obj", "skydome2.tga");
+
+	skydome = new DrawableObject(Scene::getInstance().shaderProgramProTex, "resources\\models\\objects\\skydome2.obj", "resources\\models\\textures\\skydome2.tga");
 	skydome->setAlternativeDrawing(true);
 	skydome->instantScale(0.5, 0.5, 0.5);
 
-	demon = new DrawableObject(Scene::getInstance().shaderProgramPro, "devil.obj");
+	demon = new DrawableObject(Scene::getInstance().shaderProgramPro, "resources\\models\\objects\\devil.obj");
 	demon->changeColor(0.9, 0.0, 0.0);
 	demon->setAlternativeDrawing(true);
-	demon->instantMove(0.0, 5.0, 0.0);
+	demon->instantMove(5.0, 5.0, 0.0);
 	
 
 	
 	
 	
-	//USS = new DrawableObject(Scene::getInstance().shaderProgramProTex, "USSEnterprise.obj", "uss.tga");
-	USS = new DrawableObject(Scene::getInstance().shaderProgramProTex, "fog.obj", "mist.tga");
-
+	USS = new DrawableObject(Scene::getInstance().shaderProgramProTex, "resources\\models\\objects\\fog.obj", "resources\\models\\textures\\mist.tga");
+	USS->setAlternativeDrawing(true);
+	USS->instantMove(-20, 20, 0);
 	
 
-	smallDragon = new DrawableObject(Scene::getInstance().shaderProgramPro, "small_dragon.obj");
+	smallDragon = new DrawableObject(Scene::getInstance().shaderProgramPro, "resources\\models\\objects\\small_dragon.obj");
 	smallDragon->changeColor(0.4, 0.2, 0.1);
 	
 
-	house = new DrawableObject(Scene::getInstance().shaderProgramPro, "house.obj");
+	house = new DrawableObject(Scene::getInstance().shaderProgramPro, "resources\\models\\objects\\house.obj");
 	house->setAlternativeDrawing(true);
 	house->changeColor(0.3, 0.2, 0.3);
 	house->instantMove(50.0, 40.0, 0.0);
@@ -746,8 +738,10 @@ int main(int argc, char** argv) {
 	
 
 	//kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "wood_cube2.obj", "wood.tga");
-	kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "cz805.obj", "CZ805.tga");
-
+	kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "resources\\models\\objects\\cz805.obj", "resources\\models\\textures\\CZ805.tga");
+	kostka->setAlternativeDrawing(true);
+	kostka->instantScale(0.35, 0.35, 0.35);
+	kostka->instantMove(0, 2, 0.2);
 	
 
 	obj2D = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_CIRCLE);
@@ -779,7 +773,7 @@ int main(int argc, char** argv) {
 	crossD->instantMove(0.05, 0.0);
 
 
-	weapon = new DrawableObject(Scene::getInstance().shaderProgramEyePerspective, "cz805.obj", "CZ805.tga");
+	weapon = new DrawableObject(Scene::getInstance().shaderProgramEyePerspective, "resources\\models\\objects\\cz805.obj", "resources\\models\\textures\\CZ805.tga");
 	weapon->setAlternativeDrawing(true);
 	weapon->changeColor(0.1, 0.1, 0.1);
 	//weapon->instantRotate(0, -10, 270);
@@ -794,11 +788,6 @@ int main(int argc, char** argv) {
 	mixer = new MusicMixer();
 	mixer->playBackgroundMusic();
 
-	new DrawableObject(Scene::getInstance().shaderProgramPro, "mp5.obj", 2, "dfdf", "fdfdf");
-
-
-	
-	
 
 
 	glutMainLoop();

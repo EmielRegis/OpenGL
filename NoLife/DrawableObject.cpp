@@ -94,7 +94,36 @@ void DrawableObject::changeColor(float r, float g, float b)
 		suzanne_colors[i] = r;
 		suzanne_colors[i+1] = g;
 		suzanne_colors[i+2] = b;
-		suzanne_colors[i+3] = 0.1f;
+	}
+
+	colors = &suzanne_colors[0];
+
+	this->setupVBO();
+	this->setupVAO();
+}
+
+void DrawableObject::changeColor(float r, float g, float b, float a)
+{
+	for (int i = 0; i < suzanne_colors.size(); i += 4)
+	{
+		suzanne_colors[i] = r;
+		suzanne_colors[i + 1] = g;
+		suzanne_colors[i + 2] = b;
+		suzanne_colors[i + 3] = a;
+	}
+
+	colors = &suzanne_colors[0];
+
+	this->setupVBO();
+	this->setupVAO();
+}
+
+
+void DrawableObject::setTransparency(float transparency)
+{
+	for (int i = 0; i < suzanne_colors.size(); i += 4)
+	{
+		suzanne_colors[i+3] = transparency;
 	}
 
 	colors = &suzanne_colors[0];

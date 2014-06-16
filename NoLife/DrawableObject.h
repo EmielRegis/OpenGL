@@ -42,6 +42,11 @@ public:
 	// Zmiana koloru modelu
 	void changeColor(float r, float g, float b);
 
+	void changeColor(float r, float g, float b, float a);
+
+	// Ustawienie przezroczystosci modelu
+	void setTransparency(float transparency);
+
 	//Procedura rysuj¹ca model. Ustawia odpowiednie parametry dla vertex shadera i rysuje.
 	void drawObject();
 
