@@ -737,6 +737,7 @@ int main(int argc, char** argv) {
 
 	
 
+
 	//kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "wood_cube2.obj", "wood.tga");
 	kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "resources\\models\\objects\\cz805.obj", "resources\\models\\textures\\CZ805.tga");
 	kostka->setAlternativeDrawing(true);
