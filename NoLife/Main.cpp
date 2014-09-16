@@ -18,13 +18,15 @@
 #include <thread>
 #include <cstdlib>
 #include "MusicMixer.h"
-
-
-
-
+#include "Window.h"
+#include "Camera.h"
+#include "OpenGLHelper.h"
 
 using namespace std;
 
+Window *window;
+Camera *camera;
+Scene &scene = Scene::getInstance();
 MusicMixer *mixer;
 
 DrawableObject *kostka;
@@ -44,25 +46,9 @@ DrawableObject2D *crossB;
 DrawableObject2D *crossC;
 DrawableObject2D *crossD;
 
-
-
-
-
-bool artificalMousemove = false;
-
-Scene &scene = Scene::getInstance();
-//Macierze
-
 bool keyW = false, keyS = false, keyA = false, keyD = false, keyE = false, keyShift = false, keySpace = false, keyZ = false, keyX = false, keyC = false;
-
-//Ustawienia okna i rzutowania
-int windowPositionX = 100;
-int windowPositionY = 100;
-int windowWidth = 860;
-int windowHeight = 484;
 float cameraAngle = 45.0f;
-
-float weaponRotationFlag = true;
+bool shotFlag = false;
 
 //Zmienne do animacji
 float speed = 120; //120 stopni/s
@@ -79,8 +65,6 @@ R = abs(obsX - pktX);
 
 int mouseXY = 0, mouseZ;
 
-
-
 //Uchwyty na VAO i bufory wierzcho³ków
 GLuint vao;
 GLuint bufVertices; //Uchwyt na bufor VBO przechowuj¹cy tablicê wspó³rzêdnych wierzcho³ków
@@ -88,7 +72,6 @@ GLuint bufColors;  //Uchwyt na bufor VBO przechowuj¹cy tablicê kolorów
 GLuint bufNormals; //Uchwyt na bufor VBO przechowuj¹cy tablicê wektorów normalnych
 GLuint bufTextures; //Uchwyt na bufor VBO przechowujacy tablicê wartoœci tekstur
 GLuint bufElements; //Uchwyt na bufor VBO elementow - trojkatow o ile takowy bufor mozna utworzyc
-
 
 //Procedura rysuj¹ca
 void displayFrame() {
@@ -99,7 +82,7 @@ void displayFrame() {
 
 	//Wylicz macierz rzutowania
 	scene.matP = glm::perspective(cameraAngle, // przyblizy/oddali wido
-		(float)windowWidth / (float)windowHeight, 1.0f, 200.0f);
+		(float)window->getWindowWidth() / (float)window->getWindowHeight(), 1.0f, 200.0f);
 
 	//Wylicz macierz widoku
 	scene.matV = glm::lookAt(glm::vec3(obsX, obsZ, obsY), //skad dom 0,0, 7
@@ -109,14 +92,14 @@ void displayFrame() {
 
 	//Wylicz macierz rzutowania
 	scene.matP = glm::perspective(cameraAngle, // przyblizy/oddali wido
-		(float)windowWidth / (float)windowHeight, 0.0125f, 400.0f);
+		(float)window->getWindowWidth() / (float)window->getWindowHeight(), 0.0125f, 400.0f);
 
 	floore->drawObject();
 	skydome->drawObject();
 
 
 	scene.matP = glm::perspective(cameraAngle, // przyblizy/oddali wido
-		(float)windowWidth / (float)windowHeight, 1.0f, 200.0f);
+		(float)window->getWindowWidth() / (float)window->getWindowHeight(), 1.0f, 200.0f);
 	
 
 	kostka->instantRotate(0, 0, angle - kostka->getZRotationAngle());
@@ -142,7 +125,7 @@ void displayFrame() {
 	
 
 	scene.matP = glm::perspective(cameraAngle, // przyblizy/oddali wido
-		(float)windowWidth / (float)windowHeight, 1.0f, 200.0f);
+		(float)window->getWindowWidth() / (float)window->getWindowHeight(), 1.0f, 200.0f);
 
 	weapon->drawObject();
 
@@ -151,8 +134,8 @@ void displayFrame() {
 
 	
 
-	scene.matP = glm::mat4((float)windowHeight / windowWidth, 0.0f, 0.0f, 0.0f,
-		0.0f, (float)windowHeight / windowHeight, 0.0f, 0.0f,
+	scene.matP = glm::mat4((float)window->getWindowHeight() / window->getWindowWidth(), 0.0f, 0.0f, 0.0f,
+		0.0f, (float)window->getWindowHeight() / window->getWindowHeight(), 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f);
 	
@@ -172,10 +155,6 @@ void displayFrame() {
 	glutSwapBuffers();
 }
 
-
-
-
-
 //Procedura uruchamiana okresowo. Robi animacjê.
 void nextFrame(void) {
 	int actTime = glutGet(GLUT_ELAPSED_TIME);
@@ -186,7 +165,6 @@ void nextFrame(void) {
 	glutPostRedisplay();
 }
 
-
 //Procedura wywo³ywana przy zmianie rozmiaru okna
 void changeSize(int w, int h) {
 	//Ustawienie wymiarow przestrzeni okna
@@ -194,64 +172,19 @@ void changeSize(int w, int h) {
 	//Zapamiêtanie nowych wymiarów okna dla poprawnego wyliczania macierzy rzutowania
 	if (h > w * 10 / 16)
 	{
-		windowWidth = w;
-		windowHeight = w * 10 / 16;	
+		window->setWindowDimensions(w, w * 10 / 16);
 	}
 	else if (w > h * 22/10)
 	{
-		windowWidth = h * 22 / 10;
-		windowHeight = h;
+		window->setWindowDimensions(h * 22 / 10, h);
 	}
 	else
 	{
-		windowWidth = w;
-		windowHeight = h;
+		window->setWindowDimensions(w, h);
 	}
 
-	glViewport(0, 0, windowWidth, windowHeight);
+	glViewport(0, 0, window->getWindowWidth(), window->getWindowHeight());
 }
-
-
-//Procedura inicjuj¹ca biblotekê glut
-void initGLUT(int *argc, char** argv) {
-	glutInit(argc, argv); //Zainicjuj bibliotekê GLUT
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); //Alokuj bufory kolorów (podwójne buforowanie) i bufor kolorów
-
-	glutInitWindowPosition(windowPositionX, windowPositionY); //Wska¿ pocz¹tkow¹ pozycjê okna
-	glutInitWindowSize(windowWidth, windowHeight); //Wska¿ pocz¹tkowy rozmiar okna
-	glutCreateWindow("OpenGL 3.3"); //Utwórz okno i nadaj mu tytu³
-
-	glutReshapeFunc(changeSize); //Zarejestruj procedurê changeSize jako procedurê obs³uguj¹ca zmianê rozmiaru okna
-	glutDisplayFunc(displayFrame); //Zarejestruj procedurê displayFrame jako procedurê obs³uguj¹ca odœwierzanie okna
-	glutIdleFunc(nextFrame); //Zarejestruj procedurê nextFrame jako procedurê wywo³ywan¹ najczêœciêj jak siê da (animacja)
-}
-
-
-//Procedura inicjuj¹ca bibliotekê glew
-void initGLEW() {
-	GLenum err = glewInit();
-	if (GLEW_OK != err) {
-		fprintf(stderr, "%s\n", glewGetErrorString(err));
-		exit(1);
-	}
-
-}
-
-
-/*//Wczytuje vertex shader i fragment shader i ³¹czy je w program cieniuj¹cy
-void setupShaders() {
-	shaderProgram = new ShaderProgram("vshader.txt", NULL, "fshader.txt");
-}*/
-
-
-
-
-/*//Zwolnij pamiêæ karty graficznej z shaderów i programu cieniuj¹cego
-void cleanShaders() {
-	delete shaderProgram;
-}*/
-
-
 
 void playerMoveListener()
 {
@@ -270,13 +203,6 @@ void playerMoveListener()
 
 	demon->instantRotate(0, 0, deg - demon->getZRotationAngle());
 }
-
-
-
-
-
-
-
 
 // kontrola naciskania klawiszy klawiatury
 void keyPressed(unsigned char key, int x, int y)
@@ -537,37 +463,6 @@ void passiveMouseMove(int x, int y)
 	pktX = obsX + 1 * R * cos(6.28318 * i / N);
 	pktY = obsY + 1 * R * sin(6.28318 * i / N);
 
-
-	if (weaponRotationFlag)
-	{
-		//weapon->instantRotateAroundPoint(0.0, 0.0, (((acos((pktX - obsX) / R))*57.29578 - 180.0) - weapon->getZRotationAroundAngle() + 200.0), 1.3, 1.2, 0.0);
-		//weaponRotationFlag = false;
-	}
-	else
-	{
-		float sinD = (asin((pktY - obsY) / R))*57.29578;
-		float cosD = (acos((pktX - obsX) / R))*57.29578 - 180.0;
-
-		if (cosD < 0 && sinD > 0)
-		{
-			cosD = -cosD;
-		}
-
-		float d = 0;
-		d = ((cosD - weapon->getZRotationAroundAngle() + 200.0));
-	
-		//cout << "xy: " << -xy << " d: " << d << " coskat: " << cosD << " sinkat: " << sinD << " kat broni: " << weapon->getZRotationAroundAngle() << endl;
-
-		//weapon->instantRotateAroundPoint(0.0, 0.0, d, 1.3, 1.2, 0.0);
-		//weapon->instantRotate(0.0,acos((((pktZ - obsZ) / R))*57.29578) - weapon->getYRotationAngle(), 0.0);
-
-		// cout << acos((((pktZ - obsZ) / R))*57.29578) - 180.0 << endl;
-		
-	}
-	
-	
-
-
 	if (k > 10)
 	{
 		if ((k < 180) && k >= -z && (180 - k) >= z)
@@ -599,30 +494,28 @@ void passiveMouseMove(int x, int y)
 
 	pktZ = obsZ + 1 * R * cos(6.28318 * k / N);
 
-	if (mouseXY > windowWidth - windowWidth/40)
+	if (mouseXY > window->getWindowWidth() - window->getWindowWidth()/40)
 	{
-		mouseXY = windowWidth / 2;
-		glutWarpPointer(windowWidth / 2, mouseZ);
+		mouseXY = window->getWindowWidth() / 2;
+		glutWarpPointer(window->getWindowWidth() / 2, mouseZ);
 	}
-	if (mouseXY < windowWidth / 40)
+	if (mouseXY < window->getWindowWidth() / 40)
 	{
-		mouseXY = windowWidth / 2;
-		glutWarpPointer(windowWidth / 2, mouseZ);
+		mouseXY = window->getWindowWidth() / 2;
+		glutWarpPointer(window->getWindowWidth() / 2, mouseZ);
 	}
-	if (mouseZ > windowHeight - windowHeight / 40)
+	if (mouseZ > window->getWindowHeight() - window->getWindowHeight() / 40)
 	{
-		mouseZ = windowHeight / 2;
-		glutWarpPointer(mouseXY, windowHeight / 2);
+		mouseZ = window->getWindowHeight() / 2;
+		glutWarpPointer(mouseXY, window->getWindowHeight() / 2);
 	}
-	if (mouseZ < windowHeight / 40)
+	if (mouseZ < window->getWindowHeight() / 40)
 	{
-		mouseZ = windowHeight / 2;
-		glutWarpPointer(mouseXY, windowHeight / 2);
+		mouseZ = window->getWindowHeight() / 2;
+		glutWarpPointer(mouseXY, window->getWindowHeight() / 2);
 	}
 	
 }
-
-bool shotFlag = false;
 
 void singleShot()
 {
@@ -666,47 +559,31 @@ void mouseClick(int button, int state, int x, int y)
 }
 
 
-
-
-
-
-
 int main(int argc, char** argv) {
 
 	srand(time(NULL));
 	
+	window = new Window();
 	
+	OpenGLHelper::initOpenGL(&argc, argv, window->getXPosition(), window->getYPosition(), window->getWindowWidth(), window->getWindowHeight());
+	OpenGLHelper::registerWindowResizeProcedure(changeSize);
+	OpenGLHelper::registerDisplayFrameProcedure(displayFrame);
+	OpenGLHelper::registerAnimationProcedure(nextFrame);
 
-	initGLUT(&argc, argv);
-	//initGLUT(0, NULL);
-	initGLEW();
-	//setupShaders();
+	camera = new Camera();
 	Scene::getInstance().initScene();
+	
 	glutKeyboardFunc(keyDown);
 	glutKeyboardUpFunc(keUp);
 	glutSpecialFunc(keyDown);
 	glutSpecialUpFunc(keyUp);
 	glutPassiveMotionFunc(passiveMouseMove);
 	glutMouseFunc(mouseClick);
-
 	glutSetCursor(GLUT_CURSOR_NONE);
-
-	glEnable(GL_LIGHTING);
-	// w³¹czenie obs³ugi w³aœciwoœci materia³ów
-	glEnable(GL_COLOR_MATERIAL);
-	// w³¹czenie testu bufora g³êbokoœci
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_NORMALIZE);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_BLEND);
-
-	GLint textureUnits = 3;	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &textureUnits);
 
 
 	floore = new DrawableObject(Scene::getInstance().shaderProgramProTex, "resources\\models\\objects/\\floor.obj", "resources\\models\\textures\\terrain.tga");
 	floore->setAlternativeDrawing(true);
-
 
 	skydome = new DrawableObject(Scene::getInstance().shaderProgramProTex, "resources\\models\\objects\\skydome2.obj", "resources\\models\\textures\\skydome2.tga");
 	skydome->setAlternativeDrawing(true);
@@ -717,26 +594,17 @@ int main(int argc, char** argv) {
 	demon->setAlternativeDrawing(true);
 	demon->instantMove(5.0, 5.0, 0.0);
 	
-
-	
-	
-	
 	USS = new DrawableObject(Scene::getInstance().shaderProgramProTex, "resources\\models\\objects\\fog.obj", "resources\\models\\textures\\mist.tga");
 	USS->setAlternativeDrawing(true);
 	USS->instantMove(-20, 20, 0);
 	
-
 	smallDragon = new DrawableObject(Scene::getInstance().shaderProgramPro, "resources\\models\\objects\\small_dragon.obj");
 	smallDragon->changeColor(0.4, 0.2, 0.1);
 	
-
 	house = new DrawableObject(Scene::getInstance().shaderProgramPro, "resources\\models\\objects\\house.obj");
 	house->setAlternativeDrawing(true);
 	house->changeColor(0.3, 0.2, 0.3);
 	house->instantMove(50.0, 40.0, 0.0);
-
-	
-
 
 	//kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "wood_cube2.obj", "wood.tga");
 	kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "resources\\models\\objects\\cz805.obj", "resources\\models\\textures\\CZ805.tga");
@@ -744,11 +612,10 @@ int main(int argc, char** argv) {
 	kostka->instantScale(0.35, 0.35, 0.35);
 	kostka->instantMove(0, 2, 0.2);
 	
-
 	obj2D = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_CIRCLE);
 	obj2D->instantScaleNatural(0.12f);
 	obj2D->instantRotate(180.0);
-	obj2D->instantMove(0.85*windowWidth/windowHeight, -0.75);
+	obj2D->instantMove(0.85*window->getWindowWidth()/window->getWindowHeight(), -0.75);
 
 	crossA = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_LINE);
 	crossA->instantScaleNatural(0.3);
@@ -773,7 +640,6 @@ int main(int argc, char** argv) {
 	crossD->instantScale(0.1,1.0);
 	crossD->instantMove(0.05, 0.0);
 
-
 	weapon = new DrawableObject(Scene::getInstance().shaderProgramEyePerspective, "resources\\models\\objects\\cz805.obj", "resources\\models\\textures\\CZ805.tga");
 	weapon->setAlternativeDrawing(true);
 	weapon->changeColor(0.1, 0.1, 0.1);
@@ -785,14 +651,11 @@ int main(int argc, char** argv) {
 	weapon->instantScale(0.4, 0.4, 0.4);
 
 
-
 	mixer = new MusicMixer();
 	mixer->playBackgroundMusic();
 
 
-
 	glutMainLoop();
 
-	//cleanShaders();
 	return 0;
 }

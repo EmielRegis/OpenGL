@@ -15,6 +15,7 @@
     <ClInclude Include="Archievement.h" />
     <ClInclude Include="Beast.h" />
     <ClInclude Include="Bow.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Creature.h" />
     <ClInclude Include="Crossbow.h" />
     <ClInclude Include="Demon.h" />
@@ -23,13 +24,17 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Fighting.h" />
     <ClInclude Include="Flying.h" />
+    <ClInclude Include="GameMaster.h" />
     <ClInclude Include="Grenades.h" />
     <ClInclude Include="Gun.h" />
     <ClInclude Include="HandWeapon.h" />
     <ClInclude Include="Humanoid.h" />
+    <ClInclude Include="InputDevicesHelper.h" />
     <ClInclude Include="Location.h" />
     <ClInclude Include="Man.h" />
     <ClInclude Include="MusicMixer.h" />
+    <ClInclude Include="OpenGLHelper.h" />
+    <ClInclude Include="OutputDevicesHelper.h" />
     <ClInclude Include="RangeWeapon.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Robot.h" />
@@ -39,12 +44,14 @@
     <ClInclude Include="tga.h" />
     <ClInclude Include="Undead.h" />
     <ClInclude Include="Weapon.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ally.cpp" />
     <ClCompile Include="Archievement.cpp" />
     <ClCompile Include="Beast.cpp" />
     <ClCompile Include="Bow.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Crossbow.cpp" />
     <ClCompile Include="Demon.cpp" />
@@ -53,14 +60,20 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Fighting.cpp" />
     <ClCompile Include="Flying.cpp" />
+    <ClCompile Include="GameMaster.cpp" />
     <ClCompile Include="Grenades.cpp" />
     <ClCompile Include="Gun.cpp" />
     <ClCompile Include="HandWeapon.cpp" />
     <ClCompile Include="Humanoid.cpp" />
+    <ClCompile Include="InputDevicesHelper.cpp" />
     <ClCompile Include="Location.cpp" />
-    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Main.cpp">
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ShowIncludes>
+    </ClCompile>
     <ClCompile Include="Man.cpp" />
     <ClCompile Include="MusicMixer.cpp" />
+    <ClCompile Include="OpenGLHelper.cpp" />
+    <ClCompile Include="OutputDevicesHelper.cpp" />
     <ClCompile Include="RangeWeapon.cpp" />
     <ClCompile Include="Robot.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -70,6 +83,7 @@
     <ClCompile Include="tga.cpp" />
     <ClCompile Include="Undead.cpp" />
     <ClCompile Include="Weapon.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NoLife.rc" />
