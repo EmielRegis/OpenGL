@@ -30,6 +30,8 @@
     <ClInclude Include="HandWeapon.h" />
     <ClInclude Include="Humanoid.h" />
     <ClInclude Include="InputDevicesHelper.h" />
+    <ClInclude Include="libraries\shaderprogram\shaderprogram.h" />
+    <ClInclude Include="libraries\tga\tga.h" />
     <ClInclude Include="Location.h" />
     <ClInclude Include="Man.h" />
     <ClInclude Include="MusicMixer.h" />
@@ -41,7 +43,6 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Skill.h" />
     <ClInclude Include="SpecialLocation.h" />
-    <ClInclude Include="tga.h" />
     <ClInclude Include="Undead.h" />
     <ClInclude Include="Weapon.h" />
     <ClInclude Include="Window.h" />
@@ -66,6 +67,8 @@
     <ClCompile Include="HandWeapon.cpp" />
     <ClCompile Include="Humanoid.cpp" />
     <ClCompile Include="InputDevicesHelper.cpp" />
+    <ClCompile Include="libraries\shaderprogram\shaderprogram.cpp" />
+    <ClCompile Include="libraries\tga\tga.cpp" />
     <ClCompile Include="Location.cpp" />
     <ClCompile Include="Main.cpp">
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ShowIncludes>
@@ -77,10 +80,8 @@
     <ClCompile Include="RangeWeapon.cpp" />
     <ClCompile Include="Robot.cpp" />
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="shaderprogram.cpp" />
     <ClCompile Include="Skill.cpp" />
     <ClCompile Include="SpecialLocation.cpp" />
-    <ClCompile Include="tga.cpp" />
     <ClCompile Include="Undead.cpp" />
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="Window.cpp" />

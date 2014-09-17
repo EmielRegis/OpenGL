@@ -1,12 +1,12 @@
 #pragma once
-#include "gl/glew.h"
-#include "gl/freeglut.h"
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
+#include "libraries/gl/glew.h"
+#include "libraries/gl/freeglut.h"
+#include "libraries/glm/glm.hpp"
+#include "libraries/glm/gtc/matrix_transform.hpp"
+#include "libraries/glm/gtc/type_ptr.hpp"
 #include <stdio.h>
-#include "tga/tga.h"
-#include "shaderprogram.h"
+#include "libraries/tga/tga.h"
+#include "libraries/shaderprogram/shaderprogram.h"
 
 #include "vector"
 #include <ios>
@@ -550,8 +550,8 @@ int main(int argc, char** argv) {
 	window = new Window(100, 100, 860, 484, "No Life v1.0");
 	
 	OpenGLHelper::initOpenGL(&argc, argv, window->getWindowName(), window->getXPosition(), window->getYPosition(), window->getWindowWidth(), window->getWindowHeight());
-	OpenGLHelper::registerWindowResizeProcedure(changeWindowSize);
-	OpenGLHelper::registerDisplayFrameProcedure(displayFrame);
+	OpenGLHelper::registerWindowResizeProcedure([](int width, int height)-> void { window->setWindowDimensions(width, height); });
+	OpenGLHelper::registerDisplayFrameProcedure(displayFrame);	
 	OpenGLHelper::registerAnimationProcedure(nextFrame);
 
 	camera = new Camera();

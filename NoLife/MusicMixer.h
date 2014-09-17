@@ -1,9 +1,9 @@
 #pragma once
-#pragma comment(lib, "irrKlang\\irrKlang.lib")
+#pragma comment(lib, "libraries\\irrKlang\\irrKlang.lib")
 
 #include <cstdlib>
 #include <chrono>
-#include "irrKlang\irrKlang.h"
+#include "libraries\irrKlang\irrKlang.h"
 
 
 

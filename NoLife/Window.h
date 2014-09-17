@@ -18,5 +18,6 @@ public:
 private:
 	int xPositon, yPosition, width, height;
 	string name;
+	void initOpenGLWindowProperties();
 };
 

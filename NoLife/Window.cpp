@@ -41,7 +41,7 @@ void Window::setWindowDimensions(int width, int height)
 	else if (width > height * 22 / 10)
 	{
 		this->width = height * 22 / 10;
-		this->height = height;
+		this->height = height;										 
 	}
 	else
 	{
@@ -49,7 +49,14 @@ void Window::setWindowDimensions(int width, int height)
 		this->height = height;
 	}
 
-	OpenGLHelper::changeOpenGLWindowDimensions(this->width, this->height);
+	try
+	{
+		OpenGLHelper::changeOpenGLWindowDimensions(this->width, this->height);
+	}
+	catch (...)
+	{
+		cout << "Exception while changing OpegGLWindowDimensions";
+	}	
 }
 
 int Window::getXPosition()
@@ -80,6 +87,11 @@ std::string Window::getWindowName()
 void Window::setWindowName(string name)
 {
 	this->name = name;
+}
+
+void Window::initOpenGLWindowProperties()
+{
+
 }
 
 

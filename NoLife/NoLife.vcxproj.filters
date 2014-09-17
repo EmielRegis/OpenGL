@@ -37,6 +37,12 @@
     <Filter Include="Source Files\game mechanics">
       <UniqueIdentifier>{bf5e2f09-0fca-4fe4-8e5d-6725fb709605}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\libraries">
+      <UniqueIdentifier>{487701a1-5bbc-43c9-9528-fe48dd7a853e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\libraries">
+      <UniqueIdentifier>{8b65e6fe-b33f-48a5-936f-c0ac49077bbd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bow.h">
@@ -117,29 +123,32 @@
     <ClInclude Include="Scene.h">
       <Filter>Header Files\game mechanics</Filter>
     </ClInclude>
-    <ClInclude Include="tga.h">
-      <Filter>Header Files\game mechanics</Filter>
-    </ClInclude>
     <ClInclude Include="DrawableObject2D.h">
       <Filter>Header Files\game mechanics</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OpenGLHelper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameMaster.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InputDevicesHelper.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Window.h">
+      <Filter>Header Files\game mechanics</Filter>
     </ClInclude>
     <ClInclude Include="OutputDevicesHelper.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\game mechanics</Filter>
     </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="OpenGLHelper.h">
+      <Filter>Header Files\game mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="InputDevicesHelper.h">
+      <Filter>Header Files\game mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="GameMaster.h">
+      <Filter>Header Files\game mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\game mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\tga\tga.h">
+      <Filter>Header Files\libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\shaderprogram\shaderprogram.h">
+      <Filter>Header Files\libraries</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -212,41 +221,41 @@
     <ClCompile Include="DrawableObject.cpp">
       <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files\game mechanics</Filter>
-    </ClCompile>
     <ClCompile Include="MusicMixer.cpp">
       <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
-    <ClCompile Include="shaderprogram.cpp">
-      <Filter>Source Files\game mechanics</Filter>
-    </ClCompile>
-    <ClCompile Include="tga.cpp">
-      <Filter>Source Files\game mechanics</Filter>
-    </ClCompile>
     <ClCompile Include="DrawableObject2D.cpp">
       <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenGLHelper.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
     <ClCompile Include="GameMaster.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
     <ClCompile Include="InputDevicesHelper.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\game mechanics</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLHelper.cpp">
+      <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
     <ClCompile Include="OutputDevicesHelper.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
     <ClCompile Include="Window.cpp">
+      <Filter>Source Files\game mechanics</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\tga\tga.cpp">
+      <Filter>Source Files\libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\shaderprogram\shaderprogram.cpp">
+      <Filter>Source Files\libraries</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

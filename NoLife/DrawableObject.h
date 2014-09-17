@@ -1,13 +1,13 @@
 #pragma once
 
-#include "gl/glew.h"
-#include "gl/freeglut.h"
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
+#include "libraries/gl/glew.h"
+#include "libraries/gl/freeglut.h"
+#include "libraries/glm/glm.hpp"
+#include "libraries/glm/gtc/matrix_transform.hpp"
+#include "libraries/glm/gtc/type_ptr.hpp"
 #include <stdio.h>
-#include "tga.h"
-#include "shaderprogram.h"
+#include "libraries/tga/tga.h"
+#include "libraries/shaderprogram/shaderprogram.h"
 #include <cstdarg>
 #include "vector"
 #include <ios>

@@ -16,11 +16,11 @@ Scene &Scene::getInstance()
 
 void Scene::setupShaders()
 {
-	shaderProgram = new ShaderProgram("vshader.txt", NULL, "fshader.txt");
-	shaderProgram2D = new ShaderProgram("vshader2D.txt", NULL, "fshader2D.txt");
-	shaderProgramPro = new ShaderProgram("vshaderPro.txt", NULL, "fshaderPro.txt");
-	shaderProgramProTex = new ShaderProgram("vshaderProTex.txt", NULL, "fshaderProTex.txt");
-	shaderProgramEyePerspective = new ShaderProgram("vshaderEye.txt", NULL, "fshaderEye.txt");
+	shaderProgram = new ShaderProgram("resources/shaders/vshader.txt", NULL, "resources/shaders/fshader.txt");
+	shaderProgram2D = new ShaderProgram("resources/shaders/vshader2D.txt", NULL, "resources/shaders/fshader2D.txt");
+	shaderProgramPro = new ShaderProgram("resources/shaders/vshaderPro.txt", NULL, "resources/shaders/fshaderPro.txt");
+	shaderProgramProTex = new ShaderProgram("resources/shaders/vshaderProTex.txt", NULL, "resources/shaders/fshaderProTex.txt");
+	shaderProgramEyePerspective = new ShaderProgram("resources/shaders/vshaderEye.txt", NULL, "resources/shaders/fshaderEye.txt");
 }
 
 //Zwolnij pamiêæ karty graficznej z shaderów i programu cieniuj¹cego

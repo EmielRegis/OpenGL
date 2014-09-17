@@ -1,7 +1,7 @@
 #pragma once
 
-#include "glm/gtc/type_ptr.hpp"
-#include "shaderprogram.h"
+#include "libraries/glm/gtc/type_ptr.hpp"
+#include "libraries/shaderprogram/shaderprogram.h"
 
 class Scene
 {
