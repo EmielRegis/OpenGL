@@ -11,9 +11,9 @@ OpenGLHelper::~OpenGLHelper()
 {
 }
 
-void OpenGLHelper::initOpenGL(int *argc, char** argv, int windowXPosition, int windowYPosition, int windowWidth, int windowHeight)
+void OpenGLHelper::initOpenGL(int *argc, char** argv, string windowCaption, int windowXPosition, int windowYPosition, int windowWidth, int windowHeight)
 {
-	initGLUT(argc, argv, windowXPosition, windowYPosition, windowWidth, windowHeight);
+	initGLUT(argc, argv, windowCaption, windowXPosition, windowYPosition, windowWidth, windowHeight);
 	initGLEW();	
 
 	glEnable(GL_LIGHTING);
@@ -27,13 +27,13 @@ void OpenGLHelper::initOpenGL(int *argc, char** argv, int windowXPosition, int w
 }
 
 //Procedura inicjuj¹ca biblotekê glut
-void OpenGLHelper::initGLUT(int *argc, char** argv, int windowXPosition, int windowYPosition, int windowWidth, int windowHeight) {
+void OpenGLHelper::initGLUT(int *argc, char** argv, string windowCaption, int windowXPosition, int windowYPosition, int windowWidth, int windowHeight) {
 	glutInit(argc, argv); //Zainicjuj bibliotekê GLUT
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); //Alokuj bufory kolorów (podwójne buforowanie) i bufor kolorów
 
 	glutInitWindowPosition(windowXPosition, windowYPosition); //Wska¿ pocz¹tkow¹ pozycjê okna
 	glutInitWindowSize(windowWidth, windowHeight); //Wska¿ pocz¹tkowy rozmiar okna
-	glutCreateWindow("OpenGL 3.3"); //Utwórz okno i nadaj mu tytu³	
+	glutCreateWindow(windowCaption.c_str()); //Utwórz okno i nadaj mu tytu³	
 }
 
 
@@ -60,5 +60,10 @@ void OpenGLHelper::registerDisplayFrameProcedure(void(*callback)(void))
 void OpenGLHelper::registerAnimationProcedure(void(*callback)(void))
 {
 	glutIdleFunc(callback); //Zarejestruj procedurê nextFrame jako procedurê wywo³ywan¹ najczêœciêj jak siê da (animacja)
+}
+
+void OpenGLHelper::changeOpenGLWindowDimensions(int width, int height)
+{
+	glViewport(0, 0, width, height);
 }
 

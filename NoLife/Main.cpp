@@ -166,24 +166,8 @@ void nextFrame(void) {
 }
 
 //Procedura wywo³ywana przy zmianie rozmiaru okna
-void changeSize(int w, int h) {
-	//Ustawienie wymiarow przestrzeni okna
-	
-	//Zapamiêtanie nowych wymiarów okna dla poprawnego wyliczania macierzy rzutowania
-	if (h > w * 10 / 16)
-	{
-		window->setWindowDimensions(w, w * 10 / 16);
-	}
-	else if (w > h * 22/10)
-	{
-		window->setWindowDimensions(h * 22 / 10, h);
-	}
-	else
-	{
-		window->setWindowDimensions(w, h);
-	}
-
-	glViewport(0, 0, window->getWindowWidth(), window->getWindowHeight());
+void changeWindowSize(int w, int h) {
+	window->setWindowDimensions(w, h);
 }
 
 void playerMoveListener()
@@ -563,10 +547,10 @@ int main(int argc, char** argv) {
 
 	srand(time(NULL));
 	
-	window = new Window();
+	window = new Window(100, 100, 860, 484, "No Life v1.0");
 	
-	OpenGLHelper::initOpenGL(&argc, argv, window->getXPosition(), window->getYPosition(), window->getWindowWidth(), window->getWindowHeight());
-	OpenGLHelper::registerWindowResizeProcedure(changeSize);
+	OpenGLHelper::initOpenGL(&argc, argv, window->getWindowName(), window->getXPosition(), window->getYPosition(), window->getWindowWidth(), window->getWindowHeight());
+	OpenGLHelper::registerWindowResizeProcedure(changeWindowSize);
 	OpenGLHelper::registerDisplayFrameProcedure(displayFrame);
 	OpenGLHelper::registerAnimationProcedure(nextFrame);
 

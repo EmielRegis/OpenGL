@@ -7,14 +7,16 @@ Window::Window()
 	yPosition = 100;
 	width = 860;
 	height = 484;
+	name = "New Window";
 }
 
-Window::Window(int xPosition, int yPosition, int width, int height)
+Window::Window(int xPosition, int yPosition, int width, int height, string name)
 {
 	this->xPositon = xPosition;
 	this->yPosition = yPosition;
 	this->width = width;
 	this->height = height;
+	this->name = name;
 }
 
 
@@ -30,8 +32,24 @@ void Window::setPosition(int xPosition, int yPosition)
 
 void Window::setWindowDimensions(int width, int height)
 {
-	this->width = width;
-	this->height = height;
+	//Ustawienie wymiarow przestrzeni okna
+	if (height > width * 10 / 16)
+	{
+		this->width = width;
+		this->height = width * 10 / 16;
+	}
+	else if (width > height * 22 / 10)
+	{
+		this->width = height * 22 / 10;
+		this->height = height;
+	}
+	else
+	{
+		this->width = width;
+		this->height = height;
+	}
+
+	OpenGLHelper::changeOpenGLWindowDimensions(this->width, this->height);
 }
 
 int Window::getXPosition()
@@ -52,6 +70,16 @@ int Window::getWindowWidth()
 int Window::getWindowHeight()
 {
 	return height;
+}
+
+std::string Window::getWindowName()
+{
+	return this->name;
+}
+
+void Window::setWindowName(string name)
+{
+	this->name = name;
 }
 
 
