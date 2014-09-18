@@ -168,9 +168,6 @@
     <ClInclude Include="EnvironmentPainter.h">
       <Filter>Header Files\game mechanics</Filter>
     </ClInclude>
-    <ClInclude Include="Keyborard.h">
-      <Filter>Header Files\game mechanics</Filter>
-    </ClInclude>
     <ClInclude Include="Mouse.h">
       <Filter>Header Files\game mechanics</Filter>
     </ClInclude>
@@ -181,6 +178,9 @@
       <Filter>Header Files\game mechanics</Filter>
     </ClInclude>
     <ClInclude Include="WeaponPainter.h">
+      <Filter>Header Files\game mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
       <Filter>Header Files\game mechanics</Filter>
     </ClInclude>
   </ItemGroup>
@@ -299,9 +299,6 @@
     <ClCompile Include="EnvironmentPainter.cpp">
       <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
-    <ClCompile Include="Keyborard.cpp">
-      <Filter>Source Files\game mechanics</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -309,6 +306,9 @@
       <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
     <ClCompile Include="ObjectPainter.cpp">
+      <Filter>Source Files\game mechanics</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
       <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
   </ItemGroup>

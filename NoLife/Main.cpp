@@ -26,6 +26,7 @@
 #include "ObjectPainter.h"
 #include "WeaponPainter.h"
 #include "Crosshair.h"
+#include "Keyboard.h"
 
 using namespace std;
 
@@ -33,6 +34,7 @@ Window *window;
 Camera *camera;
 Scene &scene = Scene::getInstance();
 MusicMixer *mixer;
+Keyboard *keyboard;
 
 EnvironmentPainter *environmentPainter;
 Painter *simpleObjectsPainter;
@@ -57,7 +59,7 @@ DrawableObject2D *obj2D;
 Crosshair *crosshair;
 
 
-bool keyW = false, keyS = false, keyA = false, keyD = false, keyE = false, keyShift = false, keySpace = false, keyZ = false, keyX = false, keyC = false;
+//bool keyW = false, keyS = false, keyA = false, keyD = false, keyE = false, keyShift = false, keySpace = false, keyZ = false, keyX = false, keyC = false;
 int mouseXY = 0, mouseZ;
 
 bool shotFlag = false;
@@ -124,9 +126,9 @@ void keyPressed(unsigned char key, int x, int y)
 
 	playerMoveListener();
 
-	if (keyW)
+	if (keyboard->isKeyActive('w'))
 	{
-		if (keyE)
+		if (keyboard->isKeyActive('e'))
 		{
 			j += 0.6;
 			obsZ = 1.8 + sin(j) / 8;
@@ -147,12 +149,12 @@ void keyPressed(unsigned char key, int x, int y)
 
 		skydome->instantMove(stepX, stepY, 0);
 	}
-	if (keyS)
+	if (keyboard->isKeyActive('s'))
 	{
 		stepX = (pktX - obsX) / 100;
 		stepY = (pktY - obsY) / 100;
 
-		if (keyE)
+		if (keyboard->isKeyActive('e'))
 		{
 			j += 0.6;
 			obsZ = 1.8 + sin(j) / 8;
@@ -173,7 +175,7 @@ void keyPressed(unsigned char key, int x, int y)
 
 		skydome->instantMove(-stepX, -stepY, 0);
 	}
-	if (keyA)
+	if (keyboard->isKeyActive('a'))
 	{
 		stepX = -(pktY - obsY) / 100;
 		stepY = (pktX - obsX) / 100;
@@ -186,7 +188,7 @@ void keyPressed(unsigned char key, int x, int y)
 		skydome->instantMove(-stepX, -stepY, 0);
 
 	}
-	if (keyD)
+	if (keyboard->isKeyActive('d'))
 	{
 		stepX = -(pktY - obsY) / 100;
 		stepY = (pktX - obsX) / 100;
@@ -206,16 +208,9 @@ void keyPressed(unsigned char key, int x, int y)
 
 void keyDown(unsigned char c, int x, int y)
 {
-	if (c == 'w') { keyW = true; }
-	else if (c == 's') { keyS = true; }
-	else if (c == 'a') { keyA = true; }
-	else if (c == 'd') { keyD = true; }
-	else if (c == 'e') { keyE = true; }
-	else if (c == 'z') { camera->setPosition(camera->getXPosition(), camera->getYPosition(), 2.0f); }
+	if (c == 'z') { camera->setPosition(camera->getXPosition(), camera->getYPosition(), 2.0f); }
 	else if (c == 'x') { camera->setPosition(camera->getXPosition(), camera->getYPosition(), 1.0f); }
 	else if (c == 'c') { camera->setPosition(camera->getXPosition(), camera->getZPosition(), 0.5f); }
-
-	keyPressed(c, x, y);
 }
 
 void jump()
@@ -234,22 +229,11 @@ void jump()
 	camera->setPosition(camera->getXPosition(), camera->getYPosition(), 2.0f);
 }
 
-void keyDown(int c, int x, int y)
-{
-	if (c = GLUT_KEY_SHIFT_L) { keyShift = true; }
 
-	keyPressed((char)c, x, y);
-}
-
-void keUp(unsigned char c, int x, int y)
+void keyUp(unsigned char c, int x, int y)
 {
-	if (c == 'w'){ keyW = false; }
-	else if (c == 's') { keyS = false; }
-	else if (c == 'a') { keyA = false; }
-	else if (c == 'd') { keyD = false; }
-	else if (c == 'e')
+	if (c == 'e')
 	{
-		keyE = false;
 		camera->setPosition(camera->getXPosition(), camera->getYPosition(), 2.0f);
 	}
 	else if (c == ' ')
@@ -268,10 +252,6 @@ void keUp(unsigned char c, int x, int y)
 	}
 }
 
-void keyUp(int c, int x, int y)
-{
-	if (c = GLUT_KEY_SHIFT_L) { keyShift = false; }
-}
 
 void passiveMouseMove(int x, int y)
 {
@@ -363,11 +343,17 @@ int main(int argc, char** argv)
 
 	camera = new Camera();
 	window = new Window(100, 100, 860, 484, "No Life v1.0");
+	
 
 	OpenGLHelper::initOpenGL(&argc, argv, window->getWindowName(), window->getXPosition(), window->getYPosition(), window->getWindowWidth(), window->getWindowHeight());
 	OpenGLHelper::registerWindowResizeProcedure([](int width, int height)-> void { window->setWindowDimensions(width, height); });
 	OpenGLHelper::registerDisplayFrameProcedure(displayFrame);
 	OpenGLHelper::registerAnimationProcedure(nextFrame);
+
+	keyboard = new Keyboard();
+	keyboard->addKeyUpListener(keyUp);
+	keyboard->addKeyDownListener(keyDown);
+	keyboard->addKeyDownListener(keyPressed);
 
 	Scene::getInstance().initScene();
 
@@ -376,10 +362,10 @@ int main(int argc, char** argv)
 	simpleObjectsPainter = new ObjectPainter();
 	weaponPainter = new WeaponPainter();
 
-	glutKeyboardFunc(keyDown);
-	glutKeyboardUpFunc(keUp);
-	glutSpecialFunc(keyDown);
-	glutSpecialUpFunc(keyUp);
+	glutKeyboardFunc([](unsigned char c, int x, int y) { keyboard->keyDown(c, x, y); });
+	glutKeyboardUpFunc([](unsigned char c, int x, int y) { keyboard->keyUp(c, x, y); });
+	glutSpecialFunc([](int c, int x, int y) { keyboard->keyFunctionalDown(c, x, y); });
+	glutSpecialUpFunc([](int c, int x, int y) { keyboard->keyFunctionalDown(c, x, y); });
 	glutPassiveMotionFunc(passiveMouseMove);
 	glutMotionFunc(passiveMouseMove);
 	glutMouseFunc(mouseClick);

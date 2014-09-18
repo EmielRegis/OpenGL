@@ -34,7 +34,7 @@
     <ClInclude Include="HandWeapon.h" />
     <ClInclude Include="Humanoid.h" />
     <ClInclude Include="InputDevicesHelper.h" />
-    <ClInclude Include="Keyborard.h" />
+    <ClInclude Include="Keyboard.h" />
     <ClInclude Include="libraries\shaderprogram\shaderprogram.h" />
     <ClInclude Include="libraries\tga\tga.h" />
     <ClInclude Include="Location.h" />
@@ -79,7 +79,7 @@
     <ClCompile Include="HandWeapon.cpp" />
     <ClCompile Include="Humanoid.cpp" />
     <ClCompile Include="InputDevicesHelper.cpp" />
-    <ClCompile Include="Keyborard.cpp" />
+    <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="libraries\shaderprogram\shaderprogram.cpp" />
     <ClCompile Include="libraries\tga\tga.cpp" />
     <ClCompile Include="Location.cpp" />
