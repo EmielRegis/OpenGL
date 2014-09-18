@@ -19,7 +19,7 @@ void ObjectPainter::paintObjects(std::vector<Drawable*> *drawables, Window *wind
 
 	for (Drawable* drawable : *drawables)
 	{
-		drawable->draw();
+		drawable->draw(scene);
 	}
 }
 
@@ -30,5 +30,5 @@ void ObjectPainter::paintObject(Drawable *drawable, Window *window, Scene *scene
 		glm::vec3(0.0f, 1.0f, 0.0f));
 	scene->matP = glm::perspective(camera->getAngle(), (float)window->getWindowWidth() / (float)window->getWindowHeight(), 1.0f, 200.0f);
 
-	drawable->draw();
+	drawable->draw(scene);
 }

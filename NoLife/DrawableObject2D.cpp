@@ -259,7 +259,7 @@ DrawableObject2D::~DrawableObject2D()
 }
 
 //Procedura rysuj¹ca jakiœ obiekt. Ustawia odpowiednie parametry dla vertex shadera i rysuje.
-void DrawableObject2D::draw()
+void DrawableObject2D::draw(Scene *scene)
 {
 	glm::mat4 S = glm::scale(glm::mat4(1.0), glm::vec3(this->xScale, this->yScale, 1));
 	glm::mat4 T = glm::translate(glm::mat4(1.0), glm::vec3(this->xPosition, this->yPosition, 0));
@@ -270,7 +270,7 @@ void DrawableObject2D::draw()
 
 	shaderProgram->use();
 
-	glUniformMatrix4fv(shaderProgram->getUniformLocation("P"), 1, false, glm::value_ptr(scene.matP));
+	glUniformMatrix4fv(shaderProgram->getUniformLocation("P"), 1, false, glm::value_ptr(scene->matP));
 	glUniformMatrix4fv(shaderProgram->getUniformLocation("M"), 1, false, glm::value_ptr(matM));
 
 	//glUniform1i(shaderProgram->getUniformLocation("textureMap0"), 0);

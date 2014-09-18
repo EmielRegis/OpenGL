@@ -17,7 +17,7 @@ void EnvironmentPainter::paintObject(Drawable *drawable, Window *window, Scene *
 		glm::vec3(0.0f, 1.0f, 0.0f));
 	scene->matP = glm::perspective(camera->getAngle(), (float)window->getWindowWidth() / (float)window->getWindowHeight(), 0.0125f, 400.0f);
 
-	drawable->draw();
+	drawable->draw(scene);
 }
 
 void EnvironmentPainter::paintObjects(std::vector<Drawable*> *drawables, Window *window, Scene *scene, Camera *camera)
@@ -29,7 +29,7 @@ void EnvironmentPainter::paintObjects(std::vector<Drawable*> *drawables, Window 
 
 	for (Drawable* drawable : *drawables)
 	{
-		drawable->draw();
+		drawable->draw(scene);
 	}
 
 	

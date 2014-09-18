@@ -8,7 +8,7 @@ class Crosshair :
 public:
 	Crosshair();
 	~Crosshair();
-	virtual void draw();
+	virtual void draw(Scene *scene);
 
 private:
 	DrawableObject2D *crossA;

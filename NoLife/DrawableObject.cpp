@@ -330,7 +330,8 @@ void DrawableObject::loadObjectWithTextures(const char* filename, vector<float> 
 
 
 //Procedura rysuj¹ca jakiœ obiekt. Ustawia odpowiednie parametry dla vertex shadera i rysuje.
-void DrawableObject::draw() {
+void DrawableObject::draw(Scene *scene)
+{
 
 	if (true)
 	{	
@@ -350,8 +351,8 @@ void DrawableObject::draw() {
 
 	shaderProgram->use();
 
-	glUniformMatrix4fv(shaderProgram->getUniformLocation("P"), 1, false, glm::value_ptr(scene.matP));
-	glUniformMatrix4fv(shaderProgram->getUniformLocation("V"), 1, false, glm::value_ptr(scene.matV));
+	glUniformMatrix4fv(shaderProgram->getUniformLocation("P"), 1, false, glm::value_ptr(scene->matP));
+	glUniformMatrix4fv(shaderProgram->getUniformLocation("V"), 1, false, glm::value_ptr(scene->matV));
 	glUniformMatrix4fv(shaderProgram->getUniformLocation("M"), 1, false, glm::value_ptr(matM));
 
 	glUniform4f(shaderProgram->getUniformLocation("lpos"), 0,2,5,1);

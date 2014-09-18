@@ -32,10 +32,10 @@ Crosshair::~Crosshair()
 {
 }
 
-void Crosshair::draw()
+void Crosshair::draw(Scene *scene)
 {
-	crossA->draw();
-	crossB->draw();
-	crossC->draw();
-	crossD->draw();
+	crossA->draw(scene);
+	crossB->draw(scene);
+	crossC->draw(scene);
+	crossD->draw(scene);
 }

@@ -1,7 +1,9 @@
 #pragma once
+#include "Scene.h"
+
 class Drawable
 {
 public:
-	virtual void draw() = 0;
+	virtual void draw(Scene *scene) = 0;
 };
 

@@ -53,7 +53,7 @@ public:
 
 
 	//Procedura rysuj¹ca model. Ustawia odpowiednie parametry dla vertex shadera i rysuje.
-	void draw();
+	void draw(Scene *scene);
 
 	// Natychmiastowa zmiana pozycje
 	void instantMove(float xPosition, float yPosition);
@@ -74,7 +74,6 @@ public:
 	
 
 protected:
-	Scene &scene = Scene::getInstance();
 	glm::mat4  matM;
 
 	unsigned mode;

@@ -15,7 +15,7 @@ void GuiPainter::paintObject(Drawable *drawable, Window *window, Scene *scene, C
 	scene->matP = glm::mat4((float)window->getWindowHeight() / window->getWindowWidth(), 0.0f, 0.0f, 0.0f, 0.0f,
 		(float)window->getWindowHeight() / window->getWindowHeight(), 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
 
-	drawable->draw();
+	drawable->draw(scene);
 }
 
 void GuiPainter::paintObjects(std::vector<Drawable*> *drawables, Window *window, Scene *scene, Camera *camera)
@@ -25,6 +25,6 @@ void GuiPainter::paintObjects(std::vector<Drawable*> *drawables, Window *window,
 
 	for (Drawable* drawable : *drawables)
 	{
-		drawable->draw();
+		drawable->draw(scene);
 	}
 }
