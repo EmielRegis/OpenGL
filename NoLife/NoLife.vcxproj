@@ -19,6 +19,7 @@
     <ClInclude Include="Creature.h" />
     <ClInclude Include="Crossbow.h" />
     <ClInclude Include="Demon.h" />
+    <ClInclude Include="Drawable.h" />
     <ClInclude Include="DrawableObject.h" />
     <ClInclude Include="DrawableObject2D.h" />
     <ClInclude Include="Enemy.h" />
@@ -119,6 +120,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ExecutablePath>C:\Users\w530\Documents\Visual Studio 2013\Projects\NoLife\NoLife;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>C:\boost_1_56_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\boost_1_56_0;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -129,6 +132,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glut32.lib;glew32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\boost_1_56_0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

@@ -13,13 +13,14 @@
 #include <ios>
 #include <sstream>
 #include "Scene.h"
+#include "Drawable.h"
 
 
 
 using namespace std;
 
 
-class DrawableObject
+class DrawableObject : public Drawable
 {
 public:
 	static enum MODE
@@ -48,7 +49,7 @@ public:
 	void setTransparency(float transparency);
 
 	//Procedura rysuj¹ca model. Ustawia odpowiednie parametry dla vertex shadera i rysuje.
-	void drawObject();
+	void draw();
 
 	// Natychmiastowa zmiana pozycje
 	void instantMove(float xPosition, float yPosition, float zPosition);

@@ -1,5 +1,8 @@
 #pragma once
 #include "OpenGLHelper.h"
+#include <functional>
+#include <boost/signal.hpp>
+
 
 class Window
 {
@@ -15,9 +18,11 @@ public:
 	void setPosition(int xPosition, int yPosition);
 	void setWindowDimensions(int width, int height);
 	void setWindowName(string name);
+	void addWindowResizeListener(std::function<void(int width, int height)> listener);
 private:
 	int xPositon, yPosition, width, height;
 	string name;
+	boost::signal<void(int, int)> windowResizeListeners;
 	void initOpenGLWindowProperties();
 };
 

@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "libraries/tga/tga.h"
 #include "libraries/shaderprogram/shaderprogram.h"
+#include "Drawable.h"
 
 #include "vector"
 #include <ios>
@@ -20,7 +21,7 @@ using namespace std;
 
 
 
-class DrawableObject2D
+class DrawableObject2D : public Drawable
 {
 public:
 	static enum MODE
@@ -52,7 +53,7 @@ public:
 
 
 	//Procedura rysuj¹ca model. Ustawia odpowiednie parametry dla vertex shadera i rysuje.
-	void drawObject();
+	void draw();
 
 	// Natychmiastowa zmiana pozycje
 	void instantMove(float xPosition, float yPosition);

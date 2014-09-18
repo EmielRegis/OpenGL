@@ -259,7 +259,7 @@ DrawableObject2D::~DrawableObject2D()
 }
 
 //Procedura rysuj¹ca jakiœ obiekt. Ustawia odpowiednie parametry dla vertex shadera i rysuje.
-void DrawableObject2D::drawObject()
+void DrawableObject2D::draw()
 {
 	glm::mat4 S = glm::scale(glm::mat4(1.0), glm::vec3(this->xScale, this->yScale, 1));
 	glm::mat4 T = glm::translate(glm::mat4(1.0), glm::vec3(this->xPosition, this->yPosition, 0));

@@ -330,7 +330,7 @@ void DrawableObject::loadObjectWithTextures(const char* filename, vector<float> 
 
 
 //Procedura rysuj¹ca jakiœ obiekt. Ustawia odpowiednie parametry dla vertex shadera i rysuje.
-void DrawableObject::drawObject() {
+void DrawableObject::draw() {
 
 	if (this->alternateDrawing)
 	{	

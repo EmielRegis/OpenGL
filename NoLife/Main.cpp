@@ -47,8 +47,8 @@ DrawableObject2D *crossC;
 DrawableObject2D *crossD;
 
 bool keyW = false, keyS = false, keyA = false, keyD = false, keyE = false, keyShift = false, keySpace = false, keyZ = false, keyX = false, keyC = false;
-float cameraAngle = 45.0f;
 bool shotFlag = false;
+bool canShotFlag = true;
 
 //Zmienne do animacji
 float speed = 120; //120 stopni/s
@@ -56,12 +56,12 @@ int lastTime = 0;
 float angle = 0;
 
 // zmienne do poruszania sie
-float obsX = 10.0f, obsY = 0.0f, obsZ = 2.0f, pktX = -8, pktY = -18.0f, pktZ = 2.0f, stepX = 0.0f, stepY = 0.0f, stepZ = 0.0f,
+float stepX = 0.0f, stepY = 0.0f, stepZ = 0.0f,
 i = 225,
 k = 90,
 j = 0,
-N = 360,
-R = abs(obsX - pktX);
+N = 360;
+//float R;
 
 int mouseXY = 0, mouseZ;
 
@@ -79,55 +79,50 @@ void displayFrame() {
 	glClearColor(1.0, 1.0, 1.0, 0.1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-	//Wylicz macierz rzutowania
-	scene.matP = glm::perspective(cameraAngle, // przyblizy/oddali wido
-		(float)window->getWindowWidth() / (float)window->getWindowHeight(), 1.0f, 200.0f);
-
 	//Wylicz macierz widoku
-	scene.matV = glm::lookAt(glm::vec3(obsX, obsZ, obsY), //skad dom 0,0, 7
-		glm::vec3(pktX, pktZ, pktY), //dokad dom 0,0,0
+	scene.matV = glm::lookAt(glm::vec3(camera->getXPosition(), camera->getZPosition(), camera->getYPosition()), //skad dom 0,0, 7
+		glm::vec3(camera->getXLookAtPosition(), camera->getZLookAtPosition(), camera->getYLookAtPosition()), //dokad dom 0,0,0
 		glm::vec3(0.0f, 1.0f, 0.0f)); //  jaki kat - domyslnie gora-dol
 
 
 	//Wylicz macierz rzutowania
-	scene.matP = glm::perspective(cameraAngle, // przyblizy/oddali wido
+	scene.matP = glm::perspective(camera->getAngle(), // przyblizy/oddali wido
 		(float)window->getWindowWidth() / (float)window->getWindowHeight(), 0.0125f, 400.0f);
 
-	floore->drawObject();
-	skydome->drawObject();
+	floore->draw();
+	skydome->draw();
 
 
-	scene.matP = glm::perspective(cameraAngle, // przyblizy/oddali wido
+	scene.matP = glm::perspective(camera->getAngle(), // przyblizy/oddali wido
 		(float)window->getWindowWidth() / (float)window->getWindowHeight(), 1.0f, 200.0f);
 	
 
 	kostka->instantRotate(0, 0, angle - kostka->getZRotationAngle());
-	kostka->drawObject();
+	kostka->draw();
 
 	USS->instantRotate(0, 0, angle - USS->getZRotationAngle());
-	USS->drawObject();
+	USS->draw();
 
 
-	demon->drawObject();
+	demon->draw();
 
 		
 	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0, 10.0, 15.0));
 	scene.matM = glm::scale(scene.matM, glm::vec3(15.0, 15.0, 15.0));
 	scene.matM = glm::rotate(scene.matM, 90.0f, glm::vec3(1.0, .0, 0.0));
 	scene.matM = glm::rotate(scene.matM, 180.0f, glm::vec3(1.0, 1.0, 0.0));
-	smallDragon->drawObject();
+	smallDragon->draw();
 	
-	house->drawObject();
+	house->draw();
 
 
 
 	
 
-	scene.matP = glm::perspective(cameraAngle, // przyblizy/oddali wido
+	scene.matP = glm::perspective(camera->getAngle(), // przyblizy/oddali wido
 		(float)window->getWindowWidth() / (float)window->getWindowHeight(), 1.0f, 200.0f);
 
-	weapon->drawObject();
+	weapon->draw();
 
 	//weapon->instantMove(obsX - weapon->getXCoordinate(), obsY - weapon->getYCoordinate(), 0.0);
 	
@@ -139,12 +134,12 @@ void displayFrame() {
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f);
 	
-	obj2D->drawObject();
+	obj2D->draw();
 
-	crossA->drawObject();
-	crossB->drawObject();
-	crossC->drawObject();
-	crossD->drawObject();
+	crossA->draw();
+	crossB->draw();
+	crossC->draw();
+	crossD->draw();
 
 
 	
@@ -175,12 +170,12 @@ void playerMoveListener()
 	glm::vec3 look = glm::vec3(0, 0, 1);
 	float lookLength = glm::sqrt(look.x*look.x + look.z*look.z + look.y*look.y);
 
-	glm::vec3 objToCam = glm::normalize(glm::vec3(obsX, 0, obsY) - glm::vec3(demon->getXCoordinate(), 0, demon->getYCoordinate()));
+	glm::vec3 objToCam = glm::normalize(glm::vec3(camera->getXPosition(), 0, camera->getYPosition()) - glm::vec3(demon->getXCoordinate(), 0, demon->getYCoordinate()));
 	float objToCamLength = glm::sqrt(objToCam.x*objToCam.x + objToCam.z*objToCam.z + objToCam.y*objToCam.y);
 
 	float deg = glm::degrees(acos(glm::dot(look, objToCam) / (glm::abs(lookLength) * glm::abs(objToCamLength))));
 
-	if (obsX < 0)
+	if (camera->getXPosition() < 0)
 	{
 		deg = -deg;
 	}
@@ -191,17 +186,16 @@ void playerMoveListener()
 // kontrola naciskania klawiszy klawiatury
 void keyPressed(unsigned char key, int x, int y)
 {
+	float obsX = camera->getXPosition(),
+		obsY = camera->getYPosition(),
+		obsZ = camera->getZPosition(),
+		pktX = camera->getXLookAtPosition(),
+		pktY = camera->getYLookAtPosition(),
+		pktZ = camera->getZLookAtPosition();
+
+
 	playerMoveListener();
 
-
-	//switch (key)
-	{
-		//case 37: {rot_y -= 5.0f; break; }
-		//case 38: {rot_x -= 5.0f; break; }
-		//case 39: {rot_y += 5.0f; break; }
-		//case 40: {rot_x += 5.0f; break; }
-
-		//case 87:
 		if (keyW){
 
 
@@ -228,6 +222,8 @@ void keyPressed(unsigned char key, int x, int y)
 
 			pktX += stepX;
 			pktY += stepY;
+
+			
 
 			skydome->instantMove(stepX, stepY, 0);
 			// break;
@@ -291,9 +287,11 @@ void keyPressed(unsigned char key, int x, int y)
 			skydome->instantMove(stepX, stepY, 0);
 		} // d
 
+		camera->setPosition(obsX, obsY, obsZ);
+		camera->setLookAtPoint(pktX, pktY, pktZ);
+
 	}
 
-}
 
 void keyDown(unsigned char c, int x, int y)
 {
@@ -320,15 +318,15 @@ void keyDown(unsigned char c, int x, int y)
 	}
 	else if (c == 'z')
 	{
-		obsZ = 2.0f;
+		camera->setPosition(camera->getXPosition(), camera->getYPosition(), 2.0f);
 	}
 	else if (c == 'x')
 	{
-		obsZ = 1.0f;
+		camera->setPosition(camera->getXPosition(), camera->getYPosition(), 1.0f);
 	}
 	else if (c == 'c')
 	{
-		obsZ = 0.5f;
+		camera->setPosition(camera->getXPosition(), camera->getZPosition(), 0.5f);
 	}
 	keyPressed(c, x, y);
 
@@ -338,19 +336,20 @@ bool jumpFlag = true;
 
 void jump()
 {
+	float obsZ = camera->getZPosition();
 	for (float i = 0.0f; i < 3.14f; i += 0.1f)
 	{
+		
 		jumpFlag = false;
 		obsZ = 2.0f + sin(i);
-		//weapon->instantMove(0, 0 ,0.65 + sin(i) - weapon->getZCoordinate());
-		//cout << obsZ << endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(30));
 		jumpFlag = true;
 		
+		camera->setPosition(camera->getXPosition(), camera->getYPosition(), obsZ);
 
 	}
 
-	obsZ = 2.0;
+	camera->setPosition(camera->getXPosition(), camera->getYPosition(), 2.0f);
 }
 
 void keyDown(int c, int x, int y)
@@ -385,7 +384,7 @@ void keUp(unsigned char c, int x, int y)
 	else if (c == 'e')
 	{
 		keyE = false;
-		obsZ = 2.0f;
+		camera->setPosition(camera->getXPosition(), camera->getYPosition(), 2.0f);
 	}
 	else if (c == ' ')
 	{
@@ -444,8 +443,10 @@ void passiveMouseMove(int x, int y)
 	{
 		i = 360;
 	}
-	pktX = obsX + 1 * R * cos(6.28318 * i / N);
-	pktY = obsY + 1 * R * sin(6.28318 * i / N);
+	//camera->setLookAtPoint(camera->getXPosition() + 1 * camera->getDistanceToLookAtPoint() * cos(6.28318 * i / N), camera->getYLookAtPosition(), camera->getZLookAtPosition());
+	//pktX = obsX + 1 * R * cos(6.28318 * i / N);
+	//pktY = obsY + 1 * R * sin(6.28318 * i / N);
+	//camera->setLookAtPoint(camera->getXLookAtPosition(), camera->getYPosition() + 1 * camera->getDistanceToLookAtPoint() * sin(6.28318 * i / N), camera->getZLookAtPosition());
 
 	if (k > 10)
 	{
@@ -470,13 +471,10 @@ void passiveMouseMove(int x, int y)
 	}
 
 	float cosY = (acos(cos(6.28318 * k / N)))*57.29578 - 90.0;
-	//cout << (acos(cos(6.28318 * k / N)))*57.29578 - 90.0 << endl;
-	//weapon->instantRotate(0.0, (cosY - weapon->getYRotationAngle())*0.7, 0.0);
-	//weapon->instantMove(0, 0.0, -cosY / 70.0 - weapon->getZCoordinate() + 0.65);
 
-	//cout << "k: " << k << "   k/N: " << k / N << "   6*k/N " << 6.28318 * k / N << "cos: " << cos(6.28318 * k / N) << endl;
 
-	pktZ = obsZ + 1 * R * cos(6.28318 * k / N);
+	//camera->setLookAtPoint(camera->getXLookAtPosition(), camera->getYLookAtPosition(), camera->getZPosition() + 1 * camera->getDistanceToLookAtPoint() * cos(6.28318 * k / N));
+	camera->rotateCamera(i, i, k);
 
 	if (mouseXY > window->getWindowWidth() - window->getWindowWidth()/40)
 	{
@@ -508,12 +506,14 @@ void singleShot()
 
 void serieShot()
 {
+	canShotFlag = false;
 	shotFlag = true;
 	while (shotFlag)
 	{
 		singleShot();
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
+	canShotFlag = true;
 }
 
 void shotStop()
@@ -525,8 +525,11 @@ void mouseClick(int button, int state, int x, int y)
 {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
-		std::thread first(serieShot);
-		first.detach();
+		if (canShotFlag)
+		{
+			std::thread first(serieShot);
+			first.detach();
+		}
 	}
 	else if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
 	{
@@ -545,16 +548,19 @@ void mouseClick(int button, int state, int x, int y)
 
 int main(int argc, char** argv) {
 
+
 	srand(time(NULL));
-	
+
+	camera = new Camera();
 	window = new Window(100, 100, 860, 484, "No Life v1.0");
+	//window->addWindowResizeListener([&](int w, int h) -> void {cout << w << " "<< wa->getXPosition() << h << endl; });
 	
 	OpenGLHelper::initOpenGL(&argc, argv, window->getWindowName(), window->getXPosition(), window->getYPosition(), window->getWindowWidth(), window->getWindowHeight());
 	OpenGLHelper::registerWindowResizeProcedure([](int width, int height)-> void { window->setWindowDimensions(width, height); });
 	OpenGLHelper::registerDisplayFrameProcedure(displayFrame);	
 	OpenGLHelper::registerAnimationProcedure(nextFrame);
 
-	camera = new Camera();
+	
 	Scene::getInstance().initScene();
 	
 	glutKeyboardFunc(keyDown);
@@ -562,6 +568,7 @@ int main(int argc, char** argv) {
 	glutSpecialFunc(keyDown);
 	glutSpecialUpFunc(keyUp);
 	glutPassiveMotionFunc(passiveMouseMove);
+	glutMotionFunc(passiveMouseMove);
 	glutMouseFunc(mouseClick);
 	glutSetCursor(GLUT_CURSOR_NONE);
 

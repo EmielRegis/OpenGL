@@ -52,6 +52,7 @@ void Window::setWindowDimensions(int width, int height)
 	try
 	{
 		OpenGLHelper::changeOpenGLWindowDimensions(this->width, this->height);
+		this->windowResizeListeners(width, height);
 	}
 	catch (...)
 	{
@@ -91,7 +92,13 @@ void Window::setWindowName(string name)
 
 void Window::initOpenGLWindowProperties()
 {
-
+	
 }
+
+void Window::addWindowResizeListener(std::function<void(int width, int height)> listener)
+{
+	windowResizeListeners.connect(listener);
+}
+
 
 
