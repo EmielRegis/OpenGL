@@ -47,8 +47,11 @@ DrawableObject2D *crossC;
 DrawableObject2D *crossD;
 
 bool keyW = false, keyS = false, keyA = false, keyD = false, keyE = false, keyShift = false, keySpace = false, keyZ = false, keyX = false, keyC = false;
+int mouseXY = 0, mouseZ;
+
 bool shotFlag = false;
 bool canShotFlag = true;
+bool jumpFlag = true;
 
 //Zmienne do animacji
 float speed = 120; //120 stopni/s
@@ -59,19 +62,7 @@ float angle = 0;
 float stepX = 0.0f, stepY = 0.0f, stepZ = 0.0f,
 i = 225,
 k = 90,
-j = 0,
-N = 360;
-//float R;
-
-int mouseXY = 0, mouseZ;
-
-//Uchwyty na VAO i bufory wierzcho³ków
-GLuint vao;
-GLuint bufVertices; //Uchwyt na bufor VBO przechowuj¹cy tablicê wspó³rzêdnych wierzcho³ków
-GLuint bufColors;  //Uchwyt na bufor VBO przechowuj¹cy tablicê kolorów
-GLuint bufNormals; //Uchwyt na bufor VBO przechowuj¹cy tablicê wektorów normalnych
-GLuint bufTextures; //Uchwyt na bufor VBO przechowujacy tablicê wartoœci tekstur
-GLuint bufElements; //Uchwyt na bufor VBO elementow - trojkatow o ile takowy bufor mozna utworzyc
+j = 0;
 
 //Procedura rysuj¹ca
 void displayFrame() {
@@ -79,23 +70,16 @@ void displayFrame() {
 	glClearColor(1.0, 1.0, 1.0, 0.1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//Wylicz macierz widoku
-	scene.matV = glm::lookAt(glm::vec3(camera->getXPosition(), camera->getZPosition(), camera->getYPosition()), //skad dom 0,0, 7
-		glm::vec3(camera->getXLookAtPosition(), camera->getZLookAtPosition(), camera->getYLookAtPosition()), //dokad dom 0,0,0
+	scene.matV = glm::lookAt(glm::vec3(camera->getXPosition(), camera->getZPosition(), camera->getYPosition()),
+		glm::vec3(camera->getXLookAtPosition(), camera->getZLookAtPosition(), camera->getYLookAtPosition()),
 		glm::vec3(0.0f, 1.0f, 0.0f)); //  jaki kat - domyslnie gora-dol
 
-
-	//Wylicz macierz rzutowania
-	scene.matP = glm::perspective(camera->getAngle(), // przyblizy/oddali wido
-		(float)window->getWindowWidth() / (float)window->getWindowHeight(), 0.0125f, 400.0f);
+	scene.matP = glm::perspective(camera->getAngle(), (float)window->getWindowWidth() / (float)window->getWindowHeight(), 0.0125f, 400.0f);
 
 	floore->draw();
 	skydome->draw();
 
-
-	scene.matP = glm::perspective(camera->getAngle(), // przyblizy/oddali wido
-		(float)window->getWindowWidth() / (float)window->getWindowHeight(), 1.0f, 200.0f);
-	
+	scene.matP = glm::perspective(camera->getAngle(), (float)window->getWindowWidth() / (float)window->getWindowHeight(), 1.0f, 200.0f);
 
 	kostka->instantRotate(0, 0, angle - kostka->getZRotationAngle());
 	kostka->draw();
@@ -103,37 +87,19 @@ void displayFrame() {
 	USS->instantRotate(0, 0, angle - USS->getZRotationAngle());
 	USS->draw();
 
-
 	demon->draw();
 
-		
-	scene.matM = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0, 10.0, 15.0));
-	scene.matM = glm::scale(scene.matM, glm::vec3(15.0, 15.0, 15.0));
-	scene.matM = glm::rotate(scene.matM, 90.0f, glm::vec3(1.0, .0, 0.0));
-	scene.matM = glm::rotate(scene.matM, 180.0f, glm::vec3(1.0, 1.0, 0.0));
 	smallDragon->draw();
-	
+
 	house->draw();
 
-
-
-	
-
-	scene.matP = glm::perspective(camera->getAngle(), // przyblizy/oddali wido
-		(float)window->getWindowWidth() / (float)window->getWindowHeight(), 1.0f, 200.0f);
+	scene.matP = glm::perspective(camera->getAngle(), (float)window->getWindowWidth() / (float)window->getWindowHeight(), 1.0f, 200.0f);
 
 	weapon->draw();
 
-	//weapon->instantMove(obsX - weapon->getXCoordinate(), obsY - weapon->getYCoordinate(), 0.0);
-	
+	scene.matP = glm::mat4((float)window->getWindowHeight() / window->getWindowWidth(), 0.0f, 0.0f, 0.0f, 0.0f,
+		(float)window->getWindowHeight() / window->getWindowHeight(), 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
 
-	
-
-	scene.matP = glm::mat4((float)window->getWindowHeight() / window->getWindowWidth(), 0.0f, 0.0f, 0.0f,
-		0.0f, (float)window->getWindowHeight() / window->getWindowHeight(), 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f, 1.0f);
-	
 	obj2D->draw();
 
 	crossA->draw();
@@ -141,12 +107,6 @@ void displayFrame() {
 	crossC->draw();
 	crossD->draw();
 
-
-	
-
-
-
-	//Tylny bufor na przedni
 	glutSwapBuffers();
 }
 
@@ -156,13 +116,8 @@ void nextFrame(void) {
 	int interval = actTime - lastTime;
 	lastTime = actTime;
 	angle += speed*interval / 1000.0;
-	if (angle>360) angle -= 360;
+	if (angle > 360) angle -= 360;
 	glutPostRedisplay();
-}
-
-//Procedura wywo³ywana przy zmianie rozmiaru okna
-void changeWindowSize(int w, int h) {
-	window->setWindowDimensions(w, h);
 }
 
 void playerMoveListener()
@@ -175,10 +130,7 @@ void playerMoveListener()
 
 	float deg = glm::degrees(acos(glm::dot(look, objToCam) / (glm::abs(lookLength) * glm::abs(objToCamLength))));
 
-	if (camera->getXPosition() < 0)
-	{
-		deg = -deg;
-	}
+	if (camera->getXPosition() < 0) { deg = -deg; }
 
 	demon->instantRotate(0, 0, deg - demon->getZRotationAngle());
 }
@@ -186,167 +138,116 @@ void playerMoveListener()
 // kontrola naciskania klawiszy klawiatury
 void keyPressed(unsigned char key, int x, int y)
 {
-	float obsX = camera->getXPosition(),
-		obsY = camera->getYPosition(),
-		obsZ = camera->getZPosition(),
-		pktX = camera->getXLookAtPosition(),
-		pktY = camera->getYLookAtPosition(),
-		pktZ = camera->getZLookAtPosition();
-
+	float obsX = camera->getXPosition(), obsY = camera->getYPosition(), obsZ = camera->getZPosition(),
+		pktX = camera->getXLookAtPosition(), pktY = camera->getYLookAtPosition(), pktZ = camera->getZLookAtPosition();
 
 	playerMoveListener();
 
-		if (keyW){
+	if (keyW)
+	{
+		if (keyE)
+		{
+			j += 0.6;
+			obsZ = 1.8 + sin(j) / 8;
 
-
-			
-			if (keyE)
-			{
-				j += 0.6;
-				obsZ = 1.8 + sin(j) / 8;
-
-				stepX = (pktX - obsX) / 60;
-				stepY = (pktY - obsY) / 60;
-			}
-			else
-			{
-				stepX = (pktX - obsX) / 100;
-				stepY = (pktY - obsY) / 100;
-			}
-
-
-
-
-			obsX += stepX;
-			obsY += stepY;
-
-			pktX += stepX;
-			pktY += stepY;
-
-			
-
-			skydome->instantMove(stepX, stepY, 0);
-			// break;
-
-		} // w
-		//case 83:
-		if (keyS){
-
+			stepX = (pktX - obsX) / 60;
+			stepY = (pktY - obsY) / 60;
+		}
+		else
+		{
 			stepX = (pktX - obsX) / 100;
 			stepY = (pktY - obsY) / 100;
+		}
 
+		obsX += stepX;
+		obsY += stepY;
+		pktX += stepX;
+		pktY += stepY;
 
-			
-			if (keyE)
-			{
-				j += 0.6;
-				obsZ = 1.8 + sin(j) / 8;
+		skydome->instantMove(stepX, stepY, 0);
+	}
+	if (keyS)
+	{
+		stepX = (pktX - obsX) / 100;
+		stepY = (pktY - obsY) / 100;
 
-				stepX = (pktX - obsX) / 60;
-				stepY = (pktY - obsY) / 60;
-			}
-			else
-			{
-				stepX = (pktX - obsX) / 100;
-				stepY = (pktY - obsY) / 100;
-			}
-
-			obsX -= stepX;
-			obsY -= stepY;
-
-			pktX -= stepX;
-			pktY -= stepY;
-
-			skydome->instantMove(-stepX, -stepY, 0);
-			// break;
-		} // sy
-		//case 65:
-		if (keyA){
-			stepX = -(pktY - obsY) / 100;
-			stepY = (pktX - obsX) / 100;
-
-			obsX -= stepX;
-			obsY -= stepY;
-			pktX -= stepX;
-			pktY -= stepY;
-
-			skydome->instantMove(-stepX, -stepY, 0);
-
-		} // a
-		if (keyD)//case 68:
+		if (keyE)
 		{
-			stepX = -(pktY - obsY) / 100;
-			stepY = (pktX - obsX) / 100;
+			j += 0.6;
+			obsZ = 1.8 + sin(j) / 8;
 
-			obsX += stepX;
-			obsY += stepY;
-			pktX += stepX;
-			pktY += stepY;
+			stepX = (pktX - obsX) / 60;
+			stepY = (pktY - obsY) / 60;
+		}
+		else
+		{
+			stepX = (pktX - obsX) / 100;
+			stepY = (pktY - obsY) / 100;
+		}
 
+		obsX -= stepX;
+		obsY -= stepY;
+		pktX -= stepX;
+		pktY -= stepY;
 
-			skydome->instantMove(stepX, stepY, 0);
-		} // d
+		skydome->instantMove(-stepX, -stepY, 0);
+	}
+	if (keyA)
+	{
+		stepX = -(pktY - obsY) / 100;
+		stepY = (pktX - obsX) / 100;
 
-		camera->setPosition(obsX, obsY, obsZ);
-		camera->setLookAtPoint(pktX, pktY, pktZ);
+		obsX -= stepX;
+		obsY -= stepY;
+		pktX -= stepX;
+		pktY -= stepY;
+
+		skydome->instantMove(-stepX, -stepY, 0);
 
 	}
+	if (keyD)
+	{
+		stepX = -(pktY - obsY) / 100;
+		stepY = (pktX - obsX) / 100;
+
+		obsX += stepX;
+		obsY += stepY;
+		pktX += stepX;
+		pktY += stepY;
+
+		skydome->instantMove(stepX, stepY, 0);
+	}
+
+	camera->setPosition(obsX, obsY, obsZ);
+	camera->setLookAtPoint(pktX, pktY, pktZ);
+}
 
 
 void keyDown(unsigned char c, int x, int y)
 {
-	if (c == 'w')
-	{
-		keyW = true;
-	}
-	else if (c == 's')
-	{
-		keyS = true;
-	}
-	else if (c == 'a')
-	{
-		keyA = true;
-	}
-	else if (c == 'd')
-	{
-		keyD = true;
-	}
-	else if (c == 'e')
-	{
-		keyE = true;
-		
-	}
-	else if (c == 'z')
-	{
-		camera->setPosition(camera->getXPosition(), camera->getYPosition(), 2.0f);
-	}
-	else if (c == 'x')
-	{
-		camera->setPosition(camera->getXPosition(), camera->getYPosition(), 1.0f);
-	}
-	else if (c == 'c')
-	{
-		camera->setPosition(camera->getXPosition(), camera->getZPosition(), 0.5f);
-	}
+	if (c == 'w') { keyW = true; }
+	else if (c == 's') { keyS = true; }
+	else if (c == 'a') { keyA = true; }
+	else if (c == 'd') { keyD = true; }
+	else if (c == 'e') { keyE = true; }
+	else if (c == 'z') { camera->setPosition(camera->getXPosition(), camera->getYPosition(), 2.0f); }
+	else if (c == 'x') { camera->setPosition(camera->getXPosition(), camera->getYPosition(), 1.0f); }
+	else if (c == 'c') { camera->setPosition(camera->getXPosition(), camera->getZPosition(), 0.5f); }
+
 	keyPressed(c, x, y);
-
 }
-
-bool jumpFlag = true;
 
 void jump()
 {
 	float obsZ = camera->getZPosition();
 	for (float i = 0.0f; i < 3.14f; i += 0.1f)
 	{
-		
 		jumpFlag = false;
 		obsZ = 2.0f + sin(i);
 		std::this_thread::sleep_for(std::chrono::milliseconds(30));
 		jumpFlag = true;
-		
-		camera->setPosition(camera->getXPosition(), camera->getYPosition(), obsZ);
 
+		camera->setPosition(camera->getXPosition(), camera->getYPosition(), obsZ);
 	}
 
 	camera->setPosition(camera->getXPosition(), camera->getYPosition(), 2.0f);
@@ -354,33 +255,17 @@ void jump()
 
 void keyDown(int c, int x, int y)
 {
-	if (c = GLUT_KEY_SHIFT_L)
-	{
-		keyShift = true;
-	}
-
+	if (c = GLUT_KEY_SHIFT_L) { keyShift = true; }
 
 	keyPressed((char)c, x, y);
 }
 
 void keUp(unsigned char c, int x, int y)
 {
-	if (c == 'w')
-	{
-		keyW = false;
-	}
-	else if (c == 's')
-	{
-		keyS = false;
-	}
-	else if (c == 'a')
-	{
-		keyA = false;
-	}
-	else if (c == 'd')
-	{
-		keyD = false;
-	}
+	if (c == 'w'){ keyW = false; }
+	else if (c == 's') { keyS = false; }
+	else if (c == 'a') { keyA = false; }
+	else if (c == 'd') { keyD = false; }
 	else if (c == 'e')
 	{
 		keyE = false;
@@ -392,91 +277,44 @@ void keUp(unsigned char c, int x, int y)
 		{
 			std::thread first(jump);
 			first.detach();
-		}	
+		}
 	}
-	else if (c == 'n')
-	{
-		mixer->playBackgroundMusic();
-	}
+	else if (c == 'n') { mixer->playBackgroundMusic(); }
 	else if (c == 'm')
 	{
-		if (mixer->getBackgroundMusicVolume() < 0.02f)
-		{
-			mixer->enableBackgroundMusic();
-		}
-		else
-		{
-			mixer->muteBackgroundMusic();
-		}
+		if (mixer->getBackgroundMusicVolume() < 0.02f) { mixer->enableBackgroundMusic(); }
+		else { mixer->muteBackgroundMusic(); }
 	}
 }
 
 void keyUp(int c, int x, int y)
 {
-	if (c = GLUT_KEY_SHIFT_L)
-	{
-		keyShift = false;
-	}
+	if (c = GLUT_KEY_SHIFT_L) { keyShift = false; }
 }
 
 void passiveMouseMove(int x, int y)
 {
-	
-
 	int xy = x;// -windowWidth / 2;
 	int z = y;// -windowHeight / 2;
 
 	xy = xy - mouseXY;
 	z = z - mouseZ;
 
-
-
-
 	mouseXY = x;
 	mouseZ = y;
 
-	if (i > 0)
-	{
-		i += xy;
-	}
-	else
-	{
-		i = 360;
-	}
-	//camera->setLookAtPoint(camera->getXPosition() + 1 * camera->getDistanceToLookAtPoint() * cos(6.28318 * i / N), camera->getYLookAtPosition(), camera->getZLookAtPosition());
-	//pktX = obsX + 1 * R * cos(6.28318 * i / N);
-	//pktY = obsY + 1 * R * sin(6.28318 * i / N);
-	//camera->setLookAtPoint(camera->getXLookAtPosition(), camera->getYPosition() + 1 * camera->getDistanceToLookAtPoint() * sin(6.28318 * i / N), camera->getZLookAtPosition());
+	i = (i > 0) ? i + xy : 360;
 
 	if (k > 10)
 	{
-		if ((k < 180) && k >= -z && (180 - k) >= z)
-		{
-			k += z;
-		}
-		else
-		{
-			if ((z < 0))
-			{
-				k += z;
-			}
-		}
+		if ((k < 180) && k >= -z && (180 - k) >= z) { k += z; }
+		else if (z < 0) { k += z; }
 	}
-	else
-	{
-		if (z > 0)
-		{
-			k += z;
-		}
-	}
+	else if (z > 0) { k += z; }
 
-	float cosY = (acos(cos(6.28318 * k / N)))*57.29578 - 90.0;
-
-
-	//camera->setLookAtPoint(camera->getXLookAtPosition(), camera->getYLookAtPosition(), camera->getZPosition() + 1 * camera->getDistanceToLookAtPoint() * cos(6.28318 * k / N));
 	camera->rotateCamera(i, i, k);
 
-	if (mouseXY > window->getWindowWidth() - window->getWindowWidth()/40)
+	if (mouseXY > window->getWindowWidth() - window->getWindowWidth() / 40)
 	{
 		mouseXY = window->getWindowWidth() / 2;
 		glutWarpPointer(window->getWindowWidth() / 2, mouseZ);
@@ -496,7 +334,6 @@ void passiveMouseMove(int x, int y)
 		mouseZ = window->getWindowHeight() / 2;
 		glutWarpPointer(mouseXY, window->getWindowHeight() / 2);
 	}
-	
 }
 
 void singleShot()
@@ -508,11 +345,13 @@ void serieShot()
 {
 	canShotFlag = false;
 	shotFlag = true;
+
 	while (shotFlag)
 	{
 		singleShot();
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
+
 	canShotFlag = true;
 }
 
@@ -531,38 +370,26 @@ void mouseClick(int button, int state, int x, int y)
 			first.detach();
 		}
 	}
-	else if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
-	{
-		shotStop();
-	}
-	else if (button == GLUT_MIDDLE_BUTTON)
-	{
-
-	}
-	else if (button == GLUT_RIGHT_BUTTON)
-	{
-
-	}
+	else if (button == GLUT_LEFT_BUTTON && state == GLUT_UP){ shotStop(); }
+	else if (button == GLUT_MIDDLE_BUTTON){}
+	else if (button == GLUT_RIGHT_BUTTON){}
 }
 
 
-int main(int argc, char** argv) {
-
-
+int main(int argc, char** argv)
+{
 	srand(time(NULL));
 
 	camera = new Camera();
 	window = new Window(100, 100, 860, 484, "No Life v1.0");
-	//window->addWindowResizeListener([&](int w, int h) -> void {cout << w << " "<< wa->getXPosition() << h << endl; });
-	
+
 	OpenGLHelper::initOpenGL(&argc, argv, window->getWindowName(), window->getXPosition(), window->getYPosition(), window->getWindowWidth(), window->getWindowHeight());
 	OpenGLHelper::registerWindowResizeProcedure([](int width, int height)-> void { window->setWindowDimensions(width, height); });
-	OpenGLHelper::registerDisplayFrameProcedure(displayFrame);	
+	OpenGLHelper::registerDisplayFrameProcedure(displayFrame);
 	OpenGLHelper::registerAnimationProcedure(nextFrame);
 
-	
 	Scene::getInstance().initScene();
-	
+
 	glutKeyboardFunc(keyDown);
 	glutKeyboardUpFunc(keUp);
 	glutSpecialFunc(keyDown);
@@ -572,41 +399,36 @@ int main(int argc, char** argv) {
 	glutMouseFunc(mouseClick);
 	glutSetCursor(GLUT_CURSOR_NONE);
 
-
 	floore = new DrawableObject(Scene::getInstance().shaderProgramProTex, "resources\\models\\objects/\\floor.obj", "resources\\models\\textures\\terrain.tga");
-	floore->setAlternativeDrawing(true);
 
 	skydome = new DrawableObject(Scene::getInstance().shaderProgramProTex, "resources\\models\\objects\\skydome2.obj", "resources\\models\\textures\\skydome2.tga");
-	skydome->setAlternativeDrawing(true);
 	skydome->instantScale(0.5, 0.5, 0.5);
 
 	demon = new DrawableObject(Scene::getInstance().shaderProgramPro, "resources\\models\\objects\\devil.obj");
 	demon->changeColor(0.9, 0.0, 0.0);
-	demon->setAlternativeDrawing(true);
 	demon->instantMove(5.0, 5.0, 0.0);
-	
+
 	USS = new DrawableObject(Scene::getInstance().shaderProgramProTex, "resources\\models\\objects\\fog.obj", "resources\\models\\textures\\mist.tga");
-	USS->setAlternativeDrawing(true);
 	USS->instantMove(-20, 20, 0);
-	
+
 	smallDragon = new DrawableObject(Scene::getInstance().shaderProgramPro, "resources\\models\\objects\\small_dragon.obj");
 	smallDragon->changeColor(0.4, 0.2, 0.1);
-	
+	smallDragon->instantScaleNatural(15.0);
+	smallDragon->instantRotate(-90.0f, -90.0f, .0f);
+	smallDragon->instantMove(-20.0, 10.0, 15.0);
+
 	house = new DrawableObject(Scene::getInstance().shaderProgramPro, "resources\\models\\objects\\house.obj");
-	house->setAlternativeDrawing(true);
 	house->changeColor(0.3, 0.2, 0.3);
 	house->instantMove(50.0, 40.0, 0.0);
 
-	//kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "wood_cube2.obj", "wood.tga");
 	kostka = new DrawableObject(Scene::getInstance().shaderProgramProTex, "resources\\models\\objects\\cz805.obj", "resources\\models\\textures\\CZ805.tga");
-	kostka->setAlternativeDrawing(true);
 	kostka->instantScale(0.35, 0.35, 0.35);
 	kostka->instantMove(0, 2, 0.2);
-	
+
 	obj2D = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_CIRCLE);
 	obj2D->instantScaleNatural(0.12f);
 	obj2D->instantRotate(180.0);
-	obj2D->instantMove(0.85*window->getWindowWidth()/window->getWindowHeight(), -0.75);
+	obj2D->instantMove(0.85*window->getWindowWidth() / window->getWindowHeight(), -0.75);
 
 	crossA = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_LINE);
 	crossA->instantScaleNatural(0.3);
@@ -616,35 +438,29 @@ int main(int argc, char** argv) {
 	crossB = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_LINE);
 	crossB->instantRotate(90);
 	crossB->instantScaleNatural(0.3);
-	crossB->instantScale(0.1,1.0);
+	crossB->instantScale(0.1, 1.0);
 	crossB->instantMove(-0.05, 0.0);
 
 	crossC = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_LINE);
 	crossC->instantRotate(180);
 	crossC->instantScaleNatural(0.3);
-	crossC->instantScale(1.0,0.1);
+	crossC->instantScale(1.0, 0.1);
 	crossC->instantMove(0.0, -0.05);
 
 	crossD = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_LINE);
 	crossD->instantRotate(270);
 	crossD->instantScaleNatural(0.3);
-	crossD->instantScale(0.1,1.0);
+	crossD->instantScale(0.1, 1.0);
 	crossD->instantMove(0.05, 0.0);
 
 	weapon = new DrawableObject(Scene::getInstance().shaderProgramEyePerspective, "resources\\models\\objects\\cz805.obj", "resources\\models\\textures\\CZ805.tga");
-	weapon->setAlternativeDrawing(true);
 	weapon->changeColor(0.1, 0.1, 0.1);
-	//weapon->instantRotate(0, -10, 270);
 	weapon->instantRotate(0, 5, 95);
-	//weapon->instantMove(0.5, -1.8, -1);
 	weapon->instantMove(0.7, -2.2, -1);
-	//weapon->instantScale(0.7,0.7,0.7);
 	weapon->instantScale(0.4, 0.4, 0.4);
-
 
 	mixer = new MusicMixer();
 	mixer->playBackgroundMusic();
-
 
 	glutMainLoop();
 

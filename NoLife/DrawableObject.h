@@ -91,6 +91,7 @@ public:
 
 protected:
 	Scene &scene  = Scene::getInstance();
+	glm::mat4  matM;
 
 	float xPosition = 0, yPosition = 0, zPosition = 0, xAngle = 0, yAngle = 0, zAngle = 0, xAngleAround = 0, yAngleAround = 0, zAngleAround = 0, xRotCoord = 0, yRotCoord = 0, zRotCoord = 0, xScale = 1, yScale = 1, zScale = 1;
 	

@@ -75,6 +75,7 @@ public:
 
 protected:
 	Scene &scene = Scene::getInstance();
+	glm::mat4  matM;
 
 	unsigned mode;
 

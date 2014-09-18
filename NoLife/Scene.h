@@ -23,7 +23,6 @@ public:
 
 	glm::mat4  matP;//rzutowania
 	glm::mat4  matV;//widoku
-	glm::mat4  matM;//modelu
 
 
 protected:

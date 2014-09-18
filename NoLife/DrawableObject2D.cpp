@@ -265,13 +265,13 @@ void DrawableObject2D::draw()
 	glm::mat4 T = glm::translate(glm::mat4(1.0), glm::vec3(this->xPosition, this->yPosition, 0));
 	glm::mat4 R = glm::rotate(glm::mat4(1.0), this->angle, glm::vec3(0.0, 0.0, 1.0));
 
-	scene.matM = T*S*R;
+	matM = T*S*R;
 	
 
 	shaderProgram->use();
 
 	glUniformMatrix4fv(shaderProgram->getUniformLocation("P"), 1, false, glm::value_ptr(scene.matP));
-	glUniformMatrix4fv(shaderProgram->getUniformLocation("M"), 1, false, glm::value_ptr(scene.matM));
+	glUniformMatrix4fv(shaderProgram->getUniformLocation("M"), 1, false, glm::value_ptr(matM));
 
 	//glUniform1i(shaderProgram->getUniformLocation("textureMap0"), 0);
 

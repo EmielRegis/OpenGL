@@ -332,11 +332,11 @@ void DrawableObject::loadObjectWithTextures(const char* filename, vector<float> 
 //Procedura rysuj¹ca jakiœ obiekt. Ustawia odpowiednie parametry dla vertex shadera i rysuje.
 void DrawableObject::draw() {
 
-	if (this->alternateDrawing)
+	if (true)
 	{	
-		glm::mat4 RX = scene.matM = glm::rotate(glm::mat4(1.0f), this->xAngle, glm::vec3(1.0, 1.0, 0.0));
-		glm::mat4 RY = scene.matM = glm::rotate(glm::mat4(1.0f), this->yAngle, glm::vec3(0.0, 0.0, 1.0));
-		glm::mat4 RZ = scene.matM = glm::rotate(glm::mat4(1.0f), this->zAngle, glm::vec3(0.0, 1.0, 0.0));
+		glm::mat4 RX = matM = glm::rotate(glm::mat4(1.0f), this->xAngle, glm::vec3(1.0, 1.0, 0.0));
+		glm::mat4 RY = matM = glm::rotate(glm::mat4(1.0f), this->yAngle, glm::vec3(0.0, 0.0, 1.0));
+		glm::mat4 RZ = matM = glm::rotate(glm::mat4(1.0f), this->zAngle, glm::vec3(0.0, 1.0, 0.0));
 
 		glm::mat4 S = glm::scale(glm::mat4(1.0f), glm::vec3(this->xScale, this->zScale, this->yScale));
 
@@ -345,14 +345,14 @@ void DrawableObject::draw() {
 
 		glm::mat4 T = glm::translate(glm::mat4(1.0f), glm::vec3(this->xPosition, this->zPosition, this->yPosition));
 
-		scene.matM = T*RAZ*TRAZ*S*RZ*RY*RX;
+		matM = T*RAZ*TRAZ*S*RZ*RY*RX;
 	}
 
 	shaderProgram->use();
 
 	glUniformMatrix4fv(shaderProgram->getUniformLocation("P"), 1, false, glm::value_ptr(scene.matP));
 	glUniformMatrix4fv(shaderProgram->getUniformLocation("V"), 1, false, glm::value_ptr(scene.matV));
-	glUniformMatrix4fv(shaderProgram->getUniformLocation("M"), 1, false, glm::value_ptr(scene.matM));
+	glUniformMatrix4fv(shaderProgram->getUniformLocation("M"), 1, false, glm::value_ptr(matM));
 
 	glUniform4f(shaderProgram->getUniformLocation("lpos"), 0,2,5,1);
 
