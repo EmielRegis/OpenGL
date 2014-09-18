@@ -43,6 +43,12 @@
     <Filter Include="Source Files\libraries">
       <UniqueIdentifier>{8b65e6fe-b33f-48a5-936f-c0ac49077bbd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\gui">
+      <UniqueIdentifier>{8911867d-f148-4ebf-b3e5-bfd99687ccce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\gui">
+      <UniqueIdentifier>{2b28cbcc-307b-41d3-9839-f6ce178490ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bow.h">
@@ -151,7 +157,31 @@
       <Filter>Header Files\libraries</Filter>
     </ClInclude>
     <ClInclude Include="Drawable.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\game mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="Crosshair.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiPainter.h">
+      <Filter>Header Files\game mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="EnvironmentPainter.h">
+      <Filter>Header Files\game mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyborard.h">
+      <Filter>Header Files\game mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Header Files\game mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectPainter.h">
+      <Filter>Header Files\game mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="Painter.h">
+      <Filter>Header Files\game mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponPainter.h">
+      <Filter>Header Files\game mechanics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -251,14 +281,35 @@
     <ClCompile Include="Window.cpp">
       <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="libraries\tga\tga.cpp">
       <Filter>Source Files\libraries</Filter>
     </ClCompile>
     <ClCompile Include="libraries\shaderprogram\shaderprogram.cpp">
       <Filter>Source Files\libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="Crosshair.cpp">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponPainter.cpp">
+      <Filter>Source Files\weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiPainter.cpp">
+      <Filter>Source Files\game mechanics</Filter>
+    </ClCompile>
+    <ClCompile Include="EnvironmentPainter.cpp">
+      <Filter>Source Files\game mechanics</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyborard.cpp">
+      <Filter>Source Files\game mechanics</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>Source Files\game mechanics</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectPainter.cpp">
+      <Filter>Source Files\game mechanics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

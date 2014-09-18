@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include "libraries/tga/tga.h"
 #include "libraries/shaderprogram/shaderprogram.h"
-
 #include "vector"
 #include <ios>
 #include <sstream>
@@ -21,6 +20,12 @@
 #include "Window.h"
 #include "Camera.h"
 #include "OpenGLHelper.h"
+#include "EnvironmentPainter.h"
+#include "GuiPainter.h"
+#include "Painter.h"
+#include "ObjectPainter.h"
+#include "WeaponPainter.h"
+#include "Crosshair.h"
 
 using namespace std;
 
@@ -28,6 +33,15 @@ Window *window;
 Camera *camera;
 Scene &scene = Scene::getInstance();
 MusicMixer *mixer;
+
+EnvironmentPainter *environmentPainter;
+Painter *simpleObjectsPainter;
+WeaponPainter *weaponPainter;
+GuiPainter *guiPainter;
+
+vector<Drawable*> *environmentObjects;
+vector<Drawable*> *guiObjects;
+vector<Drawable*> *simpleObjects;
 
 DrawableObject *kostka;
 DrawableObject *malpa;
@@ -39,12 +53,9 @@ DrawableObject *skydome;
 DrawableObject *smallDragon;
 DrawableObject *house;
 DrawableObject *weapon;
-
 DrawableObject2D *obj2D;
-DrawableObject2D *crossA;
-DrawableObject2D *crossB;
-DrawableObject2D *crossC;
-DrawableObject2D *crossD;
+Crosshair *crosshair;
+
 
 bool keyW = false, keyS = false, keyA = false, keyD = false, keyE = false, keyShift = false, keySpace = false, keyZ = false, keyX = false, keyC = false;
 int mouseXY = 0, mouseZ;
@@ -66,46 +77,16 @@ j = 0;
 
 //Procedura rysuj¹ca
 void displayFrame() {
-	//Wyczyœæ bufor kolorów i bufor g³êbokoœci
 	glClearColor(1.0, 1.0, 1.0, 0.1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	scene.matV = glm::lookAt(glm::vec3(camera->getXPosition(), camera->getZPosition(), camera->getYPosition()),
-		glm::vec3(camera->getXLookAtPosition(), camera->getZLookAtPosition(), camera->getYLookAtPosition()),
-		glm::vec3(0.0f, 1.0f, 0.0f)); //  jaki kat - domyslnie gora-dol
-
-	scene.matP = glm::perspective(camera->getAngle(), (float)window->getWindowWidth() / (float)window->getWindowHeight(), 0.0125f, 400.0f);
-
-	floore->draw();
-	skydome->draw();
-
-	scene.matP = glm::perspective(camera->getAngle(), (float)window->getWindowWidth() / (float)window->getWindowHeight(), 1.0f, 200.0f);
-
 	kostka->instantRotate(0, 0, angle - kostka->getZRotationAngle());
-	kostka->draw();
-
 	USS->instantRotate(0, 0, angle - USS->getZRotationAngle());
-	USS->draw();
 
-	demon->draw();
-
-	smallDragon->draw();
-
-	house->draw();
-
-	scene.matP = glm::perspective(camera->getAngle(), (float)window->getWindowWidth() / (float)window->getWindowHeight(), 1.0f, 200.0f);
-
-	weapon->draw();
-
-	scene.matP = glm::mat4((float)window->getWindowHeight() / window->getWindowWidth(), 0.0f, 0.0f, 0.0f, 0.0f,
-		(float)window->getWindowHeight() / window->getWindowHeight(), 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-
-	obj2D->draw();
-
-	crossA->draw();
-	crossB->draw();
-	crossC->draw();
-	crossD->draw();
+	environmentPainter->paintObjects(environmentObjects, window, &scene, camera);
+	simpleObjectsPainter->paintObjects(simpleObjects, window, &scene, camera);
+	weaponPainter->paintObject(weapon, window, &scene, camera);
+	guiPainter->paintObjects(guiObjects, window, &scene, camera);
 
 	glutSwapBuffers();
 }
@@ -390,6 +371,11 @@ int main(int argc, char** argv)
 
 	Scene::getInstance().initScene();
 
+	environmentPainter = new EnvironmentPainter();
+	guiPainter = new GuiPainter();
+	simpleObjectsPainter = new ObjectPainter();
+	weaponPainter = new WeaponPainter();
+
 	glutKeyboardFunc(keyDown);
 	glutKeyboardUpFunc(keUp);
 	glutSpecialFunc(keyDown);
@@ -403,6 +389,10 @@ int main(int argc, char** argv)
 
 	skydome = new DrawableObject(Scene::getInstance().shaderProgramProTex, "resources\\models\\objects\\skydome2.obj", "resources\\models\\textures\\skydome2.tga");
 	skydome->instantScale(0.5, 0.5, 0.5);
+
+	environmentObjects = new vector<Drawable*>;
+	environmentObjects->push_back(floore);
+	environmentObjects->push_back(skydome);
 
 	demon = new DrawableObject(Scene::getInstance().shaderProgramPro, "resources\\models\\objects\\devil.obj");
 	demon->changeColor(0.9, 0.0, 0.0);
@@ -425,39 +415,31 @@ int main(int argc, char** argv)
 	kostka->instantScale(0.35, 0.35, 0.35);
 	kostka->instantMove(0, 2, 0.2);
 
+	simpleObjects = new vector<Drawable*>();
+	simpleObjects->push_back(kostka);
+	simpleObjects->push_back(house);
+	simpleObjects->push_back(smallDragon);
+	simpleObjects->push_back(USS);
+	simpleObjects->push_back(demon);
+
+
 	obj2D = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_CIRCLE);
 	obj2D->instantScaleNatural(0.12f);
 	obj2D->instantRotate(180.0);
 	obj2D->instantMove(0.85*window->getWindowWidth() / window->getWindowHeight(), -0.75);
 
-	crossA = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_LINE);
-	crossA->instantScaleNatural(0.3);
-	crossA->instantScale(1.0, 0.1);
-	crossA->instantMove(0.0, 0.05);
+	crosshair = new Crosshair();
 
-	crossB = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_LINE);
-	crossB->instantRotate(90);
-	crossB->instantScaleNatural(0.3);
-	crossB->instantScale(0.1, 1.0);
-	crossB->instantMove(-0.05, 0.0);
-
-	crossC = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_LINE);
-	crossC->instantRotate(180);
-	crossC->instantScaleNatural(0.3);
-	crossC->instantScale(1.0, 0.1);
-	crossC->instantMove(0.0, -0.05);
-
-	crossD = new DrawableObject2D(Scene::getInstance().shaderProgram2D, DrawableObject2D::DRAWABLE_2D_PRIMITIVE_LINE);
-	crossD->instantRotate(270);
-	crossD->instantScaleNatural(0.3);
-	crossD->instantScale(0.1, 1.0);
-	crossD->instantMove(0.05, 0.0);
+	guiObjects = new vector < Drawable*>();
+	guiObjects->push_back(obj2D);
+	guiObjects->push_back(crosshair);
 
 	weapon = new DrawableObject(Scene::getInstance().shaderProgramEyePerspective, "resources\\models\\objects\\cz805.obj", "resources\\models\\textures\\CZ805.tga");
 	weapon->changeColor(0.1, 0.1, 0.1);
 	weapon->instantRotate(0, 5, 95);
 	weapon->instantMove(0.7, -2.2, -1);
 	weapon->instantScale(0.4, 0.4, 0.4);
+
 
 	mixer = new MusicMixer();
 	mixer->playBackgroundMusic();
