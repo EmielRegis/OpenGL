@@ -28,7 +28,11 @@
 #include "Crosshair.h"
 #include "Keyboard.h"
 
+#include "Leap.h"
+#include "LeapMotionManager.h"
+
 using namespace std;
+using namespace Leap;
 
 Window *window;
 Camera *camera;
@@ -58,6 +62,9 @@ DrawableObject *weapon;
 DrawableObject2D *obj2D;
 Crosshair *crosshair;
 
+Controller *controller;
+LeapMotionManager *leapManager;
+
 
 //bool keyW = false, keyS = false, keyA = false, keyD = false, keyE = false, keyShift = false, keySpace = false, keyZ = false, keyX = false, keyC = false;
 int mouseXY = 0, mouseZ;
@@ -77,6 +84,10 @@ i = 225,
 k = 90,
 j = 0;
 
+//int normalMoveCoef = 100, speedMoveCoef = 60;
+int normalMoveCoef = 400, speedMoveCoef = 240;
+
+
 //Procedura rysuj¹ca
 void displayFrame() {
 	glClearColor(1.0, 1.0, 1.0, 0.1);
@@ -93,15 +104,7 @@ void displayFrame() {
 	glutSwapBuffers();
 }
 
-//Procedura uruchamiana okresowo. Robi animacjê.
-void nextFrame(void) {
-	int actTime = glutGet(GLUT_ELAPSED_TIME);
-	int interval = actTime - lastTime;
-	lastTime = actTime;
-	angle += speed*interval / 1000.0;
-	if (angle > 360) angle -= 360;
-	glutPostRedisplay();
-}
+
 
 void playerMoveListener()
 {
@@ -126,20 +129,20 @@ void keyPressed(unsigned char key, int x, int y)
 
 	playerMoveListener();
 
-	if (keyboard->isKeyActive('w'))
+	if (keyboard->isKeyActive('w') || leapManager->isKeyActive(KEY_VIRTUAL_W))
 	{
-		if (keyboard->isKeyActive('e'))
+		if (keyboard->isKeyActive('e') || leapManager->isKeyActive(KEY_VIRTUAL_E))
 		{
-			j += 0.6;
+			j += 0.15;
 			obsZ = 1.8 + sin(j) / 8;
 
-			stepX = (pktX - obsX) / 60;
-			stepY = (pktY - obsY) / 60;
+			stepX = (pktX - obsX) / speedMoveCoef;
+			stepY = (pktY - obsY) / speedMoveCoef;
 		}
 		else
 		{
-			stepX = (pktX - obsX) / 100;
-			stepY = (pktY - obsY) / 100;
+			stepX = (pktX - obsX) / normalMoveCoef;
+			stepY = (pktY - obsY) / normalMoveCoef;
 		}
 
 		obsX += stepX;
@@ -149,23 +152,20 @@ void keyPressed(unsigned char key, int x, int y)
 
 		skydome->instantMove(stepX, stepY, 0);
 	}
-	if (keyboard->isKeyActive('s'))
+	if (keyboard->isKeyActive('s') || leapManager->isKeyActive(KEY_VIRTUAL_S))
 	{
-		stepX = (pktX - obsX) / 100;
-		stepY = (pktY - obsY) / 100;
-
-		if (keyboard->isKeyActive('e'))
+		if (keyboard->isKeyActive('e') || leapManager->isKeyActive(KEY_VIRTUAL_E))
 		{
-			j += 0.6;
+			j += 0.15;
 			obsZ = 1.8 + sin(j) / 8;
 
-			stepX = (pktX - obsX) / 60;
-			stepY = (pktY - obsY) / 60;
+			stepX = (pktX - obsX) / speedMoveCoef;
+			stepY = (pktY - obsY) / speedMoveCoef;
 		}
 		else
 		{
-			stepX = (pktX - obsX) / 100;
-			stepY = (pktY - obsY) / 100;
+			stepX = (pktX - obsX) / normalMoveCoef;
+			stepY = (pktY - obsY) / normalMoveCoef;
 		}
 
 		obsX -= stepX;
@@ -175,10 +175,10 @@ void keyPressed(unsigned char key, int x, int y)
 
 		skydome->instantMove(-stepX, -stepY, 0);
 	}
-	if (keyboard->isKeyActive('a'))
+	if (keyboard->isKeyActive('a') || leapManager->isKeyActive(KEY_VIRTUAL_A))
 	{
-		stepX = -(pktY - obsY) / 100;
-		stepY = (pktX - obsX) / 100;
+		stepX = -(pktY - obsY) / normalMoveCoef;
+		stepY = (pktX - obsX) / normalMoveCoef;
 
 		obsX -= stepX;
 		obsY -= stepY;
@@ -188,10 +188,10 @@ void keyPressed(unsigned char key, int x, int y)
 		skydome->instantMove(-stepX, -stepY, 0);
 
 	}
-	if (keyboard->isKeyActive('d'))
+	if (keyboard->isKeyActive('d') || leapManager->isKeyActive(KEY_VIRTUAL_D))
 	{
-		stepX = -(pktY - obsY) / 100;
-		stepY = (pktX - obsX) / 100;
+		stepX = -(pktY - obsY) / normalMoveCoef;
+		stepY = (pktX - obsX) / normalMoveCoef;
 
 		obsX += stepX;
 		obsY += stepY;
@@ -252,6 +252,30 @@ void keyUp(unsigned char c, int x, int y)
 	}
 }
 
+void virtualMouseMove()
+{
+	int z = 0;
+	int xy = 0;
+
+	if (leapManager->isKeyActive(KEY_VIRTUAL_MOUSE_MOVE_LEFT)) xy = -1;
+	else if (leapManager->isKeyActive(KEY_VIRTUAL_MOUSE_MOVE_RIGHT)) xy = 1;
+
+	i = (i > 0) ? i + xy : 360;
+
+
+	if (leapManager->isKeyActive(KEY_VIRTUAL_MOUSE_MOVE_UP)) z = 1;
+	else if (leapManager->isKeyActive(KEY_VIRTUAL_MOUSE_MOVE_DOWN)) z = -1;
+
+	if (k > 10)
+	{
+		if ((k < 180) && k >= -z && (180 - k) >= z) { k += z; }
+		else if (z < 0) { k += z; }
+	}
+	else if (z > 0) { k += z; }
+
+
+	camera->rotateCamera(i, i, k);
+}
 
 void passiveMouseMove(int x, int y)
 {
@@ -264,6 +288,7 @@ void passiveMouseMove(int x, int y)
 	mouseXY = x;
 	mouseZ = y;
 
+	cout << i << endl;
 	i = (i > 0) ? i + xy : 360;
 
 	if (k > 10)
@@ -323,7 +348,7 @@ void shotStop()
 
 void mouseClick(int button, int state, int x, int y)
 {
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN || leapManager->isKeyActive(KEY_VIRTUAL_LEFT_MOUSE_BUTTON))
 	{
 		if (canShotFlag)
 		{
@@ -331,11 +356,33 @@ void mouseClick(int button, int state, int x, int y)
 			first.detach();
 		}
 	}
-	else if (button == GLUT_LEFT_BUTTON && state == GLUT_UP){ shotStop(); }
+	else if (button == GLUT_LEFT_BUTTON && state == GLUT_UP || !leapManager->isKeyActive(KEY_VIRTUAL_LEFT_MOUSE_BUTTON)){ shotStop(); }
 	else if (button == GLUT_MIDDLE_BUTTON){}
 	else if (button == GLUT_RIGHT_BUTTON){}
 }
 
+
+//Procedura uruchamiana okresowo. Robi animacjê.
+void nextFrame(void) {
+	int actTime = glutGet(GLUT_ELAPSED_TIME);
+	int interval = actTime - lastTime;
+	lastTime = actTime;
+	angle += speed*interval / 1000.0;
+	if (angle > 360) angle -= 360;
+
+
+	/*Hand left = controller->frame().hands().leftmost();
+	Hand right = controller->frame().hands().rightmost();*/
+
+	//leapManager->fireMotionListeners();
+
+	virtualMouseMove();
+	keyPressed(0, 0, 0);
+	mouseClick(3333, 3333, 3333, 3333);
+
+
+	glutPostRedisplay();
+}
 
 int main(int argc, char** argv)
 {
@@ -343,7 +390,6 @@ int main(int argc, char** argv)
 
 	camera = new Camera();
 	window = new Window(100, 100, 860, 484, "No Life v1.0");
-	
 
 	OpenGLHelper::initOpenGL(&argc, argv, window->getWindowName(), window->getXPosition(), window->getYPosition(), window->getWindowWidth(), window->getWindowHeight());
 	OpenGLHelper::registerWindowResizeProcedure([](int width, int height)-> void { window->setWindowDimensions(width, height); });
@@ -376,7 +422,7 @@ int main(int argc, char** argv)
 	skydome = new DrawableObject(Scene::getInstance().shaderProgramProTex, "resources\\models\\objects\\skydome2.obj", "resources\\models\\textures\\skydome2.tga");
 	skydome->instantScale(0.5, 0.5, 0.5);
 
-	environmentObjects = new vector<Drawable*>;
+	environmentObjects = new vector < Drawable* > ;
 	environmentObjects->push_back(floore);
 	environmentObjects->push_back(skydome);
 
@@ -430,7 +476,21 @@ int main(int argc, char** argv)
 	mixer = new MusicMixer();
 	mixer->playBackgroundMusic();
 
+	leapManager = new LeapMotionManager();
+
+	controller = new Controller();
+	controller->addListener(*leapManager);
+
+	/*leapManager->addMotionListener([](LeapMotionManager* lm)
+	{
+	virtualMouseMove();
+	keyPressed(0, 0, 0);
+	mouseClick(3333, 3333, 3333, 3333);
+	});*/
+
 	glutMainLoop();
+
+	controller->removeListener(*leapManager);
 
 	return 0;
 }

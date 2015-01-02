@@ -183,6 +183,9 @@
     <ClInclude Include="Keyboard.h">
       <Filter>Header Files\game mechanics</Filter>
     </ClInclude>
+    <ClInclude Include="LeapMotionManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Weapon.cpp">
@@ -310,6 +313,9 @@
     </ClCompile>
     <ClCompile Include="Keyboard.cpp">
       <Filter>Source Files\game mechanics</Filter>
+    </ClCompile>
+    <ClCompile Include="LeapMotionManager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
