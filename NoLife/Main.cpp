@@ -104,6 +104,21 @@ void displayFrame() {
 	glutSwapBuffers();
 }
 
+void jump()
+{
+	jumpFlag = false;
+	float obsZ = camera->getZPosition();
+	for (float i = 0.0f; i < 3.14f; i += 0.1f)
+	{
+		
+		obsZ = 2.0f + 2.0f * sin(i);
+		std::this_thread::sleep_for(std::chrono::milliseconds(30));
+		camera->setPosition(camera->getXPosition(), camera->getYPosition(), obsZ);
+	}
+	camera->setPosition(camera->getXPosition(), camera->getYPosition(), 2.0f);
+	jumpFlag = true;
+}
+
 
 
 void playerMoveListener()
@@ -134,7 +149,7 @@ void keyPressed(unsigned char key, int x, int y)
 		if (keyboard->isKeyActive('e') || leapManager->isKeyActive(KEY_VIRTUAL_E))
 		{
 			j += 0.15;
-			obsZ = 1.8 + sin(j) / 8;
+			obsZ = 1.8 + sin(j) / 9;
 
 			stepX = (pktX - obsX) / speedMoveCoef;
 			stepY = (pktY - obsY) / speedMoveCoef;
@@ -157,7 +172,7 @@ void keyPressed(unsigned char key, int x, int y)
 		if (keyboard->isKeyActive('e') || leapManager->isKeyActive(KEY_VIRTUAL_E))
 		{
 			j += 0.15;
-			obsZ = 1.8 + sin(j) / 8;
+			obsZ = 1.8 + sin(j) / 9;
 
 			stepX = (pktX - obsX) / speedMoveCoef;
 			stepY = (pktY - obsY) / speedMoveCoef;
@@ -180,6 +195,9 @@ void keyPressed(unsigned char key, int x, int y)
 		stepX = -(pktY - obsY) / normalMoveCoef;
 		stepY = (pktX - obsX) / normalMoveCoef;
 
+		stepX *= 0.6f;
+		stepY *= 0.6f;
+
 		obsX -= stepX;
 		obsY -= stepY;
 		pktX -= stepX;
@@ -193,6 +211,9 @@ void keyPressed(unsigned char key, int x, int y)
 		stepX = -(pktY - obsY) / normalMoveCoef;
 		stepY = (pktX - obsX) / normalMoveCoef;
 
+		stepX *= 0.6f;
+		stepY *= 0.6f;
+
 		obsX += stepX;
 		obsY += stepY;
 		pktX += stepX;
@@ -203,31 +224,33 @@ void keyPressed(unsigned char key, int x, int y)
 
 	camera->setPosition(obsX, obsY, obsZ);
 	camera->setLookAtPoint(pktX, pktY, pktZ);
+
+	if (leapManager->isKeyActive(KEY_VIRTUAL_Z)) { camera->setPosition(camera->getXPosition(), camera->getYPosition(), 2.0f); }
+	else if (leapManager->isKeyActive(KEY_VIRTUAL_X)) { camera->setPosition(camera->getXPosition(), camera->getYPosition(), 1.0f); }
+	else if (leapManager->isKeyActive(KEY_VIRTUAL_C)) { camera->setPosition(camera->getXPosition(), camera->getZPosition(), 0.5f); }
+
+	if (leapManager->isKeyActive(KEY_VIRTUAL_SPACE))
+	{
+		if (jumpFlag)
+		{	
+			jumpFlag = false;
+			std::thread first(jump);
+			first.detach();
+		}
+	}
+
+
 }
 
 
 void keyDown(unsigned char c, int x, int y)
 {
-	if (c == 'z') { camera->setPosition(camera->getXPosition(), camera->getYPosition(), 2.0f); }
-	else if (c == 'x') { camera->setPosition(camera->getXPosition(), camera->getYPosition(), 1.0f); }
-	else if (c == 'c') { camera->setPosition(camera->getXPosition(), camera->getZPosition(), 0.5f); }
+	if (c == 'z' || leapManager->isKeyActive(KEY_VIRTUAL_Z)) { camera->setPosition(camera->getXPosition(), camera->getYPosition(), 2.0f); }
+	else if (c == 'x' || leapManager->isKeyActive(KEY_VIRTUAL_X)) { camera->setPosition(camera->getXPosition(), camera->getYPosition(), 1.0f); }
+	else if (c == 'c' || leapManager->isKeyActive(KEY_VIRTUAL_C)) { camera->setPosition(camera->getXPosition(), camera->getZPosition(), 0.5f); }
 }
 
-void jump()
-{
-	float obsZ = camera->getZPosition();
-	for (float i = 0.0f; i < 3.14f; i += 0.1f)
-	{
-		jumpFlag = false;
-		obsZ = 2.0f + sin(i);
-		std::this_thread::sleep_for(std::chrono::milliseconds(30));
-		jumpFlag = true;
 
-		camera->setPosition(camera->getXPosition(), camera->getYPosition(), obsZ);
-	}
-
-	camera->setPosition(camera->getXPosition(), camera->getYPosition(), 2.0f);
-}
 
 
 void keyUp(unsigned char c, int x, int y)
@@ -236,16 +259,17 @@ void keyUp(unsigned char c, int x, int y)
 	{
 		camera->setPosition(camera->getXPosition(), camera->getYPosition(), 2.0f);
 	}
-	else if (c == ' ')
+	if (c == ' ')
 	{
 		if (jumpFlag)
 		{
+			jumpFlag = false;
 			std::thread first(jump);
 			first.detach();
 		}
 	}
-	else if (c == 'n') { mixer->playBackgroundMusic(); }
-	else if (c == 'm')
+	if (c == 'n') { mixer->playBackgroundMusic(); }
+	if (c == 'm')
 	{
 		if (mixer->getBackgroundMusicVolume() < 0.02f) { mixer->enableBackgroundMusic(); }
 		else { mixer->muteBackgroundMusic(); }
@@ -257,21 +281,33 @@ void virtualMouseMove()
 	int z = 0;
 	int xy = 0;
 
-	if (leapManager->isKeyActive(KEY_VIRTUAL_MOUSE_MOVE_LEFT)) xy = -1;
-	else if (leapManager->isKeyActive(KEY_VIRTUAL_MOUSE_MOVE_RIGHT)) xy = 1;
-
-	i = (i > 0) ? i + xy : 360;
-
-
-	if (leapManager->isKeyActive(KEY_VIRTUAL_MOUSE_MOVE_UP)) z = 1;
-	else if (leapManager->isKeyActive(KEY_VIRTUAL_MOUSE_MOVE_DOWN)) z = -1;
-
-	if (k > 10)
+	if (leapManager->isKeyActive(KEY_VIRTUAL_I) || leapManager->isKeyActive(KEY_VIRTUAL_O))
 	{
-		if ((k < 180) && k >= -z && (180 - k) >= z) { k += z; }
-		else if (z < 0) { k += z; }
+		if (leapManager->isKeyActive(KEY_VIRTUAL_I)) xy = -1;
+		else if (leapManager->isKeyActive(KEY_VIRTUAL_O)) xy = 1;
+
+		i = (i > 0) ? i + (float)xy/1.5f : 360;
 	}
-	else if (z > 0) { k += z; }
+	else
+	{
+		if (leapManager->isKeyActive(KEY_VIRTUAL_MOUSE_MOVE_LEFT)) xy = -1;
+		else if (leapManager->isKeyActive(KEY_VIRTUAL_MOUSE_MOVE_RIGHT)) xy = 1;
+
+		i = (i > 0) ? i + (float)xy/4.0f : 360;
+
+
+		if (leapManager->isKeyActive(KEY_VIRTUAL_MOUSE_MOVE_UP)) z = 1;
+		else if (leapManager->isKeyActive(KEY_VIRTUAL_MOUSE_MOVE_DOWN)) z = -1;
+
+		if (k > 10)
+		{
+			if ((k < 180) && k >= -z && (180 - k) >= z) { k += (float)z/4.0f; }
+			else if (z < 0) { k += (float)z/4.0f; }
+		}
+		else if (z > 0) { k += (float)z/4.0f; }
+	}
+	
+	
 
 
 	camera->rotateCamera(i, i, k);

@@ -22,6 +22,12 @@ LeapMotionManager::LeapMotionManager()
 	keyMap.insert(std::pair<VirtualLeapMotionKeyEnum, bool>(KEY_VIRTUAL_MOUSE_MOVE_LEFT, false));
 	keyMap.insert(std::pair<VirtualLeapMotionKeyEnum, bool>(KEY_VIRTUAL_MOUSE_MOVE_RIGHT, false));
 	keyMap.insert(std::pair<VirtualLeapMotionKeyEnum, bool>(KEY_VIRTUAL_MOUSE_MOVE_UP, false));
+	keyMap.insert(std::pair<VirtualLeapMotionKeyEnum, bool>(KEY_VIRTUAL_I, false));
+	keyMap.insert(std::pair<VirtualLeapMotionKeyEnum, bool>(KEY_VIRTUAL_O, false));
+	keyMap.insert(std::pair<VirtualLeapMotionKeyEnum, bool>(KEY_VIRTUAL_Z, false));
+	keyMap.insert(std::pair<VirtualLeapMotionKeyEnum, bool>(KEY_VIRTUAL_X, false));
+	keyMap.insert(std::pair<VirtualLeapMotionKeyEnum, bool>(KEY_VIRTUAL_C, false));
+
 }
 
 LeapMotionManager::~LeapMotionManager()
@@ -56,10 +62,23 @@ void LeapMotionManager::onFrame(const Controller& controller)
 		Hand leftHand = controller.frame().hands().leftmost();
 		Hand rightHand = controller.frame().hands().rightmost();
 
+
 			keyMap[KEY_VIRTUAL_W] = (leftHand.palmPosition().z < -30);
 			keyMap[KEY_VIRTUAL_S] = (leftHand.palmPosition().z > 30);
 			keyMap[KEY_VIRTUAL_A] = (leftHand.palmPosition().x < -120);
 			keyMap[KEY_VIRTUAL_D] = (leftHand.palmPosition().x > -70);
+
+			keyMap[KEY_VIRTUAL_SPACE] = (leftHand.palmVelocity().y > 250);
+			
+		/*	if (keyMap[KEY_VIRTUAL_SPACE])
+				std::cout << keyMap[KEY_VIRTUAL_SPACE] << std::endl;*/
+
+			//keyMap[KEY_POSITION_Z] = (leftHand.)
+
+			keyMap[KEY_VIRTUAL_I] = (leftHand.direction().x < -0.4f);
+			keyMap[KEY_VIRTUAL_O] = (leftHand.direction().x > 0.4f);
+
+
 
 			keyMap[KEY_VIRTUAL_E] = (leftHand.grabStrength() > 0.7f);
 
@@ -67,19 +86,20 @@ void LeapMotionManager::onFrame(const Controller& controller)
 
 			if (rightHand.pinchStrength() < 0.75f)
 			{
-				keyMap[KEY_VIRTUAL_MOUSE_MOVE_DOWN] = (rightHand.palmVelocity().y > 200);
-				keyMap[KEY_VIRTUAL_MOUSE_MOVE_UP] = (rightHand.palmVelocity().y < -200);
-				keyMap[KEY_VIRTUAL_MOUSE_MOVE_LEFT] = (rightHand.palmVelocity().x < -200);
-				keyMap[KEY_VIRTUAL_MOUSE_MOVE_RIGHT] = (rightHand.palmVelocity().x > 200);
-				keyMap[KEY_VIRTUAL_MOUSE_MOVE_FORWARD] = (rightHand.palmVelocity().z < -200);
-				keyMap[KEY_VIRTUAL_MOUSE_MOVE_BACKWARD] = (rightHand.palmVelocity().z > 200);
+				keyMap[KEY_VIRTUAL_MOUSE_MOVE_DOWN] = (rightHand.direction().y > 0.4f);
+				keyMap[KEY_VIRTUAL_MOUSE_MOVE_UP] = (rightHand.direction().y < -0.4f);
+				keyMap[KEY_VIRTUAL_MOUSE_MOVE_LEFT] = (rightHand.direction().x < -0.4f);
+				keyMap[KEY_VIRTUAL_MOUSE_MOVE_RIGHT] = (rightHand.direction().x > 0.4f);
+				keyMap[KEY_VIRTUAL_MOUSE_MOVE_FORWARD] = (rightHand.direction().z < -0.4f);
+				keyMap[KEY_VIRTUAL_MOUSE_MOVE_BACKWARD] = (rightHand.direction().z > 0.4f);
 			}
 
 			//keyMap[KEY_VIRTUAL_MOUSE_MOVE_BACKWARD] = controller.frame().gesture(Gesture::TYPE_SWIPE).
 	}
 	else
 	{
-		keyMap[KEY_VIRTUAL_W] = keyMap[KEY_VIRTUAL_S] = keyMap[KEY_VIRTUAL_A] = keyMap[KEY_VIRTUAL_D] = false;
+		keyMap[KEY_VIRTUAL_C] = keyMap[KEY_VIRTUAL_X] = keyMap[KEY_VIRTUAL_Z] = keyMap[KEY_VIRTUAL_O] = keyMap[KEY_VIRTUAL_I] =
+			keyMap[KEY_VIRTUAL_W] = keyMap[KEY_VIRTUAL_W] = keyMap[KEY_VIRTUAL_S] = keyMap[KEY_VIRTUAL_A] = keyMap[KEY_VIRTUAL_D] = false;
 		keyMap[KEY_VIRTUAL_LEFT_MOUSE_BUTTON] = keyMap[KEY_VIRTUAL_RIGHT_MOUSE_BUTTON] = false;
 		keyMap[KEY_VIRTUAL_MOUSE_MOVE_BACKWARD] = keyMap[KEY_VIRTUAL_MOUSE_MOVE_DOWN] = keyMap[KEY_VIRTUAL_MOUSE_MOVE_FORWARD] =
 			keyMap[KEY_VIRTUAL_MOUSE_MOVE_LEFT] = keyMap[KEY_VIRTUAL_MOUSE_MOVE_RIGHT] = keyMap[KEY_VIRTUAL_MOUSE_MOVE_UP] = false;
